@@ -1,0 +1,9 @@
+{
+  // Allow duplicate headings under different parent sections
+  "MD024": {
+    "siblings_only": true
+  },
+  "MD025": false,
+  // Disable line length warnings
+  "MD013": false
+}
