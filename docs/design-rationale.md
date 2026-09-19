@@ -5,7 +5,7 @@ document holds the reasons.
 
 ## The name
 
-The folio is called *The Rave'ns Ledger*. A ledger is a book of entries kept in order, each one dated and
+The folio is called *The Raven's Ledger*. A ledger is a book of entries kept in order, each one dated and
 accountable, and that is the argument the folio makes: every feature is traced to a source and every modification
 to a test. The raven is the character's bird, and it stands for the black-on-black palette without naming a
 television programme in the masthead. Eighteen characters, so it fits the same masthead geometry as a twenty
@@ -13,8 +13,8 @@ character wordmark with room to spare.
 
 ## Period frame, modern page
 
-The garment sits in three periods at once, 1905, 1926 and 1955, and the folio borrows one page convention from
-that span: the engraved double rule under a masthead, a heavy line over a hairline, which printed ephemera used
+The garment is a 2022 screen costume corrected through three periods, 1905, 1926 and 1955, and the folio borrows
+one page convention from that span: the engraved double rule under a masthead, a heavy line over a hairline, which printed ephemera used
 to separate the head of a page from its content. Everything above the rule is identity; everything below it is
 content. That division never moves across the twelve pages, and it is what makes them read as one document.
 

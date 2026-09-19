@@ -22,8 +22,11 @@
     print-at-100% proof — behaves exactly as it does in the host.
 
 .PARAMETER Item
-    Which to build: folio, spine, tag, labels, mounts, or all (default).
-    mounts is the A4 cutting scaffold for the experiment mounts on folio
+    Which to build: folio, spine, tag, labels, mounts, meta, or
+    all (default). meta is the design notes page: the design process and
+    the graphic elements, drawn by the live deck.css. It includes the full
+    colour system, token derivation, and masthead transitions. mounts is
+    the A4 cutting scaffold for the experiment mounts on folio
     pages 9-11: the same slots at the same size, on paper an A4 printer
     can take. Print it at 100% with margins None and check its 100 mm bar.
 
@@ -81,7 +84,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('all', 'folio', 'spine', 'tag', 'labels', 'mounts')]
+    [ValidateSet('all', 'folio', 'spine', 'tag', 'labels', 'mounts', 'meta')]
     [string[]] $Item = @('all'),
 
     [string] $OutDir = (Join-Path $env:TEMP 'folio-preview'),
@@ -210,6 +213,14 @@ $docs = [ordered]@{
             slotRule = $(if ($DashedSlots) { '0.25mm dashed #1A1A1A' } else { '0.12mm solid #1A1A1A' })
             calDisplay = 'flex'
         }
+    }
+    # The design notes: a static page, no sections and no tokens, that
+    # links deck.css and draws the type, the house mark, the rules, the
+    # plates and the colourways with the folio's own classes. It explains
+    # the design process and keeps a ledger of changes at its foot.
+    meta   = @{
+        Out = 'design-notes.html'; Static = 'meta/design-process.html'
+        Name = 'Design notes'; Sub = 'The design process and the graphic elements, drawn by the live stylesheet'
     }
 }
 
@@ -412,7 +423,7 @@ $cards = foreach ($key in $docs.Keys) {
 
 $index = @"
 <!DOCTYPE html><html><head><meta charset="utf-8">
-<title>The Rave'ns Ledger - previews</title>
+<title>The Raven's Ledger - previews</title>
 $head
 <style>
   body { background: #F5EFE2; color: #1A1A1A; font-family: 'PT Serif', Georgia, serif; margin: 0; padding: 46px 40px 60px; }
@@ -433,7 +444,7 @@ $head
 <div class="lede">Static previews rendered from the .dc.html sources against the live stylesheets in <code>design-system/</code>. Sheets are sized in real millimetres: Ctrl&nbsp;+&nbsp;scroll to zoom freely, Ctrl+P to print a true-size proof.$flagLine</div>
 $($cards -join "`n")
 <div class="foot">Rebuild after editing: <code>pwsh .\scripts\preview.ps1</code>, then reload.<br>
-Options: <code>-Item folio|spine|tag|labels|mounts</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-NoMirror</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
+Options: <code>-Item folio|spine|tag|labels|mounts|meta</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-NoMirror</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
 </body></html>
 "@
 

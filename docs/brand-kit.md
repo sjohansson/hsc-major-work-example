@@ -1,9 +1,9 @@
 # Brand kit
 
-The Rave'ns Ledger, Major Textiles Project folio, HSC Textiles and Design. This is the specification of record
+The Raven's Ledger, Major Textiles Project folio, HSC Textiles and Design. This is the specification of record
 for the folio's identity: names, colours, type and the masthead construction. The implementation is
-`design-system/deck.css`, whose comments record the measurements behind each choice, and the swatch sheet is
-`design-system/explorations/color-theme.html`. The reasons are in [design-rationale.md](design-rationale.md).
+`design-system/deck.css`, whose comments record the measurements behind each choice, and the full Colour chapter is in
+`design-system/meta/design-process.html`, built by `preview.ps1 -Item meta`. The reasons are in [design-rationale.md](design-rationale.md).
 
 ## Section names
 
@@ -28,7 +28,9 @@ is never paraphrased, and never only in the footer.
 
 Four structural tokens: Ink `#1A1A1A`, Paper `#FEFBFC`, Cream `#F5EFE2` (the masthead band), and the two brand
 colours sampled from the garment, which arrive as props: `slate` `#4A4E69` (the rule under the wordmark) and
-`wine` `#8C3B4A` (the NESA-designated second colour for pattern modifications on page 7).
+`wine` `#8C3B4A` (the NESA-designated second colour for pattern modifications on page 7). A fifth token,
+`school purple` `#5B2A86` (Wednesday's Nevermore uniform), colours the house mark and the divider hairlines
+it sits between, and nothing else.
 
 Each folio chapter (area) carries its own colourway of five tokens:
 
@@ -58,7 +60,7 @@ colour type, and its one use is the last clause of the closing statement on page
 **Component mapping.** Per page, the area class recolours exactly these components and nothing else: the
 masthead chapter-transition block (field), table header rows (border), table cells (tint), plate corner dots
 (accent), and the section-title stub rules on pages 5 and 12 (border). Kept in brand colours, not area colours:
-the slate rule under the wordmark, the house mark (ink only), and the wine that marks pattern modifications on
+the slate rule under the wordmark, the house mark and its divider lines (school purple), and the wine that marks pattern modifications on
 pages 6 to 8. Production drawings and pattern pieces stay pure ink linework.
 
 ## Type
@@ -71,10 +73,11 @@ at 1 : 1 and is the only place smaller type appears.
 
 ## The house mark
 
-One ornament for the whole set: a simplified nightshade flower between two bars, held in `design-system/assets/house-mark.svg`,
-ink only. It appears in the running foot on all twelve pages, in the ornamented rule that closes the opening and
+One ornament for the whole set: a simplified nightshade flower drawn as linework, held in `design-system/assets/house-mark.svg`,
+in school purple `#5B2A86`. It carries no lines of its own; the hairlines either side of it are CSS rules in the
+same purple, so they always sit on the page's own line axis. It appears in the running foot on all twelve pages, in the ornamented rule that closes the opening and
 closing statements, on the binder spine and on the swing tag, and nowhere else. It is sized by its ink, not its
-file: `--mark-h` is the height of the drawn band and the box is scaled to deliver it (see `.mark-band` in
+file: `--mark-h` is the height of the drawn flower and the box is scaled to deliver it (see `.mark-band` in
 `deck.css`).
 
 ## Masthead
