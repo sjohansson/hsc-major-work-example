@@ -1,8 +1,13 @@
 * text=auto eol=lf
 
-*.png  binary
-*.jpg  binary
-*.jpeg binary
-*.webp binary
-*.gif  binary
-*.ico  binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.avif  binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.pyc   binary

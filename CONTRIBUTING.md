@@ -1,35 +1,42 @@
-# Contributing to this repo
+# Contributing
 
-Thanks for your interest in contributing!
+## Ground rules
 
-## Getting started
+- Everything in this repo is fictional. Do not add a real student name, student number, school, teacher, or a
+  photograph of a real person.
+- Do not add third-party material: commercial sewing patterns, screen stills, magazine scans, exam papers or
+  other students' work. Link to public sources instead.
+- Follow the writing and typography rules in [AGENTS.md](AGENTS.md).
 
-1. Fork and clone the repo.
+## Setup
+
+```pwsh
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Chrome or Edge must be on `PATH`, or set `CHROME_PATH`, for the Canva pipeline. The preview script only needs a
+browser.
 
 ## Before opening a pull request
 
-Run the full check suite locally:
-
 ```pwsh
-./scripts/pre-push.ps1 -NoFix
+npx markdownlint-cli2 "**/*.md"
+npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
+python -m compileall -q scripts
+pwsh scripts/preview.ps1 -Item all -NoOpen
+python scripts/canva.py build --verify
 ```
 
-## Code conventions
+CI runs the first three. The last two are the visual proof and take a minute.
 
-## Commits and PRs
+## Commits
 
-- Keep commits focused; conventional-style prefixes (`feat:`, `fix:`, `docs:`,
-  `chore:`) are appreciated but not required.
-- PRs should describe the *why*, not just the *what*.
-- A PR template will guide you through the basics.
-
-## Reporting bugs / requesting features
-
-Use the GitHub issue templates. For security-sensitive issues, see
-[SECURITY.md](SECURITY.md) instead — please do not file public issues for
-vulnerabilities.
+Use the Conventional Commits prefixes in
+[.github/copilot-commit-message-instructions.md](.github/copilot-commit-message-instructions.md). Keep commits
+focused and describe the why in the body.
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). By
-participating you agree to abide by its terms.
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md).

@@ -1,16 +1,19 @@
-# VS Code files for those working on multiple tools
+# VS Code: keep only the shared workspace files
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-# Local History for Visual Studio Code
 .history/
 
-# Playwright (e2e test output)
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Generated output (Canva export, PDFs, verify diffs, previews)
+/build/
+
+# Canva account identifiers (design id, page ids, asset ids)
+design-system/canva.local.json

@@ -10,11 +10,20 @@
   // https://github.com/microsoft/vscode/issues/327959
   // The "Value is not accepted" warning on this setting is expected; it still works.
   "chat.utilitySmallModel": "copilot/gpt-5.4-mini",
-    "editor.rulers": [
+  "editor.rulers": [
     {
       "column": 120,
       "color": "#883088",
       "lineStyle": "dashed"
     }
-  ]
+  ],
+  "chat.agentSkillsLocations": {
+    ".agents/skills": true,
+    ".github/skills": true,
+    ".claude/skills": true,
+    "~/.agents/skills": true,
+    "~/.copilot/skills": true,
+    "~/.claude/skills": true,
+    "~/.vscode/extensions/synapsevscode.synapse-1.26.0/copilot/skills": true
+  }
 }

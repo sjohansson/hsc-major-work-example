@@ -1,13 +1,12 @@
 {
-	"recommendations": [
-		"davidanson.vscode-markdownlint",
-		"editorconfig.editorconfig",
-		"biomejs.biome",
-		"github.vscode-github-actions",
-		"github.vscode-pull-request-github",
-		"ms-edgedevtools.vscode-edge-devtools",
-		"ms-vscode.powershell",
-		"esbenp.prettier-vscode"
-	],
-	"unwantedRecommendations": []
+  "recommendations": [
+    "davidanson.vscode-markdownlint",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-australian-english",
+    "ms-python.python",
+    "ms-vscode.powershell",
+    "github.vscode-pull-request-github"
+  ],
+  "unwantedRecommendations": []
 }
