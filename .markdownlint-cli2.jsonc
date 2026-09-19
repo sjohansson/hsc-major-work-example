@@ -1,14 +1,17 @@
 {
+  // CLI and CI configuration. Keep the rules in step with .markdownlint.jsonc,
+  // which the VS Code extension reads for live feedback.
   "config": {
     "default": true,
     "MD013": false,
     "MD024": {
       "siblings_only": true
-    }
+    },
+    "MD025": false
   },
   "ignores": [
-    "node_modules/**",
-    ".gradle/**",
-    "**/build/**"
+    "build/**",
+    ".venv/**",
+    "node_modules/**"
   ]
 }
