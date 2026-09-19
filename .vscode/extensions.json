@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "davidanson.vscode-markdownlint",
+    "editorconfig.editorconfig",
+    "biomejs.biome",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "ms-edgedevtools.vscode-edge-devtools",
+    "ms-vscode.powershell",
+    "esbenp.prettier-vscode"
+  ],
+  "unwantedRecommendations": []
+}
