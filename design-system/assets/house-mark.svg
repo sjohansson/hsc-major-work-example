@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1376 768" width="1376" height="768">
+  <!-- House ornament: a jet bead between two bars. One colour, ink only.
+       The drawn band occupies 1216 x 584 inside an 80 px transparent margin,
+       the same geometry the old artwork had, so .mark-band in deck.css sizes
+       it by the ink without change. -->
+  <g fill="#1A1A1A">
+    <rect x="80" y="372" width="420" height="24" />
+    <rect x="876" y="372" width="420" height="24" />
+    <circle cx="80" cy="384" r="42" />
+    <circle cx="1296" cy="384" r="42" />
+    <path d="M688 92 L866 384 L688 676 L510 384 Z" />
+  </g>
+  <path d="M688 210 L790 384 L688 558 L586 384 Z" fill="#FEFBFC" />
+  <path d="M688 300 L738 384 L688 468 L638 384 Z" fill="#1A1A1A" />
+</svg>

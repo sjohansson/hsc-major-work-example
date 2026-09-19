@@ -1,0 +1,375 @@
+<!-- @dsCard group="Folio" name="Mount Scaffold — A4" -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./support.js"></script>
+</head>
+
+<body>
+  <x-dc>
+    <helmet>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet" />
+      <link rel="stylesheet" href="./deck.css" />
+      <link rel="stylesheet" href="./mount-scaffold.css" />
+
+    </helmet>
+
+    <!-- 793 x 1122px, not 794 x 1123. A4 is 793.70 x 1122.52px at 96dpi and
+         deck-stage writes the design size straight into @page; rounding up
+         puts the page box a hair over the sheet and a browser answers that
+         by scaling the whole thing down to fit, which is precisely the
+         failure this document exists to avoid. Rounding down costs 0.2mm of
+         unused paper at the edge and nothing else — the sheet fills its
+         slide at 100%, and every measurement inside is in millimetres. -->
+    <x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="793" height="1122"
+      hint-size="100%,100%">
+
+      <section data-label="A4 1 · Materials"
+        data-speaker-notes="A4 cutting scaffold for the twelve mounts on folio page 9. Print at 100% with margins set to None, check the 100 mm bar, then trim each sample to sit just inside its outline.">
+        <div class="ms-sheet" style="--accent:{{ accent }};--slot-rule:{{ slotRule }}">
+          <div class="ms-head">
+            <div class="ms-title">Mount scaffold</div>
+            <div class="ms-source">Folio page 9 &middot; A3 mounts at true size</div>
+          </div>
+          <div class="ms-rule"></div>
+          <div class="ms-area">Area one &middot; Materials</div>
+          <div class="ms-lede">Twelve mounts at the size they occupy on the A3 page &mdash; each outline
+            34.9 &times; 28.5&nbsp;mm across the rule. Trim each sample to sit just inside it, and number the back.</div>
+
+          <div class="ms-body">
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 1 &middot; Lining fabric</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">1.1 Soft tulle, gathered</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">1.2 Mid-weight tulle, gathered</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">1.3 Stiff tulle, gathered</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">1.4 Mid-weight on satin, at rest</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 2 &middot; Closing mechanism</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">2.1 Poplin collar sample</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">2.2 Piqu&eacute; collar sample</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">2.3 Satin collar sample</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">2.4 Piqu&eacute; after three washes</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 3 &middot; Ribbon width</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">3.1 Crepe satin, shiny face</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">3.2 Crepe satin, matte face</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">3.3 Cotton sateen</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">3.4 Polyester crepe, seam puckered</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Using this sheet</div>
+              <div class="ms-note">
+                <p>Print at <b>100% / Actual size</b> with margins set to <b>None</b>, then measure the bar at the
+                  foot. It has to read 100&nbsp;mm end to end. If it is short, the printer scaled the sheet and
+                  nothing cut against it will fit.</p>
+                <p>Each outline is one mount on the A3 page: 34.9 &times; 28.5&nbsp;mm across the rule, four to
+                  a block, 4&nbsp;mm apart, in the same 82.3&nbsp;mm frame the folio prints.</p>
+                <p>Trim samples a whisker inside the rule so no raw edge shows past it, and write the number on
+                  the back before it leaves the sheet.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ms-cal" style="display:{{ calDisplay }}">
+            <div class="ms-cal-bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="ms-cal-txt">Print-scale check. This bar is 100&nbsp;mm end to end and each band is
+              10&nbsp;mm. Measure it before cutting anything.</div>
+          </div>
+
+          <div class="ms-foot">
+            <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+            <span>Mount scaffold 1 of 3</span>
+          </div>
+        </div>
+      </section>
+
+      <section data-label="A4 2 · Equipment"
+        data-speaker-notes="A4 cutting scaffold for the twelve mounts on folio page 10. Same geometry as sheet 1 — check the 100 mm bar on each sheet, since printers can scale one page and not another.">
+        <div class="ms-sheet" style="--accent:{{ accent }};--slot-rule:{{ slotRule }}">
+          <div class="ms-head">
+            <div class="ms-title">Mount scaffold</div>
+            <div class="ms-source">Folio page 10 &middot; A3 mounts at true size</div>
+          </div>
+          <div class="ms-rule"></div>
+          <div class="ms-area">Area two &middot; Equipment</div>
+          <div class="ms-lede">Twelve mounts at the size they occupy on the A3 page &mdash; each outline
+            34.9 &times; 28.5&nbsp;mm across the rule. Trim each sample to sit just inside it, and number the back.</div>
+
+          <div class="ms-body">
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 4 &middot; Pins and pin marking</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">4.1 Standard foot (control)</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">4.2 Teflon foot</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">4.3 Walking foot</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">4.4 Tulle caught by the standard foot</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 5 &middot; Sealing raw edges</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">5.1 Machine basting (control)</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">5.2 Ruffler foot</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">5.3 Zig zag over cord</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">5.4 Cord gathers set to satin</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 6 &middot; Needles and marking tools</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">6.1 Chalk on satin, brushed</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">6.2 Heat pen ghost on satin</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">6.3 Tailor&rsquo;s tacks on tulle</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">6.4 Pencil on satin after sponging</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Using this sheet</div>
+              <div class="ms-note">
+                <p>Print at <b>100% / Actual size</b> with margins set to <b>None</b>, then measure the bar at the
+                  foot. It has to read 100&nbsp;mm end to end. If it is short, the printer scaled the sheet and
+                  nothing cut against it will fit.</p>
+                <p>Each outline is one mount on the A3 page: 34.9 &times; 28.5&nbsp;mm across the rule, four to
+                  a block, 4&nbsp;mm apart, in the same 82.3&nbsp;mm frame the folio prints.</p>
+                <p>Trim samples a whisker inside the rule so no raw edge shows past it, and write the number on
+                  the back before it leaves the sheet.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ms-cal" style="display:{{ calDisplay }}">
+            <div class="ms-cal-bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="ms-cal-txt">Print-scale check. This bar is 100&nbsp;mm end to end and each band is
+              10&nbsp;mm. Measure it before cutting anything.</div>
+          </div>
+
+          <div class="ms-foot">
+            <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+            <span>Mount scaffold 2 of 3</span>
+          </div>
+        </div>
+      </section>
+
+      <section data-label="A4 3 · Manufacturing"
+        data-speaker-notes="A4 cutting scaffold for the twelve mounts on folio page 11. Nine experiments, thirty-six mounts across the three sheets; the numbering matches the captions on folio pages 9 to 11 exactly.">
+        <div class="ms-sheet" style="--accent:{{ accent }};--slot-rule:{{ slotRule }}">
+          <div class="ms-head">
+            <div class="ms-title">Mount scaffold</div>
+            <div class="ms-source">Folio page 11 &middot; A3 mounts at true size</div>
+          </div>
+          <div class="ms-rule"></div>
+          <div class="ms-area">Area three &middot; Manufacturing processes</div>
+          <div class="ms-lede">Twelve mounts at the size they occupy on the A3 page &mdash; each outline
+            34.9 &times; 28.5&nbsp;mm across the rule. Trim each sample to sit just inside it, and number the back.</div>
+
+          <div class="ms-body">
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 7 &middot; Hem and seam finish</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">7.1 Raw tulle edge (control)</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">7.2 Satin-bound tulle edge</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">7.3 Double-turned satin hem</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">7.4 Horsehair braid hem</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 8 &middot; Gathering against pleating</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">8.1 Buttons and loops</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">8.2 Hooks and bars</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">8.3 Hook-and-loop tape</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">8.4 Covered snaps</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Experiment 9 &middot; Securing embellishment</div>
+              <div class="ms-grid">
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">9.1 Lapped zip (control)</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">9.2 Hook and eye placket</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">9.3 Invisible zip</div>
+                </div>
+                <div>
+                  <div class="ms-slot"></div>
+                  <div class="ms-cap">9.4 Invisible zip under the belt</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-block">
+              <div class="ms-exp">Using this sheet</div>
+              <div class="ms-note">
+                <p>Print at <b>100% / Actual size</b> with margins set to <b>None</b>, then measure the bar at the
+                  foot. It has to read 100&nbsp;mm end to end. If it is short, the printer scaled the sheet and
+                  nothing cut against it will fit.</p>
+                <p>Each outline is one mount on the A3 page: 34.9 &times; 28.5&nbsp;mm across the rule, four to
+                  a block, 4&nbsp;mm apart, in the same 82.3&nbsp;mm frame the folio prints.</p>
+                <p>Thirty-six mounts across the three sheets. The numbers match the captions on folio pages 9 to
+                  11 exactly, so a sample can be checked back against its experiment.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ms-cal" style="display:{{ calDisplay }}">
+            <div class="ms-cal-bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="ms-cal-txt">Print-scale check. This bar is 100&nbsp;mm end to end and each band is
+              10&nbsp;mm. Measure it before cutting anything.</div>
+          </div>
+
+          <div class="ms-foot">
+            <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+            <span>Mount scaffold 3 of 3</span>
+          </div>
+        </div>
+      </section>
+
+    </x-import>
+
+  </x-dc>
+  <script type="text/x-dc" data-dc-script
+    data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C9A264&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#C9A264&quot;,&quot;#D98A9F&quot;,&quot;#8FA98B&quot;,&quot;#8AA3BC&quot;],&quot;section&quot;:&quot;Sheet&quot;},&quot;dashedSlots&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Production&quot;},&quot;showCal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Production&quot;},&quot;studentNo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;12345678&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Production&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const dashed = this.props.dashedSlots ?? false;
+    return {
+      accent: this.props.accent ?? '#C9A264',
+      studentNo: this.props.studentNo ?? '12345678',
+      // The slots are border-box, so a heavier rule eats into the outline
+      // rather than growing it — the printed 34.8667 x 28.24mm outside
+      // measurement is the same either way. Dashed is for cutting against;
+      // the hairline matches what the A3 page prints.
+      slotRule: dashed ? '0.25mm dashed #1A1A1A' : '0.12mm solid #1A1A1A',
+      calDisplay: (this.props.showCal ?? true) ? 'flex' : 'none'
+    };
+  }
+}
+
+</script>
+</body>
+
+</html>

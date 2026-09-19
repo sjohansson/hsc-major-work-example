@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 83.9 173.4" width="83.9mm" height="173.4mm" data-placeholder="true">
+  <rect x="0" y="0" width="83.9" height="173.4" fill="#FFFFFF" />
+  <rect x="0.4" y="0.4" width="83.1" height="172.6" fill="none" stroke="#1A1A1A" stroke-width="0.25" />
+  <path d="M0 0 L83.9 173.4 M83.9 0 L0 173.4" stroke="#1A1A1A" stroke-width="0.12" opacity="0.5" />
+  <rect x="6.712" y="72.8565" width="70.476" height="27.687" fill="#FFFFFF" opacity="0.92" />
+  <text x="41.95" y="84.4976" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="6.2925" fill="#1A1A1A">Drawing 6.2, back flat, 1 : 7</text>
+  <text x="41.95" y="93.3071" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="4.71938" fill="#1A1A1A" opacity="0.8">placeholder, 83.9 x 173.4 mm</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 78.2 113.4" width="78.2mm" height="113.4mm" data-placeholder="true">
+  <rect x="0" y="0" width="78.2" height="113.4" fill="#DCDCDC" />
+  <rect x="0.4" y="0.4" width="77.4" height="112.6" fill="none" stroke="#4A4A4A" stroke-width="0.25" />
+  <path d="M0 0 L78.2 113.4 M78.2 0 L0 113.4" stroke="#4A4A4A" stroke-width="0.12" opacity="0.5" />
+  <rect x="6.256" y="43.797" width="65.688" height="25.806" fill="#DCDCDC" opacity="0.92" />
+  <text x="39.1" y="54.6472" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="5.865" fill="#2A2A2A">Final design, back</text>
+  <text x="39.1" y="62.8583" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="4.39875" fill="#2A2A2A" opacity="0.8">placeholder, 78.2 x 113.4 mm</text>
+</svg>

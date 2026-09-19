@@ -1,0 +1,199 @@
+/* The Raven's Ledger - binder spine insert.
+
+   The printed card that slides into the spine pocket of the ring binder the
+   twelve folio pages live in. Trim 59 × 436 mm, which is the binder's spine
+   width by its cover height; 3 mm bleed all round gives a 65 × 442 mm art
+   box, because every fill on this piece runs off three edges and a hand trim
+   is never exact.
+
+   THE ARTWORK IS THE MASTHEAD, TURNED. Nothing here is a new construction:
+   .masthead2 / .m2-cream / .m2-area come from deck.css untouched, so the
+   cream band, the 38 pt wordmark, the rose rule and the 60° chapter
+   transition are the same objects the twelve pages use, at the same sizes.
+   Below the band the engraving double rule and a running foot repeat the
+   page skeleton, so the spine reads as one folio page seen edge-on.
+
+   Two departures from a page masthead, both deliberate:
+
+   1. The band is 47 mm, not 26 mm (44 mm after trim, plus 3 mm of bleed).
+      The 60° slant is derived from --band-h, so it re-derives to 27.1 mm and
+      the angle holds — the whole point of deriving it. The wordmark is left
+      at 38 pt: it measures 143.3 mm against 326 mm of cream run here, so
+      none of the A4 amendment's width bounds bite.
+
+   2. The area block carries all four area fields in chapter order rather
+      than one. A page belongs to one chapter; the spine is the whole book,
+      and this is its index — rose, sage, Wedgwood blue, marigold, reading
+      down the spine in the order the chapters run. Each band is the
+      masthead's 60° joint repeated, all four the same length, and the run
+      closes in cream, so the strip begins and ends in the masthead's own
+      colour with the four chapters between. The fills butt directly with
+      no rule between them, which is the same rule the cream/field joint
+      follows.
+
+   ROTATION. The art is authored horizontally, then rotated 90° clockwise
+   inside .spine-piece, which puts the wordmark at the head reading
+   top-to-bottom — the English spine convention, so the title is upright
+   when the binder lies face up. Rotation happens after layout, so every
+   measurement below is in the horizontal frame: "band height" is the 47 mm
+   that becomes the strip's width once turned.
+
+   Depends on deck.css for the masthead construction, .wordmark,
+   .masthead-rule, .mark-band, the :root area tokens, .tbl and the type
+   utilities. --slate / --wine / --band-h arrive on .spine-art from the deck
+   props, exactly as they do on a .page root. */
+
+/* ---- A2 sheet ---- */
+/* The strip is 436 mm long, which is 16 mm past the 420 mm of an A3 sheet,
+   so this piece cannot print on the folio's own stock. A2 portrait is the
+   next size up that takes it whole, and it takes two copies side by side
+   with room for the spec panel — a spare costs nothing on a sheet already
+   paid for, and a mis-cut on a 436 mm strip is otherwise a reprint. */
+.sheet {
+  position: relative; box-sizing: border-box;
+  width: 420mm; height: 594mm;
+  padding: 14mm 18mm;
+  background: #FFFFFF; overflow: hidden;
+  display: flex; flex-direction: column;
+  font-family: 'PT Serif', Times, serif; color: #1A1A1A;
+}
+.sheet-head {
+  flex: none; display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 11pt; padding-bottom: 2.5mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.sheet-foot {
+  flex: none; display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 11pt; padding-top: 2.5mm; border-top: 0.12mm solid #1A1A1A;
+}
+.sheet-body { flex: 1; min-height: 0; display: flex; align-items: center; gap: 34mm; }
+
+/* ---- Crop marks ---- */
+/* Marks sit 1 mm outside the bleed box and stop short of it, so a trim that
+   follows them never cuts through a mark. They mark the TRIM, not the
+   bleed: the horizontal pair sits at y = 3 mm and y = 439 mm of the art
+   box, the vertical pair at x = 3 mm and x = 62 mm. */
+.piece-wrap { position: relative; flex: none; width: 65mm; height: 442mm; }
+.cm { position: absolute; background: #1A1A1A; }
+.cm-h { width: 9mm; height: 0.15mm; }
+.cm-v { width: 0.15mm; height: 9mm; }
+.cm-l { left: -10mm; }
+.cm-r { right: -10mm; }
+.cm-t { top: -10mm; }
+.cm-b { bottom: -10mm; }
+.cm-y1 { top: 3mm; }
+.cm-y2 { bottom: 3mm; }
+.cm-x1 { left: 3mm; }
+.cm-x2 { right: 3mm; }
+
+/* ---- The strip ---- */
+/* .spine-piece is the bleed box in its finished orientation (65 mm wide,
+   442 mm tall). .spine-art is the same box authored the other way up and
+   rotated into it: centred by half-size negative margins rather than a
+   translate, so the rotation is the only transform in play. */
+/* --seg-step is how far each chapter band advances along the strip, and it
+   is the same at every height because the bands are congruent
+   parallelograms — "equal length" is unambiguous however the slant
+   re-derives. --seg-tail is the cream close, measured on its short side;
+   the slant makes it that much wider on the other. */
+.spine-piece { position: relative; width: 65mm; height: 442mm; overflow: hidden; --seg-step: 28mm; --seg-tail: 15mm; }
+/* Proofing only: a dotted outline on the trim box, switched on by the
+   showTrim prop setting --trim-outline on the sheet. Never printed. */
+.spine-piece::after {
+  content: ""; position: absolute; inset: 3mm; z-index: 5; pointer-events: none;
+  outline: var(--trim-outline, none);
+}
+.spine-art {
+  position: absolute; top: 50%; left: 50%;
+  width: 442mm; height: 65mm; margin: -32.5mm 0 0 -221mm;
+  transform: rotate(90deg); transform-origin: center;
+  box-sizing: border-box; background: #FEFBFC;
+  display: flex; flex-direction: column;
+}
+
+/* Band: 47 mm = 44 mm of trim + 3 mm of top bleed. Height is set rather
+   than min-height so the band cannot grow and quietly break the 60°.
+
+   The area block's width is derived rather than stated: four bands, plus
+   one slant to carry the first band's leading edge, plus the cream close.
+   Retune --band-h and the slant re-derives; retune --seg-step or
+   --seg-tail and the block resizes to fit. Nothing here needs measuring
+   twice. */
+.spine-art .masthead2 {
+  flex: none; height: 47mm;
+  --m2-area-w: calc(4 * var(--seg-step) + var(--m2-slant) + var(--seg-tail));
+}
+/* 28 mm of left padding = 3 mm bleed + the folio's own 25 mm binding
+   margin, so the wordmark starts on the same measure it does on a page.
+   Centred vertically in the trim band: the 3 mm top padding takes the
+   bleed out of the reckoning first. */
+.spine-art .m2-cream { align-items: center; padding: 3mm 0 0 28mm; }
+/* Four chapter bands, then cream. Each band is the masthead's own joint
+   repeated: a parallelogram clipped at 60° on both edges and pulled left
+   by exactly the slant, so its leading edge lands on its neighbour's
+   trailing one. That is how .m2-area meets .m2-cream, three more times —
+   fills butting directly, no paper between, no rule.
+   The block's own cream ground shows only if a sub-pixel rounding gap
+   ever opens between two bands, which is the right direction to fail:
+   cream is the masthead's colour, paper is not. */
+.spine-art .m2-area {
+  padding: 0; background: #F5EFE2;
+  align-items: stretch; justify-content: flex-start;
+}
+.spine-art .seg {
+  flex: none;
+  width: calc(var(--seg-step) + var(--m2-slant));
+  clip-path: polygon(var(--m2-slant) 0, 100% 0, calc(100% - var(--m2-slant)) 100%, 0 100%);
+}
+.spine-art .seg + .seg { margin-left: calc(-1 * var(--m2-slant)); }
+.spine-art .seg-1 { background: var(--sources-field); }
+.spine-art .seg-2 { background: var(--designs-field); }
+.spine-art .seg-3 { background: var(--making-field); }
+.spine-art .seg-4 { background: var(--trials-field); }
+/* The close. Leading edge on the fourth band's, trailing edge square on
+   the bleed — a trapezoid, not a parallelogram, because the strip ends
+   there and paper does not slant. */
+.spine-art .seg-end {
+  width: calc(var(--seg-tail) + var(--m2-slant));
+  background: #F5EFE2;
+  clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Double rule and running foot on the page's own margins, plus 3 mm of
+   bleed at each end: 25 + 3 left, 15 + 3 right.
+
+   The heavy weight is 0.53mm, matching .rule-heavy in deck.css — see the
+   comment there for why the pair cannot be authored at 0.4mm. Short
+   version: 0.4mm is 1.51px at 1x and snaps to either 1 or 2 device rows
+   depending on where the sheet falls on the pixel grid, while the 0.12mm
+   hairline always snaps up to 1, so at some offsets the two lines rendered
+   identically. 0.53mm is the smallest weight that is >= 2px. */
+.spine-rule-heavy { flex: none; margin: 2.5mm 18mm 0 28mm; height: 0.53mm; background: #1A1A1A; }
+.spine-rule-fine { flex: none; margin: 0.9mm 18mm 0 28mm; height: 0.12mm; background: #1A1A1A; }
+.spine-foot {
+  flex: 1; min-height: 0; margin: 0 18mm 3mm 28mm;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12pt; color: #1A1A1A;
+}
+
+/* ---- Spec panel ---- */
+/* Set in the Wedgwood blue of Area III: these three production items are
+   all described on page 7, inside the Manufacturing Specification, so the
+   sheets that make them belong to that chapter's colourway. */
+.spec { flex: 1; min-width: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.spec-kicker { font-size: 11pt; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 700; }
+.spec-title { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 26pt; line-height: 1.02; margin-top: 2.5mm; }
+.spec-rule { width: 50mm; height: 1.1mm; background: var(--area-border); margin: 4mm 0 6mm; }
+.spec-lede { font-size: 12pt; line-height: 1.35; text-wrap: pretty; }
+.spec h4 {
+  font-family: 'PT Serif', Times, serif; font-size: 11pt; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin: 7mm 0 2.5mm; padding-bottom: 1.5mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.spec ol, .spec ul { margin: 0; padding-left: 5.5mm; font-size: 12pt; line-height: 1.3; }
+.spec li { margin-bottom: 1.8mm; }
+.spec li:last-child { margin-bottom: 0; }
+.note {
+  font-size: 11pt; line-height: 1.3; margin-top: 7mm;
+  border-left: 1mm solid var(--area-border); padding-left: 4mm; text-wrap: pretty;
+}
+.note b { letter-spacing: 0.06em; text-transform: uppercase; font-size: 10pt; }

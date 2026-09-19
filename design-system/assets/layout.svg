@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 78.2 76.4" width="78.2mm" height="76.4mm" data-placeholder="true">
+  <rect x="0" y="0" width="78.2" height="76.4" fill="#FFFFFF" />
+  <rect x="0.4" y="0.4" width="77.4" height="75.6" fill="none" stroke="#1A1A1A" stroke-width="0.25" />
+  <path d="M0 0 L78.2 76.4 M78.2 0 L0 76.4" stroke="#1A1A1A" stroke-width="0.12" opacity="0.5" />
+  <rect x="6.256" y="25.594" width="65.688" height="25.212" fill="#FFFFFF" opacity="0.92" />
+  <text x="39.1" y="36.1945" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="5.73" fill="#1A1A1A">Cutting layout, 1 : 20</text>
+  <text x="39.1" y="44.2165" text-anchor="middle" font-family="PT Serif, Georgia, serif" font-size="4.2975" fill="#1A1A1A" opacity="0.8">placeholder, 78.2 x 76.4 mm</text>
+</svg>

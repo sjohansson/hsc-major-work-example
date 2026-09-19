@@ -1,0 +1,212 @@
+<!-- @dsCard group="Folio Extras" name="Swing Tag" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./deck.css" />
+<link rel="stylesheet" href="./swing-tag.css" />
+
+</helmet>
+
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="794" height="1123" hint-size="100%,100%">
+
+<section data-label="Swing tag · A4 sheet" data-speaker-notes="Swing tag, 70 × 120 mm, front and back on one A4 sheet at true size. The tag is the folio page at 1:4.2 - chamfered head, cream band, wordmark, slate rule, engraving double rule, footer on a hairline. Front is the marketing face; back is the completion marker and repeats page 7's product-label wording exactly. Both faces are printed, glued either side of a board core, cut to the outline and punched for a 7 mm black grosgrain ribbon.">
+  <div class="sheet area-making">
+
+    <div class="sheet-head">
+      <span>The Raven&rsquo;s Ledger &middot; production items</span>
+      <span>Item 2 of 3 &middot; Swing tag &middot; trim 70 &times; 120 mm</span>
+    </div>
+
+    <div class="artwork-row">
+
+      <!-- ══ FRONT ══ -->
+      <div>
+        <div class="tag-wrap">
+          <div class="tag" style="--slate:{{ slate }};--wine:{{ wine }}">
+            <div class="tag-head"></div>
+            <div class="tag-band">
+              <div>
+                <div class="wordmark">The Raven&rsquo;s<br />Ledger</div>
+                <div class="masthead-rule"></div>
+              </div>
+            </div>
+            <div class="tag-rule-heavy"></div>
+            <div class="tag-rule-fine"></div>
+            <div class="tag-body">
+              <div class="tag-claim">Costume for the stage,<br />made entirely by hand</div>
+              <div style="margin-top:auto;margin-bottom:3mm">
+                <div class="tag-mark">
+                  <span class="bar"></span><img class="mark-band" src="./assets/house-mark.svg" alt="" /><span class="bar"></span>
+                </div>
+                <div class="tag-piece" style="margin-top:4mm">Dress &amp; Collar</div>
+                <div class="tag-hand" style="margin-top:3mm">Tiers gathered by hand &middot; cuffs beaded by hand<br />Collar detachable on four snaps</div>
+              </div>
+            </div>
+            <div class="tag-foot">
+              <span>Major Textiles Project</span>
+              <span>2026</span>
+            </div>
+          </div>
+          <svg class="tag-outline" viewBox="0 0 70 120" preserveAspectRatio="none" fill="none" stroke="#1A1A1A" stroke-width="0.2">
+            <path d="M22 0.1 H48 L69.9 22 V119.9 H0.1 V22 Z" />
+            <circle cx="35" cy="11" r="2.5" />
+          </svg>
+        </div>
+        <div class="face-label">Front &middot; cut line and punch shown</div>
+      </div>
+
+      <!-- ══ BACK ══ -->
+      <div>
+        <div class="tag-wrap">
+          <div class="tag" style="--slate:{{ slate }};--wine:{{ wine }}">
+            <div class="tag-head"></div>
+            <div class="tag-band-slim">
+              <div class="wordmark">The Raven&rsquo;s Ledger</div>
+            </div>
+            <div class="tag-rule-heavy"></div>
+            <div class="tag-rule-fine"></div>
+            <div class="tag-body">
+              <div class="spec-head">Dance costume, one piece</div>
+              <div class="spec-line"><b>Dress</b> &middot; size {{ gownSize }} &middot; shell 100% polyester crepe satin, tiers and sleeves 100% nylon tulle</div>
+              <div class="spec-line"><b>Collar</b> &middot; detachable on four snaps &middot; 100% cotton piqu&eacute;</div>
+
+              <div class="spec-head">Care</div>
+              <div class="care-row">
+                <!-- Hand wash -->
+                <svg class="care-sym" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M2.5 9.5 H21.5 L19.3 20.5 H4.7 Z" />
+                  <path d="M9.2 16.4 V13.4 M11.4 16.4 V12.2 M13.6 16.4 V12.6 M15.4 16.6 V14.2" stroke-width="1.5" />
+                  <rect x="8.4" y="16.2" width="7.6" height="2.4" rx="1.1" fill="#1A1A1A" stroke="none" />
+                </svg>
+                <!-- Do not bleach -->
+                <svg class="care-sym" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M12 3.6 L21 20.4 H3 Z" />
+                  <path d="M4.6 4.8 L19.4 19.2 M19.4 4.8 L4.6 19.2" />
+                </svg>
+                <!-- Do not tumble dry -->
+                <svg class="care-sym" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+                  <rect x="3" y="4" width="18" height="16" rx="0.6" />
+                  <circle cx="12" cy="12" r="5.6" />
+                  <path d="M4.2 5.2 L19.8 18.8 M19.8 5.2 L4.2 18.8" />
+                </svg>
+                <!-- Cool iron, one dot -->
+                <svg class="care-sym" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M2.4 17.6 H21.6 L19.4 9.4 H8.6 C5.6 9.4 3.4 12.4 2.4 17.6 Z" />
+                  <circle cx="12" cy="14" r="1.15" fill="#1A1A1A" stroke="none" />
+                </svg>
+                <!-- Dry flat -->
+                <svg class="care-sym" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+                  <rect x="3" y="4" width="18" height="16" rx="0.6" />
+                  <path d="M7.5 12 H16.5" />
+                </svg>
+              </div>
+              <div class="care-text">Dress: hand wash cold, separately, collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry. Collar: machine wash cold, gentle; line dry; warm iron.</div>
+
+              <div class="origin">Made by hand in Australia</div>
+            </div>
+            <div class="tag-foot">
+              <span>Student No. {{ studentNo }}</span>
+              <span>2026</span>
+            </div>
+          </div>
+          <svg class="tag-outline" viewBox="0 0 70 120" preserveAspectRatio="none" fill="none" stroke="#1A1A1A" stroke-width="0.2">
+            <path d="M22 0.1 H48 L69.9 22 V119.9 H0.1 V22 Z" />
+            <circle cx="35" cy="11" r="2.5" />
+          </svg>
+        </div>
+        <div class="face-label">Back &middot; completion marker</div>
+      </div>
+
+    </div>
+
+    <div class="notes">
+      <div class="notes-col">
+        <div class="notes-kicker">Production item 2 of 3</div>
+        <div class="notes-title">Swing tag</div>
+        <div class="notes-rule"></div>
+        <table class="tbl" style="--cell-pad:1.4mm">
+          <tbody>
+            <tr><td style="width:40%">Trim size</td><td>70 &times; 120 mm, chamfered head</td></tr>
+            <tr><td>Punch</td><td>5 mm, centred, 11 mm from the head</td></tr>
+            <tr><td>Core</td><td>Greyboard or mount board, 1&ndash;1.5 mm</td></tr>
+            <tr><td>Tie</td><td>7 mm black grosgrain ribbon</td></tr>
+            <tr><td>Sheet</td><td>A4 portrait, one set</td></tr>
+            <tr><td>Colour</td><td>CMYK, 300 dpi</td></tr>
+          </tbody>
+        </table>
+        <h4>Printing</h4>
+        <ol>
+          <li>Print this sheet at 100 per cent on A4. Do not fit to page.</li>
+          <li>Matt photo or 200 gsm paper &mdash; the faces are glued down, so the stock only has to hold ink cleanly.</li>
+          <li>Print a second copy before cutting. Two faces, one board and one punch leave no room to recover a slip.</li>
+        </ol>
+
+        <div class="note"><b>Wording is not free text.</b> The back repeats page 7&rsquo;s product-label copy word for word, and the sewn-in labels repeat it again. Change one, change all three.</div>
+      </div>
+
+      <div class="notes-col">
+        <h4>Making up</h4>
+        <ol>
+          <li>Cut both faces roughly oversize, leaving the outline intact.</li>
+          <li>Glue the front to the board with an even, thin spread; glue the back to the reverse, squaring the two cut lines to each other.</li>
+          <li>Press flat under weight until dry, then cut through all three layers on the outline &mdash; just inside the line, so no hairline survives on the edge.</li>
+          <li>Punch the 5 mm hole on its circle. Punch through the board, not into it, and back the tag with scrap so the reverse does not tear out.</li>
+          <li>Thread a 20 cm length of the 7 mm black grosgrain: fold it in half, pass the loop through the hole and draw the ends back through the loop. Seal both ends with a lighter.</li>
+        </ol>
+
+        <div class="note"><b>Why board.</b> A tag cut from paper curls and reads as a printout. Two printed faces on a 1&ndash;1.5 mm core give a card with a visible edge and enough weight to hang straight off the garment &mdash; the difference between a label and a finished object.</div>
+      </div>
+    </div>
+
+    <div class="sheet-foot">
+      <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+      <span>Print at 100% &middot; do not scale to fit &middot; cut on the outline</span>
+    </div>
+
+  </div>
+</section>
+
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;slate&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#4A4E69&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#4A4E69&quot;,&quot;#3C3F58&quot;,&quot;#5B5F7C&quot;,&quot;#2F3247&quot;],&quot;section&quot;:&quot;Colour (re-sample from garment)&quot;},&quot;wine&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#8C3B4A&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#8C3B4A&quot;,&quot;#6B2E3B&quot;,&quot;#A24C5C&quot;,&quot;#7A3341&quot;],&quot;section&quot;:&quot;Colour (re-sample from garment)&quot;},&quot;gownSize&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;10&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Garment&quot;},&quot;studentNo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;12345678&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Production&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    // <doc-page> decides pagination from its .sheet children; React mounts
+    // them after the element upgrades, so poke its measure pass over a few
+    // frames. Same treatment as the twelve-page deck.
+    const poke = () => {
+      document.querySelectorAll('doc-page').forEach((el) => {
+        if (typeof el._measure === 'function') {
+          try { el._measure(); } catch (e) { /* not upgraded yet */ }
+        }
+      });
+    };
+    [0, 50, 150, 400, 900, 1800, 3200].forEach((t) => setTimeout(poke, t));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(poke);
+  }
+
+  renderVals() {
+    return {
+      slate: this.props.slate ?? '#4A4E69',
+      wine: this.props.wine ?? '#8C3B4A',
+      // Page 7's gown label reads "size 10"; the tag must not disagree with
+      // it, so the size is a prop rather than typed into three places.
+      gownSize: this.props.gownSize ?? '10',
+      studentNo: this.props.studentNo ?? '12345678'
+    };
+  }
+}
+
+</script>
+</body>
+</html>
