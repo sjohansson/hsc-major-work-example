@@ -48,7 +48,9 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 - `design-system/` the deck, the items, their css, the two runtime files, `canva.config.json`, and `assets/`.
 - `design-system/assets/plates.json` lists every image slot. `scripts/make_placeholder_plates.py` generates the
   SVGs from it. Real artwork replaces a placeholder by keeping its filename.
-- `design-system/explorations/` standalone specimen pages for masthead, ornament and colour options.
+- `design-system/meta/` the design notes page (the design process, the graphic elements as live specimens, and a
+  ledger of changes, with the full colour system, token derivation, and masthead transitions).
+  Built by `preview.ps1 -Item meta`.
 - `docs/` requirements, brand kit, print specs, production items, Canva pipeline, self-assessment method.
 - `scripts/` `preview.ps1`, `canva.py` and the `canva/` package, `make_placeholder_plates.py`.
 - `build/` generated output, ignored by git. Nothing generated is ever committed.
@@ -58,7 +60,7 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 ## Commands
 
 ```pwsh
-pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|all [-Guides] [-Bleed] [-NoOpen]
+pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoOpen]
 python scripts/canva.py build [--verify] [--pdf]
 python scripts/canva.py extract
 python scripts/canva.py ops --page 01 --phase elements|format

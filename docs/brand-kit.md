@@ -71,7 +71,7 @@ at 1 : 1 and is the only place smaller type appears.
 
 ## The house mark
 
-One ornament for the whole set: a jet bead between two bars, drawn in `design-system/assets/house-mark.svg`,
+One ornament for the whole set: a simplified nightshade flower between two bars, held in `design-system/assets/house-mark.svg`,
 ink only. It appears in the running foot on all twelve pages, in the ornamented rule that closes the opening and
 closing statements, on the binder spine and on the swing tag, and nowhere else. It is sized by its ink, not its
 file: `--mark-h` is the height of the drawn band and the box is scaled to deliver it (see `.mark-band` in
