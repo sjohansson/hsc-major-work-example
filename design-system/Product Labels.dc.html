@@ -1,0 +1,375 @@
+<!-- @dsCard group="Folio Extras" name="Product Labels" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./deck.css" />
+<link rel="stylesheet" href="./product-labels.css" />
+
+</helmet>
+
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="794" height="1123" hint-size="100%,100%">
+
+<section data-label="Labels · transfer sheet" data-speaker-notes="The transfer sheet. Four dress labels and four collar labels at true size, 58 by 39 mm trim around a 55 by 36 mm ruled box. Contents and layout are page 7's, unchanged. The banner at the top states whether the sheet was printed mirrored — mirrored is correct for standard light-fabric iron-on transfer paper, not mirrored is correct for printable fabric sheets. Nothing is printed inside the trim that is not meant to end up on the garment.">
+  <div class="sheet area-making" style="--mirror:{{ mirror }}">
+
+    <div class="sheet-head">
+      <span>The Raven&rsquo;s Ledger &middot; production items</span>
+      <span>Item 3 of 3 &middot; Product labels &middot; trim 58 &times; 39 mm &middot; sheet 1 of 3</span>
+    </div>
+
+    <div class="banner">
+      <span class="banner-state">{{ mirrorState }}</span>
+      <span class="banner-text">{{ mirrorNote }}</span>
+    </div>
+
+    <div class="grid">
+
+      <div class="cell">
+        <div class="cell-tag">Dress 1</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+          <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Collar 1</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+          <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Dress 2</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+          <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Collar 2</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+          <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Dress 3</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+          <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Collar 3</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+          <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Dress 4</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+          <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+      <div class="cell">
+        <div class="cell-tag">Collar 4</div>
+        <div class="label"><div class="label-box">
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+          <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+        </div></div>
+        <span class="cm cm-h cm-l cm-y1"></span><span class="cm cm-h cm-r cm-y1"></span>
+        <span class="cm cm-h cm-l cm-y2"></span><span class="cm cm-h cm-r cm-y2"></span>
+        <span class="cm cm-v cm-t cm-x1"></span><span class="cm cm-v cm-t cm-x2"></span>
+        <span class="cm cm-v cm-b cm-x1"></span><span class="cm cm-v cm-b cm-x2"></span>
+      </div>
+
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="sheet-foot">
+      <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+      <span>Print at 100% &middot; do not scale to fit &middot; cut to the marks</span>
+    </div>
+
+  </div>
+</section>
+
+<section data-label="Labels · reading proof" data-speaker-notes="The reading proof. Same labels, never mirrored — this sheet forces --mirror to none on its own root, so it reads correctly whatever the transfer sheet is set to. The pair is shown at true size to judge the object and at 150 per cent to proofread the copy, and the enlargement is a faithful scale of the same markup rather than a second setting. Reference only: it is not a transfer sheet.">
+  <div class="sheet area-making" style="--mirror:none">
+
+    <div class="sheet-head">
+      <span>The Raven&rsquo;s Ledger &middot; production items</span>
+      <span>Item 3 of 3 &middot; Product labels &middot; reading proof &middot; sheet 2 of 3</span>
+    </div>
+
+    <div class="banner">
+      <span class="banner-state">REFERENCE</span>
+      <span class="banner-text">Never mirrored, whatever sheet 1 is set to &mdash; this is where the copy is read and checked. <b>Not a transfer sheet.</b> If you are using printable fabric sheets rather than iron-on transfer paper, do not print this one: set the mirror prop off and print sheet 1, which carries the crop marks and the full run.</span>
+    </div>
+
+    <div class="proof-head">At true size &mdash; 58 &times; 39 mm trim, 55 &times; 36 mm ruled box</div>
+    <div class="proof-row">
+      <div>
+        <div class="cell">
+          <div class="label"><div class="label-box">
+            <div class="wordmark">The Raven&rsquo;s Ledger</div>
+            <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+            <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+          </div></div>
+        </div>
+        <div class="proof-cap">Dress label, as it will read on the dress and in the overskirt band.</div>
+      </div>
+      <div>
+        <div class="cell">
+          <div class="label"><div class="label-box">
+            <div class="wordmark">The Raven&rsquo;s Ledger</div>
+            <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+            <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+          </div></div>
+        </div>
+        <div class="proof-cap">Collar label, as it will read inside the stand.</div>
+      </div>
+    </div>
+
+    <div class="proof-head">At 150 per cent &mdash; for proofreading the copy</div>
+
+    <div class="proof-pair">
+      <div class="proof-150">
+        <div class="cell">
+          <div class="label"><div class="label-box">
+            <div class="wordmark">The Raven&rsquo;s Ledger</div>
+            <div class="label-spec">Dress and overskirt &middot; size {{ gownSize }} &middot; shell 100% polyester, tiers and sleeves 100% nylon &middot; Made in Australia</div>
+            <div class="label-care">Hand wash cold, separately, with the collar removed. Do not bleach or wring. Dry flat in shade. Cool iron on the reverse of the satin only; never iron the tulle. Do not tumble dry.</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="proof-side">
+        <b>Dress - check before printing sheet 1</b>
+        <ul>
+          <li>The size reads the same here, on page 7 of the folio and on the back of the swing tag.</li>
+          <li>The fibre content matches the swatch page: polyester crepe satin shell, nylon tulle tiers and sleeves. The same label goes in the dress and in the overskirt band.</li>
+          <li>The care line matches the swing tag and the evaluation table on page 12: cool iron on the satin reverse only, never the tulle.</li>
+          <li>The dress and collar care lines differ on purpose. The collar is cotton and takes a warm iron; the dress is synthetic and does not.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="proof-pair" style="margin-top:8mm">
+      <div class="proof-150">
+        <div class="cell">
+          <div class="label"><div class="label-box">
+            <div class="wordmark">The Raven&rsquo;s Ledger</div>
+            <div class="label-spec">Collar &middot; detachable &middot; 100% cotton &middot; Made in Australia</div>
+            <div class="label-care">Machine wash cold, gentle cycle. Do not bleach. Line dry. Warm iron. Do not tumble dry.</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="proof-side">
+        <b>Collar - what this scale is showing</b>
+        <ul>
+          <li>The enlargement is the same markup scaled, not a second setting: the 0.3 mm rule thickens with the type, so what reads here is what prints.</li>
+          <li>Nothing outside the ruled box transfers. The 1.5 mm of paper around it is cutting tolerance, so a slightly wide cut still leaves a clean margin on the fabric.</li>
+          <li>The collar care line is its own. The collar is 100% cotton and is washed and pressed apart from the dress, which is why it detaches. That is how page 7 sets it; change page 7 first and follow it here.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="sheet-foot">
+      <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+      <span>Reference sheet &mdash; print on plain paper, not on transfer material</span>
+    </div>
+
+  </div>
+</section>
+
+<section data-label="Labels · production notes" data-speaker-notes="Production notes for the labels, kept on their own sheet so the transfer paper carries nothing but artwork. Covers stock, mirroring, pressing onto polyester at the temperature the folio's own scorch experiment settled, and how the transfer sits on a fabric patch cut large enough for the seam allowance.">
+  <div class="sheet area-making">
+
+    <div class="sheet-head">
+      <span>The Raven&rsquo;s Ledger &middot; production items</span>
+      <span>Item 3 of 3 &middot; Product labels &middot; notes &middot; sheet 3 of 3</span>
+    </div>
+
+    <div class="notes" style="border-top:none;margin-top:6mm;padding-top:0">
+      <div class="notes-col">
+        <div class="notes-kicker">Production item 3 of 3</div>
+        <div class="notes-title">Product labels<br />dress and collar</div>
+        <div class="notes-rule"></div>
+
+        <table class="tbl" style="--cell-pad:1.6mm">
+          <tbody>
+            <tr><td style="width:42%">Trim (transfer)</td><td>58 &times; 39 mm</td></tr>
+            <tr><td>Ruled box</td><td>55 &times; 36 mm</td></tr>
+            <tr><td>Fabric patch, cut</td><td>71 &times; 48 mm white polyester</td></tr>
+            <tr><td>Seam allowance</td><td>10 mm left edge, 6 mm elsewhere</td></tr>
+            <tr><td>Quantity</td><td>4 dress, 4 collar - 3 needed</td></tr>
+            <tr><td>Placement</td><td>Dress: left side seam below the waist. Overskirt: inside the band at the left opening. Collar: inside the stand at centre back</td></tr>
+            <tr><td>Colour</td><td>CMYK, 300 dpi</td></tr>
+          </tbody>
+        </table>
+
+        <h4>The transfer on its patch</h4>
+        <svg class="diagram" viewBox="0 0 170 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- fabric patch -->
+          <rect x="18" y="16" width="134" height="70" stroke="#1A1A1A" stroke-width="0.8" fill="#FFFFFF" />
+          <!-- seam allowance, hatched -->
+          <g stroke="#1A1A1A" stroke-width="0.4" opacity="0.55">
+            <path d="M18 26 L28 16 M18 36 L38 16 M18 46 L38 26 M18 56 L38 36 M18 66 L38 46 M18 76 L38 56 M18 86 L38 66 M28 86 L38 76" />
+          </g>
+          <!-- stitch line -->
+          <path d="M28 12 V90" stroke="#1A1A1A" stroke-width="0.7" stroke-dasharray="3 2.5" />
+          <!-- transferred label -->
+          <rect x="46" y="26" width="94" height="50" fill="#FEFBFC" stroke="#1A1A1A" stroke-width="0.6" />
+          <g stroke="#1A1A1A" stroke-width="0.5" opacity="0.75">
+            <path d="M52 40 H108" stroke-width="2" />
+            <path d="M52 50 H132 M52 56 H120 M52 64 H130 M52 70 H112" />
+          </g>
+          <!-- callouts -->
+          <g font-family="'PT Serif', Times, serif" font-size="6" fill="#1A1A1A">
+            <text x="85" y="100" text-anchor="middle">55 &#215; 36 mm transfer on a 71 &#215; 48 mm patch</text>
+            <text x="18" y="8">10 mm caught in the side seam &mdash; stitch on the dashes</text>
+          </g>
+        </svg>
+
+        <div class="note"><b>The allowance is cloth, not print.</b> Iron-on film carries everything it is cut to, so no cut line, fold line or allowance is printed inside the trim. Cut the transfer to the crop marks and cut the polyester patch larger; the difference is what the seam catches.</div>
+      </div>
+
+      <div class="notes-col">
+        <h4>Printing</h4>
+        <ol>
+          <li>Print sheet 1 at 100 per cent on A4 transfer material. Do not fit to page &mdash; the labels are set at true size.</li>
+          <li>Use transfer paper for <b>light</b> fabrics: the label patch is white polyester, and dark-fabric paper lays down an opaque white film that would show as a patch.</li>
+          <li>Mirror the artwork with the prop, not with the printer driver, so the banner on the sheet always states how that sheet was printed. Do not mirror twice.</li>
+          <li>Read the copy on sheet 2 before committing transfer paper &mdash; the mirrored sheet cannot be proofread. Then proof sheet 1 once on plain paper and check one measured dimension: the ruled box should read 55 mm across.</li>
+        </ol>
+
+        <h4>Applying</h4>
+        <ol>
+          <li>Cut each transfer to its crop marks, square and clean. Round nothing; the ruled box is 1.5 mm inside the cut.</li>
+          <li>Cut a 71 &times; 48 mm patch of the white polyester for each label. Seal all four raw edges with a lighter, as every other raw edge in this project.</li>
+          <li>Press the patch flat and dry first. Any moisture left in it lifts the film at the edges.</li>
+          <li>Transfer with a dry iron, no steam, on the <b>synthetic</b> setting, with the patch on a hard flat surface rather than an ironing board. Use the pressing cloth the transfer paper supplies or its backing sheet.</li>
+          <li>Work up from the lowest heat that bonds. Polyester scorches, and a scorched patch is discarded, not rescued.</li>
+          <li>Peel to the paper&rsquo;s own instruction, hot or cold. Let the label cool fully flat before handling it.</li>
+        </ol>
+
+        <h4>Stitching in</h4>
+        <ol>
+          <li>Position the dress label on the <b>left</b> side seam below the waist. Position the second dress label inside the overskirt band at the left opening. Position the collar label inside the stand at centre back, where it is hidden when the collar is worn.</li>
+          <li>Turn the 6 mm allowance under on the top, bottom and right edges; press lightly from the reverse, never over the transfer.</li>
+          <li>Catch the 10 mm left allowance in the side seam and stitch the remaining three folded edges down by hand, close to the fold.</li>
+        </ol>
+
+        <div class="note"><b>One wording everywhere.</b> This copy is page 7&rsquo;s product-label text, and the swing tag repeats it. Dress and collar care lines differ because the fibres differ. Change the size, the fibre or the care in one place and it must change in all, or the folio contradicts the garment.</div>
+
+        <div class="note"><b>Words here, symbols on the tag.</b> AS/NZS 1957 accepts written instructions or symbols. Inside a 55 &times; 36 mm box the ISO symbols would sit about 4 mm tall, and their interior detail fills in on transfer film at that size. The labels carry the words, the tag carries the symbols. Page 7 states this.</div>
+      </div>
+    </div>
+
+    <div class="sheet-foot">
+      <span>Major Textiles Project &middot; Student No. {{ studentNo }}</span>
+      <span>Notes sheet &mdash; print on plain paper, not on transfer material</span>
+    </div>
+
+  </div>
+</section>
+
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mirror&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Transfer&quot;},&quot;gownSize&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;10&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Garment&quot;},&quot;studentNo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;12345678&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Production&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    // <doc-page> decides pagination from its .sheet children; React mounts
+    // them after the element upgrades, so poke its measure pass over a few
+    // frames. Same treatment as the twelve-page deck.
+    const poke = () => {
+      document.querySelectorAll('doc-page').forEach((el) => {
+        if (typeof el._measure === 'function') {
+          try { el._measure(); } catch (e) { /* not upgraded yet */ }
+        }
+      });
+    };
+    [0, 50, 150, 400, 900, 1800, 3200].forEach((t) => setTimeout(poke, t));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(poke);
+  }
+
+  renderVals() {
+    // The mirror prop drives three things at once — the transform on every
+    // label, and the two halves of the banner that state which way the
+    // sheet was printed. Keeping them on one source is the point: a
+    // mirrored sheet that does not say so is indistinguishable from a
+    // ruined one until it is on the fabric.
+    const mirror = this.props.mirror ?? true;
+    return {
+      mirror: mirror ? 'scaleX(-1)' : 'none',
+      mirrorState: mirror ? 'MIRRORED' : 'NOT MIRRORED',
+      mirrorNote: mirror
+        ? 'Correct for standard iron-on transfer paper for light fabrics, which prints face down. The artwork below reads backwards; it will read correctly once transferred. Do not also mirror in the printer driver.'
+        : 'Correct for printable fabric sheets, which are stitched in directly. WRONG for iron-on transfer paper — set the mirror prop before printing.',
+      gownSize: this.props.gownSize ?? '10',
+      studentNo: this.props.studentNo ?? '12345678'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

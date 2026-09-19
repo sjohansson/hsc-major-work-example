@@ -1,0 +1,608 @@
+<!-- @dsCard group="Meta" name="Design notes" -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Raven's Ledger - design notes</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet" />
+  <!-- The live deck stylesheet. Every specimen below is drawn by the same
+       rules that draw the folio, so this page cannot drift from the pages
+       it explains. Relative refs resolve one level up, in design-system/;
+       scripts/preview.ps1 repoints them when it builds the static copy. -->
+  <link rel="stylesheet" href="../deck.css" />
+  <style>
+    /* Page shell. Every class here is mp- prefixed because deck.css is
+       linked unscoped and owns the bare names (.body, .display, .plate). */
+    html { background: #F5EFE2; }
+    body { margin: 0; color: #1A1A1A; font-family: 'PT Serif', Times, serif; }
+    .mp-wrap { max-width: 1160px; margin: 0 auto; padding: 40px 24px 90px; }
+    .mp-wrap h1 { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 36px; line-height: 1.05; margin: 0 0 8px; }
+    .mp-wrap h2 { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 24px; line-height: 1.1; margin: 54px 0 10px; }
+    .mp-wrap h3 { font-family: 'PT Serif', Times, serif; font-weight: 700; font-size: 16px; line-height: 1.3; margin: 26px 0 6px; }
+    .mp-lede { font-size: 16px; line-height: 1.5; max-width: 72ch; margin: 0 0 6px; }
+    .mp-wrap p, .mp-wrap li { font-size: 15px; line-height: 1.5; max-width: 76ch; }
+    .mp-wrap p { margin: 0 0 12px; }
+    .mp-wrap ol, .mp-wrap ul { padding-left: 22px; margin: 0 0 12px; }
+    .mp-wrap li { margin-bottom: 6px; }
+    .mp-note { font-size: 13.5px; line-height: 1.45; font-style: italic; color: #5A5052; max-width: 78ch; }
+    .mp-wrap code { font-family: 'Courier New', monospace; font-size: 13px; background: #EAE2D3; padding: 1px 4px; }
+    .mp-toc { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 14px; }
+    .mp-toc li { margin: 0; }
+
+    /* Specimen frame: a piece of paper the deck rules draw on. Sheets are
+       sized in real millimetres so a specimen is the size it prints at.
+       The masthead one is a full 297 mm across and scrolls sideways on a
+       narrow window rather than shrinking, for the same reason. */
+    .mp-spec { background: #FEFBFC; box-shadow: 0 1px 8px rgba(0,0,0,0.18); margin: 14px 0 8px; overflow-x: auto; }
+    .mp-spec-pad { padding: 8mm 10mm; }
+    .mp-cap { font-size: 13.5px; line-height: 1.45; color: #5A5052; max-width: 86ch; margin: 0 0 18px; }
+    .mp-cap b { color: #1A1A1A; }
+    .mp-row { display: flex; flex-wrap: wrap; gap: 8mm 14mm; align-items: flex-end; }
+    .mp-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A8082; margin-bottom: 2mm; }
+
+    /* The masthead specimen needs the page width the deck host would give
+       it; .page is pinned to 420 mm tall and is not reused here. */
+    .mp-masthead { width: 297mm; background: #FEFBFC; display: flex; flex-direction: column; }
+    .mp-masthead .rule-fine { margin-bottom: 8mm; }
+
+    /* Sizes table and the change ledger. */
+    .mp-table { border-collapse: collapse; font-size: 14px; line-height: 1.4; margin: 10px 0 14px; max-width: 100%; }
+    .mp-table th, .mp-table td { text-align: left; vertical-align: top; padding: 6px 14px 6px 0; border-bottom: 0.5px solid #C9BEC1; }
+    .mp-table th { font-weight: 700; }
+    .mp-table td:first-child { white-space: nowrap; }
+
+    /* Swatch rows: name and token on the left, the filled chip on the
+       right. The hex is read back from the computed style at load, so the
+       figure printed beside a chip is the one the stylesheet is using. */
+    .mp-swatch { display: grid; grid-template-columns: 220px 110px 1fr; align-items: center; gap: 16px; margin-bottom: 8px; max-width: 900px; }
+    .mp-swatch .mp-name { font-size: 15px; line-height: 1.3; }
+    .mp-swatch .mp-name .mp-var { display: block; font-family: 'Courier New', monospace; font-size: 12px; color: #5A5052; }
+    .mp-swatch .mp-hex { font-family: 'Courier New', monospace; font-size: 13px; color: #5A5052; }
+    .mp-swatch .mp-hex small { display: block; font-family: 'PT Serif', Times, serif; font-size: 12px; }
+    .mp-swatch .mp-chip { height: 44px; border: 1px solid #1A1A1A; box-shadow: inset 0 0 0 3px #FEFBFC; }
+
+    /* Structural tokens in a row of cards. */
+    .mp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0 8px; max-width: 900px; }
+    .mp-card { border: 0.5px solid #C9BEC1; background: #FEFBFC; padding: 10px 12px; font-size: 13px; line-height: 1.4; }
+    .mp-card b { display: block; font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 15px; margin-bottom: 8px; }
+    .mp-card .mp-chip { height: 34px; border: 0.5px solid rgba(26,26,26,0.15); margin-bottom: 8px; }
+    .mp-card .mp-hex { font-family: 'Courier New', monospace; font-size: 12px; color: #5A5052; }
+
+    /* The one text use of an area colour, shown as it sets on page 12. */
+    .mp-emph-line { font-size: 16pt; line-height: 1.4; max-width: 60ch; margin: 8px 0 4px; }
+    .mp-emph-line .mp-emph { color: var(--area-emph); }
+    .mp-sub { font-size: 13px; margin-bottom: 14px; color: #5A5052; }
+    .mp-wrap h4 { font-size: 16px; margin: 24px 0 8px; }
+
+    /* The mark, shown large. */
+    .mp-mark-big { --mark-h: 30mm; display: flex; align-items: center; justify-content: center; padding: 10mm; }
+
+    /* Change ledger: one entry per change, newest first. */
+    .mp-ledger { list-style: none; padding: 0; margin: 12px 0 0; max-width: 86ch; }
+    .mp-ledger li { border-top: 0.5px solid #C9BEC1; padding: 10px 0 12px; margin: 0; max-width: none; }
+    .mp-ledger .mp-when { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8082; }
+    .mp-ledger .mp-what { font-weight: 700; margin: 2px 0 4px; }
+    .mp-ledger .mp-where { font-size: 13px; color: #5A5052; }
+  </style>
+</head>
+
+<body>
+  <div class="mp-wrap">
+
+    <h1>The Raven&rsquo;s Ledger - design notes</h1>
+    <p class="mp-lede">How the folio's graphic system was designed and what each element does. The specimens on this
+      page are drawn by the folio's own stylesheet, at the size they print, so what you see here is what is on
+      the pages.</p>
+    <p class="mp-note">The measurements of record are in <code>docs/brand-kit.md</code> and the comments in
+      <code>design-system/deck.css</code>. The reasons are in <code>docs/design-rationale.md</code>. This page is
+      the walk-through. If the two disagree, the stylesheet wins and this page needs an entry in the ledger at the
+      foot.</p>
+    <ul class="mp-toc">
+      <li><a href="#process">The design process</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#mark">The house mark</a></li>
+      <li><a href="#rules">Rules</a></li>
+      <li><a href="#plates">Plates</a></li>
+      <li><a href="#colour">Colour</a></li>
+      <li><a href="#ledger">Changes and updates</a></li>
+    </ul>
+
+    <!-- ================================================================ -->
+    <h2 id="process">The design process</h2>
+    <p>The folio is marked on its content, not its looks. So the graphic system was designed to do one job: make
+      twelve dense A3 pages read as one document, and let a marker find what they are looking for without being
+      told. Every choice below came from that, in this order.</p>
+    <ol>
+      <li><b>Start from the brief and the marker.</b> NESA sets the section names, the page limits and a 12 pt
+        floor on type. Those are fixed. The section names are printed verbatim on every page, in the masthead
+        dateline, so they are never only in a footer.</li>
+      <li><b>Name it.</b> A ledger is a book of dated, accountable entries. That is the argument the folio makes:
+        every feature traced to a source, every modification to a test. The raven stands for the black-on-black
+        garment without naming a television programme in the masthead.</li>
+      <li><b>Borrow one convention from the garment's period, and only one.</b> The dress is a 2022 screen
+        costume corrected through 1905, 1926 and 1955. The pages borrow the engraved double rule under a masthead from printed ephemera of that
+        span: a heavy line over a hairline. Above it is identity, below it is content. Nothing else on the page
+        is period pastiche. The grid is a modern six-column grid and the tables are plain.</li>
+      <li><b>Two typefaces, one job each.</b> A fat face for the titles, because the fat faces of the 1820s to
+        1900s make the same historical case the pages argue. A large-bodied text face for everything a marker
+        reads, so 12 pt is comfortably legible.</li>
+      <li><b>Colour to navigate, never to decorate.</b> The garment is black. Each of the four NESA sections gets
+        its own colourway at the same value, so a page turn shows the section change at the masthead before a
+        word is read. Area colours are fills and rules. They never colour text, with one measured exception.</li>
+      <li><b>One ornament.</b> A nightshade flower, drawn as linework in school purple. It marks the running foot, opens and
+        closes the two statements that frame the folio, and appears on the spine and the swing tag. Nowhere
+        else.</li>
+      <li><b>Measure, then write the number down.</b> Every width, weight and contrast ratio that the design
+        depends on is measured in the preview and recorded in a stylesheet comment or the brand kit, keyed to
+        the thing it was measured on. Change the thing, re-measure, update the comment.</li>
+    </ol>
+
+    <!-- ================================================================ -->
+    <h2 id="type">Type</h2>
+    <p>Two families from Google Fonts, loaded by one stylesheet link. <b>Fraunces</b> at weight 900, the display
+      face. <b>PT Serif</b> regular, bold and italic, the text face. There is no style below 12 pt anywhere on a
+      folio page. When a page is crowded, the only fix is to cut words.</p>
+
+    <h3>Fraunces Black, the display face</h3>
+    <p>Fraunces is a variable "soft" fat face with an optical size axis. The link requests the axis range
+      <code>opsz 9..144</code> at weight 900 only, so the browser picks the drawing for the size in use: the
+      38 pt wordmark gets the high-contrast display cut, and the 13 pt plate numbers get a sturdier one. It is
+      used in exactly three places: the wordmark, the section titles, and the plate-number roundels. It is never
+      used for a sentence.</p>
+    <div class="mp-spec">
+      <div class="mp-spec-pad mp-row">
+        <div>
+          <div class="mp-label">Wordmark, 38 pt, slate rule beneath</div>
+          <div class="wordmark">The Raven&rsquo;s Ledger</div>
+          <div class="masthead-rule" style="--slate:#4A4E69"></div>
+        </div>
+        <div>
+          <div class="mp-label">Section title, 19 pt</div>
+          <div class="display" style="font-size:19pt;line-height:1.05">Relevance to the focus area</div>
+        </div>
+        <div>
+          <div class="mp-label">Plate number, 13 pt in a 7 mm roundel</div>
+          <div style="display:flex;gap:3mm" class="area-sources"><span class="plate-num">1</span><span
+              class="plate-num">2</span><span class="plate-num">3</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>How it works.</b> The wordmark is <code>.wordmark</code>: Fraunces, weight 900, 38 pt,
+      line-height 0.92, with the 30 mm slate rule under it. Section titles are <code>.display</code> with an
+      inline 19 pt size. The roundel is <code>.plate-num</code>, a 7 mm circle filled with the chapter's field
+      colour and ringed in ink. Filled roundels number someone else's picture. Outlined callout dots, the other
+      numbered-circle idiom, point into the student's own drawings.</p>
+
+    <h3>PT Serif, the text face</h3>
+    <p>PT Serif has a larger body than Times at the same point size, so 12 pt PT Serif clears the NESA floor with
+      room to spare. Every word a marker reads is set in it, including the section name in the masthead.</p>
+    <div class="mp-spec">
+      <div class="mp-spec-pad">
+        <div class="mp-label">Standfirst, 16 pt, leading 1.4</div>
+        <div class="standfirst-text" style="max-width:257mm"><span class="standfirst-lead">The ledger.</span> This
+          folio documents a one-piece dance costume - a tea-length black dress with a detachable white collar. <span
+            style="font-style:italic">The ledger is kept as an evidence trail: every feature claimed here is traced
+            to a source on these pages, and every modification to a test.</span></div>
+        <div class="mp-label" style="margin-top:8mm">Body, 12.5 pt, leading 1.3</div>
+        <div class="body" style="max-width:120mm">The bodice is cut close and seamed at the waist. The skirt is
+          four tiers of nylon tulle over a taffeta underskirt, each tier gathered to the one above at a ratio of
+          two to one, and hemmed with 12 mm horsehair braid so the edge holds its line at performance
+          distance.</div>
+        <div class="mp-label" style="margin-top:8mm">Dateline, 12 pt bold caps at 0.11 em, over 12 pt italic</div>
+        <div class="kicker" style="text-align:left">
+          <div class="kicker-area">Investigation, Experimentation<br>and Evaluation</div>
+          <div class="kicker-period">Trials &amp; Proofs, Part IV</div>
+        </div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>How it works.</b> The lead-in word of the standfirst is Fraunces inline, so the block
+      opens in the masthead's voice and the sentence continues in PT Serif. The dateline's line break is authored,
+      never wrapped: only the longest section name breaks, and always at the same word. The ampersand belongs to
+      the period titles, which are the folio's own naming. NESA section names always use "and".</p>
+
+    <table class="mp-table">
+      <tr><th>Style</th><th>Face</th><th>Size and leading</th><th>Where</th></tr>
+      <tr><td>Wordmark</td><td>Fraunces 900</td><td>38 pt, 0.92</td><td>Masthead, all twelve pages, spine, swing tag</td></tr>
+      <tr><td>Section title</td><td>Fraunces 900</td><td>19 pt, 1.05</td><td>Opening display line of each page section</td></tr>
+      <tr><td>Plate number</td><td>Fraunces 900</td><td>13 pt in a 7 mm roundel</td><td>Source plate captions, pages 1 to 2</td></tr>
+      <tr><td>Standfirst, closing statement</td><td>PT Serif</td><td>16 pt, 1.4</td><td>Pages 1, 5 and 12</td></tr>
+      <tr><td>Body</td><td>PT Serif</td><td>12.5 pt, 1.3</td><td>Running text</td></tr>
+      <tr><td>Tables, captions, keys, labels, foot</td><td>PT Serif</td><td>12 pt, 1.3</td><td>Everything else</td></tr>
+      <tr><td>Dateline</td><td>PT Serif bold caps, italic</td><td>12 pt, 0.11 em tracking</td><td>Masthead area block</td></tr>
+    </table>
+    <p class="mp-note">The swing tag reverse reproduced on page 7 is artwork at 1 : 1 and is the only place smaller
+      type appears.</p>
+
+    <!-- ================================================================ -->
+    <h2 id="mark">The house mark</h2>
+    <p>One ornament for the whole set: a nightshade flower, drawn as linework in school purple. Nightshade is the
+      character's flower and it reads as a small dark thing at arm's length, which is the whole reason it was
+      chosen over a monogram. It is the only decorative element the folio has.</p>
+    <div class="mp-spec">
+      <div class="mp-mark-big"><img class="mark-band" src="../assets/house-mark.svg"
+          alt="The house mark: a nightshade flower" /></div>
+    </div>
+    <p class="mp-cap"><b>The artwork.</b> The mark is one SVG, <code>assets/house-mark.svg</code>: five petals as an
+      outline with a vein in each and a stamen ring, all stroked in school purple. It carries no bars of its own.
+      The lines either side of it are always the page's CSS hairlines, so the mark cannot draw a line that
+      misses them. The viewBox is cropped to the drawing, 480 x 457 units, so the box is the drawing and nothing
+      more. Anything that needs the mark links this file; there is no other copy.</p>
+
+    <h3>Where it appears</h3>
+    <div class="mp-spec">
+      <div class="mp-spec-pad">
+        <div class="mp-label">The ornamented rule, 10 mm, opening and closing the statements on pages 1 and 12</div>
+        <div class="mark-rule" style="max-width:257mm"><img class="mark-band" src="../assets/house-mark.svg" alt="" /></div>
+        <div class="mp-label" style="margin-top:10mm">The running foot, 6 mm, all twelve pages</div>
+        <div class="folio-footer" style="margin:0;max-width:257mm">
+          <span class="footer-mark">
+            <span>Major Textiles Project</span>
+            <img class="mark-band" src="../assets/house-mark.svg" alt="" />
+            <span>Student No. 12345678</span>
+          </span>
+          <span class="footer-mark">
+            <span>Design Inspiration</span>
+            <img class="mark-band" src="../assets/house-mark.svg" alt="" />
+            <span>Page 1 of 12</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>How it works.</b> The mark is sized by its ink, not its file. <code>.mark-band</code>
+      sets the image height from <code>--mark-h</code> and lets the width follow: 6 mm in the foot, 10 mm in the
+      ornamented rule. The stamen ring sits 37.25 units below the centre of the 457 unit crop, so the rule lifts the image
+      by 37.25 / 457 of its height and the ring sits on the axis of the hairlines either side. The foot does the
+      same sum, then adds a drop of 0.0625 em, one pixel at 12 pt, to land the ring on the type's optical centre. The air
+      either side is <code>--mark-space</code>, 2.5 mm, which is 2.4 word spaces of 12 pt PT Serif: enough that the
+      mark separates the two halves of the line rather than reading as punctuation inside it.</p>
+    <p class="mp-cap"><b>Where it does not appear.</b> Not in tables, not beside headings, not on the product
+      labels, not as a watermark. It appears in the foot, on the two statement rules, on the binder spine and on
+      the swing tag, and nowhere else. A device used everywhere marks nothing.</p>
+
+    <!-- ================================================================ -->
+    <h2 id="rules">Rules</h2>
+    <p>The folio has three rules and each one means something. The masthead below is the real component, at
+      297 mm, so the double rule and the 60 degree chapter transition can be read together.</p>
+    <div class="mp-spec">
+      <div class="mp-masthead area-sources" style="--slate:#4A4E69;--band-h:26mm">
+        <div class="masthead2">
+          <div class="m2-cream">
+            <div>
+              <div class="wordmark">The Raven&rsquo;s Ledger</div>
+              <div class="masthead-rule"></div>
+            </div>
+          </div>
+          <div class="m2-area">
+            <div class="kicker">
+              <div class="kicker-area">Design Inspiration</div>
+              <div class="kicker-period">The Sources, Gathered, Part I</div>
+            </div>
+          </div>
+        </div>
+        <div class="rule-heavy"></div>
+        <div class="rule-fine"></div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>The double rule.</b> 0.53 mm over a 0.12 mm hairline, 0.9 mm apart, full width of the
+      content box. The engraved rule that separates identity from content on every page. 0.53 mm rather than a
+      rounder 0.4 mm because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the pages, which
+      collapsed the pair to a doubled hairline.</p>
+    <p class="mp-cap"><b>The chapter transition.</b> The cream band ends in a 60 degree edge after the wordmark
+      and the area field begins on the same edge. The slant is derived from the band height, so the angle holds
+      if the band is retuned. The area block is 122 mm wide, constrained at both ends: wider and the wordmark is
+      clipped, narrower and the longest section name collides with the slant. The section name's cap top lands
+      within 0.02 mm of the wordmark's across the seam, so the two read as one line of type interrupted by the
+      transition.</p>
+    <div class="mp-spec">
+      <div class="mp-spec-pad area-trials">
+        <div class="mp-label">The stub rule, 60 mm in the area border colour, under an opening display line</div>
+        <div class="display" style="font-size:19pt;line-height:1.05">Investigation, Experimentation and Evaluation</div>
+        <div class="rule-stub"></div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>The stub rule.</b> 60 mm by 1.1 mm in the chapter's border colour, under the opening line
+      on pages 5 and 12. The one place a chapter colour touches a title, and it touches it as a rule, not as
+      type.</p>
+
+    <!-- ================================================================ -->
+    <h2 id="plates">Plates</h2>
+    <p>Every source image and sketch sits in a double-ruled plate with four corner dots in the chapter colour, the
+      way period books mounted engravings. The frame does the historical work so a mixed set of photographs
+      reads as one considered set.</p>
+    <div class="mp-spec">
+      <div class="mp-spec-pad mp-row">
+        <div class="area-sources">
+          <div class="mp-label">Source plate, slate dots</div>
+          <div class="plate" style="width:56mm;height:70mm;box-sizing:border-box">
+            <img src="../assets/i2.png" class="plate-img img-contain"
+              alt="Generated reconstruction of a black mourning dress, c. 1905" />
+            <div class="dot dot-tl"></div><div class="dot dot-tr"></div><div class="dot dot-bl"></div><div class="dot dot-br"></div>
+          </div>
+        </div>
+        <div class="area-designs">
+          <div class="mp-label">Sketch plate, bone dots</div>
+          <div class="plate" style="width:40mm;height:70mm;box-sizing:border-box">
+            <img src="../assets/s1a.png" class="plate-img img-contain" alt="" />
+            <div class="dot dot-tl"></div><div class="dot dot-tr"></div><div class="dot dot-bl"></div><div class="dot dot-br"></div>
+          </div>
+        </div>
+        <div>
+          <div class="mp-label">Production drawing, single box, no dots</div>
+          <div style="width:40mm;height:70mm;box-sizing:border-box;border:0.3mm solid #1A1A1A;background:#fff">
+            <img src="../assets/draw_collar.png" style="width:100%;height:100%;object-fit:contain" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>How it works.</b> <code>.plate</code> is a 0.4 mm outer frame with a 0.12 mm inner frame
+      drawn 1.8 mm inside it by a pseudo-element, and four 1.6 mm dots in the chapter's accent colour lifted above
+      the image. Production drawings on pages 6 to 8 sit in a plain 0.3 mm box with no dots, because NESA asks
+      for scaled line drawings with a key and the designated second colour only, and decorative framing pulls
+      against that.</p>
+
+    <!-- ================================================================ -->
+    <h2 id="colour">Colour</h2>
+    <p>The structural colours, four section colourways, and rules for their use are shown below. Section swatches
+      and school purple use the live stylesheet; their hex values are read from the computed style.</p>
+    <ul class="mp-toc">
+      <li><a href="#colour-structural">Structural tokens</a></li>
+      <li><a href="#colour-areas">The four colourways</a></li>
+      <li><a href="#colour-derivation">Token derivation</a></li>
+      <li><a href="#colour-rules">Colour use</a></li>
+      <li><a href="#colour-masthead">Masthead transitions</a></li>
+    </ul>
+
+    <h3 id="colour-structural">Structural tokens</h3>
+    <p>The garment is black. The page is built from ink, paper, and cream, with two brand colours sampled from the
+      garment itself. Slate, from the tulle where it catches light, is the rule under the wordmark. Wine, from the
+      jet beads under warm light, is the NESA-designated second colour for pattern modifications on pages 6 to 8.
+      Slate and Wine arrive as props so the preview can re-sample them; the values shown are the defaults. School purple colours the house mark and its divider lines.</p>
+    <div class="mp-cards">
+      <div class="mp-card"><b>Ink</b><div class="mp-chip" style="background:#1A1A1A"></div>
+        <span class="mp-hex">#1A1A1A</span><br>Text, engraving rules, drawings</div>
+      <div class="mp-card"><b>Paper</b><div class="mp-chip" style="background:#FEFBFC"></div>
+        <span class="mp-hex">#FEFBFC</span><br>Page background</div>
+      <div class="mp-card"><b>Cream</b><div class="mp-chip" style="background:#F5EFE2"></div>
+        <span class="mp-hex">#F5EFE2</span><br>Masthead band</div>
+      <div class="mp-card"><b>Slate</b><div class="mp-chip" style="background:#4A4E69"></div>
+        <span class="mp-hex">#4A4E69</span><br>Rule under the wordmark. Prop <code>slate</code></div>
+      <div class="mp-card"><b>Wine</b><div class="mp-chip" style="background:#8C3B4A"></div>
+        <span class="mp-hex">#8C3B4A</span><br>Pattern modifications. Prop <code>wine</code></div>
+      <div class="mp-card"><b>School purple</b><div class="mp-chip" style="background:var(--school-purple)"></div>
+        <span class="mp-hex" data-token="--school-purple"></span><br>House mark and divider lines</div>
+    </div>
+
+    <!-- ================================================================ -->
+    <h3 id="colour-areas">The four colourways</h3>
+    <p>Each NESA section is a chapter, and each chapter has a colourway held at the same value as the other three
+      so the four read as one family. A page turn shows the section change at the masthead before a word is read.
+      The five tokens in each are field, border, accent, tint, and emph; the swatches below are filled from the
+      <code>--area-*</code> tokens the pages themselves use.</p>
+
+    <div class="area-sources">
+      <h4>Area I - The Sources, Gathered</h4>
+      <div class="mp-sub">Design Inspiration &middot; Slate &middot; pages 1 to 2</div>
+      <div class="mp-swatch"><div class="mp-name">Field<span class="mp-var">--sources-field</span></div><div class="mp-hex" data-token="--area-field"></div><div class="mp-chip" style="background:var(--area-field)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Border<span class="mp-var">--sources-border</span></div><div class="mp-hex" data-token="--area-border"></div><div class="mp-chip" style="background:var(--area-border)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Accent<span class="mp-var">--sources-accent</span></div><div class="mp-hex" data-token="--area-accent"></div><div class="mp-chip" style="background:var(--area-accent)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Tint<span class="mp-var">--sources-tint</span></div><div class="mp-hex" data-token="--area-tint"></div><div class="mp-chip" style="background:var(--area-tint)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Emph<span class="mp-var">--sources-emph</span></div><div class="mp-hex" data-token="--area-emph"><small>6.38 : 1 on paper</small></div><div class="mp-chip" style="background:var(--area-emph)"></div></div>
+    </div>
+
+    <div class="area-designs">
+      <h4>Area II - The Designs, Weighed</h4>
+      <div class="mp-sub">Visual Design Development &middot; Bone &middot; pages 3 to 5</div>
+      <div class="mp-swatch"><div class="mp-name">Field<span class="mp-var">--designs-field</span></div><div class="mp-hex" data-token="--area-field"></div><div class="mp-chip" style="background:var(--area-field)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Border<span class="mp-var">--designs-border</span></div><div class="mp-hex" data-token="--area-border"></div><div class="mp-chip" style="background:var(--area-border)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Accent<span class="mp-var">--designs-accent</span></div><div class="mp-hex" data-token="--area-accent"></div><div class="mp-chip" style="background:var(--area-accent)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Tint<span class="mp-var">--designs-tint</span></div><div class="mp-hex" data-token="--area-tint"></div><div class="mp-chip" style="background:var(--area-tint)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Emph<span class="mp-var">--designs-emph</span></div><div class="mp-hex" data-token="--area-emph"><small>5.08 : 1 on paper</small></div><div class="mp-chip" style="background:var(--area-emph)"></div></div>
+    </div>
+
+    <div class="area-making">
+      <h4>Area III - The Making</h4>
+      <div class="mp-sub">Manufacturing Specification &middot; Ash &middot; pages 6 to 8</div>
+      <div class="mp-swatch"><div class="mp-name">Field<span class="mp-var">--making-field</span></div><div class="mp-hex" data-token="--area-field"></div><div class="mp-chip" style="background:var(--area-field)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Border<span class="mp-var">--making-border</span></div><div class="mp-hex" data-token="--area-border"></div><div class="mp-chip" style="background:var(--area-border)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Accent<span class="mp-var">--making-accent</span></div><div class="mp-hex" data-token="--area-accent"></div><div class="mp-chip" style="background:var(--area-accent)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Tint<span class="mp-var">--making-tint</span></div><div class="mp-hex" data-token="--area-tint"></div><div class="mp-chip" style="background:var(--area-tint)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Emph<span class="mp-var">--making-emph</span></div><div class="mp-hex" data-token="--area-emph"><small>5.28 : 1 on paper</small></div><div class="mp-chip" style="background:var(--area-emph)"></div></div>
+    </div>
+
+    <div class="area-trials">
+      <h4>Area IV - Trials &amp; Proofs</h4>
+      <div class="mp-sub">Investigation, Experimentation and Evaluation &middot; Wine &middot; pages 9 to 12</div>
+      <div class="mp-swatch"><div class="mp-name">Field<span class="mp-var">--trials-field</span></div><div class="mp-hex" data-token="--area-field"></div><div class="mp-chip" style="background:var(--area-field)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Border<span class="mp-var">--trials-border</span></div><div class="mp-hex" data-token="--area-border"></div><div class="mp-chip" style="background:var(--area-border)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Accent<span class="mp-var">--trials-accent</span></div><div class="mp-hex" data-token="--area-accent"></div><div class="mp-chip" style="background:var(--area-accent)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Tint<span class="mp-var">--trials-tint</span></div><div class="mp-hex" data-token="--area-tint"></div><div class="mp-chip" style="background:var(--area-tint)"></div></div>
+      <div class="mp-swatch"><div class="mp-name">Emph<span class="mp-var">--trials-emph</span></div><div class="mp-hex" data-token="--area-emph"><small>6.80 : 1 on paper</small></div><div class="mp-chip" style="background:var(--area-emph)"></div></div>
+    </div>
+    <p class="mp-cap">The contrast ratios are measured against paper <code>#FEFBFC</code> and are written in the
+      stylesheet beside each emph value. If an accent is ever re-sampled, re-derive its emph and re-measure.</p>
+
+    <!-- ================================================================ -->
+    <h3 id="colour-derivation">How the tokens are derived</h3>
+    <p>One colour is chosen per chapter, the border. The other four are made from it, so a colourway is one
+      decision and four arithmetic steps.</p>
+    <ul>
+      <li><b>Border</b> is the chosen colour at full strength.</li>
+      <li><b>Field</b> is the border mixed 42 per cent over white.</li>
+      <li><b>Tint</b> is the border mixed 12 per cent over white.</li>
+      <li><b>Accent</b> is the border mixed as 82 per cent border and 18 per cent ink.</li>
+      <li><b>Emph</b> is the accent mixed as 80 per cent accent and 20 per cent ink: <code>color-mix(in srgb, &lt;accent&gt; 80%,
+        #1A1A1A)</code>.</li>
+    </ul>
+    <p>The accents are graphic tones and measure under 4.5 : 1 on paper. The design uses 4.5 : 1 as its minimum for coloured text on paper. 80 per cent is the mix
+      at which all four emph values clear 4.5 : 1 with margin while the hue is still plainly the chapter's. Every
+      value is written into <code>deck.css</code> as a literal, not as a <code>color-mix()</code> call, so it
+      survives without that function and so a marker's contrast check lands on a number that is in the file.</p>
+
+    <!-- ================================================================ -->
+    <h3 id="colour-rules">Where colour may go</h3>
+    <p><b>Area tokens are fill and rule colours, never text colours.</b> Text over field, tint, or a border-coloured table header is always ink. Emph is the only token that may colour
+      type, and its one use is the last clause of the closing statement on page 12. Recheck text contrast whenever these colours change.</p>
+    <div class="area-trials">
+      <p class="mp-emph-line">The tulle, the collar, the closure, the band, the raw edges and the way each tier is
+        gathered and set were all decided by an experiment on these pages. <span class="mp-emph">That is the
+        argument this ledger was kept to make.</span></p>
+    </div>
+    <p class="mp-cap"><b>The one exception, as it sets.</b> A closing clause in Wine emph, 16 pt, at 6.80 : 1 on
+      paper. It reads in the chapter's own colour, the same family as the rule stub, the table headings and the
+      plate dots around it, rather than introducing a hue the folio uses nowhere else.</p>
+
+    <p>Per page, the area class recolours exactly these components and nothing else.</p>
+    <table class="mp-table">
+      <tr><th>Component</th><th>Token</th><th>Where</th></tr>
+      <tr><td>Masthead chapter-transition block</td><td>field</td><td>All twelve pages</td></tr>
+      <tr><td>Table header rows</td><td>border</td><td>Wherever a table sets</td></tr>
+      <tr><td>Table cells</td><td>tint</td><td>Wherever a table sets</td></tr>
+      <tr><td>Plate corner dots</td><td>accent</td><td>Pages 1 to 5</td></tr>
+      <tr><td>Section-title stub rules</td><td>border</td><td>Pages 5 and 12</td></tr>
+      <tr><td>Closing clause</td><td>emph</td><td>Page 12 only</td></tr>
+    </table>
+    <p>Kept in brand colours, not area colours: the slate rule under the wordmark, the house mark and its divider lines in school purple, and
+      the wine that marks pattern modifications on pages 6 to 8. Production drawings and pattern pieces stay pure
+      ink linework.</p>
+
+    <!-- ================================================================ -->
+    <h3 id="colour-masthead">The masthead transitions</h3>
+    <p>The cream band ends after the wordmark in a 60 degree clipped edge and the area field begins on that same
+      edge, so the two fills meet along one line with no paper between. The field is the only place a chapter
+      colour touches the masthead. These four are the real <code>.masthead2</code> at 297 mm, one per area,
+      drawn by <code>deck.css</code>.</p>
+
+    <div class="mp-spec">
+      <div class="mp-masthead area-sources" style="--slate:#4A4E69;--band-h:26mm">
+        <div class="masthead2">
+          <div class="m2-cream"><div><div class="wordmark">The Raven&rsquo;s Ledger</div><div class="masthead-rule"></div></div></div>
+          <div class="m2-area"><div class="kicker"><div class="kicker-area">Design Inspiration</div><div class="kicker-period">The Sources, Gathered, Part I</div></div></div>
+        </div>
+        <div class="rule-heavy"></div><div class="rule-fine"></div>
+      </div>
+      <div class="mp-masthead area-designs" style="--slate:#4A4E69;--band-h:26mm">
+        <div class="masthead2">
+          <div class="m2-cream"><div><div class="wordmark">The Raven&rsquo;s Ledger</div><div class="masthead-rule"></div></div></div>
+          <div class="m2-area"><div class="kicker"><div class="kicker-area">Visual Design Development</div><div class="kicker-period">The Designs, Weighed, Part I</div></div></div>
+        </div>
+        <div class="rule-heavy"></div><div class="rule-fine"></div>
+      </div>
+      <div class="mp-masthead area-making" style="--slate:#4A4E69;--band-h:26mm">
+        <div class="masthead2">
+          <div class="m2-cream"><div><div class="wordmark">The Raven&rsquo;s Ledger</div><div class="masthead-rule"></div></div></div>
+          <div class="m2-area"><div class="kicker"><div class="kicker-area">Manufacturing Specification</div><div class="kicker-period">The Making, Part I</div></div></div>
+        </div>
+        <div class="rule-heavy"></div><div class="rule-fine"></div>
+      </div>
+      <div class="mp-masthead area-trials" style="--slate:#4A4E69;--band-h:26mm">
+        <div class="masthead2">
+          <div class="m2-cream"><div><div class="wordmark">The Raven&rsquo;s Ledger</div><div class="masthead-rule"></div></div></div>
+          <div class="m2-area"><div class="kicker"><div class="kicker-area">Investigation, Experimentation<br>and Evaluation</div><div class="kicker-period">Trials &amp; Proofs, Part I</div></div></div>
+        </div>
+        <div class="rule-heavy"></div><div class="rule-fine"></div>
+      </div>
+    </div>
+    <p class="mp-cap"><b>Slate, Bone, Ash, Wine.</b> The dateline is ink on field on every page. The section name
+      is NESA's, verbatim; only the longest one breaks, and its break is authored. The ampersand in Trials &amp;
+      Proofs is the folio's own title and is not NESA-facing.</p>
+
+
+    <!-- ================================================================ -->
+    <h2 id="ledger">Changes and updates</h2>
+    <p>The design system is not finished. This is the ledger of what changed after the sections above were
+      written, newest first. When you change an element, add an entry here and update the section it belongs to.
+      One entry per change: the date, what changed, why, and which files carry it.</p>
+    <!--
+      Entry template. Copy it to the top of the list and fill it in.
+
+      <li>
+        <div class="mp-when">19 September 2026</div>
+        <div class="mp-what">What changed, in one line.</div>
+        <p>Why it changed, and what was measured to decide it. Two or three sentences.</p>
+        <div class="mp-where">design-system/deck.css, docs/brand-kit.md</div>
+      </li>
+
+      Sections that could use their own heading once there is something to
+      say: the production items (spine, swing tag, labels, mount scaffold),
+      the tables, the callout dots, and the Canva flattening.
+    -->
+    <ul class="mp-ledger">
+      <li>
+        <div class="mp-when">20 September 2026</div>
+        <div class="mp-what">Full colour notes moved into the Colour chapter.</div>
+        <p>The swatches, token derivation, contrast ratios, component mapping, and four masthead specimens now
+          sit here. School purple is included. The separate colour page and preview option have been removed.</p>
+        <div class="mp-where">design-system/meta/design-process.html, scripts/preview.ps1, docs/brand-kit.md</div>
+      </li>
+      <li>
+        <div class="mp-when">19 September 2026</div>
+        <div class="mp-what">Colour exploration replaced by the colour design notes page.</div>
+        <p>The swatch sheet in explorations still called the areas Rose, Sage and Marigold, had no emph token and
+          drew its masthead at screen scale from its own copy of the values. The new page links deck.css, fills
+          every chip from the live token and reads the hex back from the computed style, so it cannot disagree
+          with the pages. The masthead exploration was one rejected option and is gone with the folder.</p>
+        <div class="mp-where">design-system/meta/colour-notes.html, scripts/preview.ps1, docs/brand-kit.md, AGENTS.md</div>
+      </li>
+      <li>
+        <div class="mp-when">19 September 2026</div>
+        <div class="mp-what">Source lineage reversed and the overskirt made the invention.</div>
+        <p>The folio argued from three museum dresses to a 2022 character. The brief runs the other way: the 2022
+          dance dress is the source and the three periods are the corrections. Pages 1 to 5 now start from that dress
+          at face value. The detachable collar was too small a change to carry the creativity criterion, so the
+          tiered skirt is now a separate overskirt on a hooked band and the costume converts between the dance and
+          the school scene. Tiers regraded 18, 26, 34 cm to cover the 68 cm skirt; Experiment 8 now tests the band
+          closure. Plate 1 is the 2022 dress and the historical plates moved to 2 to 4.</p>
+        <div class="mp-where">design-system/Folio Deck.dc.html, design-system/assets/plates.json, design-system/assets/i1 to i4 and i7,
+          design-system/Product Labels.dc.html, design-system/Swing Tag.dc.html, docs/design-rationale.md</div>
+      </li>
+      <li>
+        <div class="mp-when">19 September 2026</div>
+        <div class="mp-what">Page 1 source plates cut to a 2:3 frame.</div>
+        <p>The four generated dress images are 1024 x 1536 px. In the 84mm plate the inner rectangle measured
+          56.1 x 90.4mm, so the image sat 3mm short at top and bottom. The plate content height is now 77.8mm,
+          which gives an inner rectangle of 56.1 x 84.2mm and saves 6.2mm on the page.</p>
+        <div class="mp-where">design-system/Folio Deck.dc.html, design-system/assets/plates.json</div>
+      </li>
+      <li>
+        <div class="mp-when">19 September 2026</div>
+        <div class="mp-what">Design notes page added to the preview build.</div>
+        <p>The reasons behind the graphic system lived in three places: the brand kit, the design rationale and
+          the stylesheet comments. None of them showed the elements. This page draws them with the live
+          stylesheet so the explanation and the artwork cannot drift apart.</p>
+        <div class="mp-where">design-system/meta/design-process.html, scripts/preview.ps1</div>
+      </li>
+    </ul>
+
+  </div>
+  <script>
+    // Read each token back from the computed style and print it beside its
+    // chip, so the figure on the page is the one the stylesheet resolved.
+    // The lookup walks up to the nearest area-* wrapper, which is where the
+    // --area-* tokens are set.
+    (function () {
+      var toHex = function (rgb) {
+        var m = /^rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(rgb);
+        if (!m) { return rgb; }
+        return '#' + [m[1], m[2], m[3]].map(function (n) {
+          return ('0' + parseInt(n, 10).toString(16)).slice(-2);
+        }).join('').toUpperCase();
+      };
+      var cells = document.querySelectorAll('[data-token]');
+      Array.prototype.forEach.call(cells, function (cell) {
+        var probe = document.createElement('span');
+        probe.style.color = 'var(' + cell.getAttribute('data-token') + ')';
+        cell.insertBefore(probe, cell.firstChild);
+        var hex = toHex(getComputedStyle(probe).color);
+        probe.textContent = hex;
+        probe.style.color = '';
+      });
+    })();
+  </script>
+</body>
+
+</html>

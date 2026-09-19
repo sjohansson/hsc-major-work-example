@@ -1,0 +1,149 @@
+/* The Raven's Ledger - swing tag.
+
+   Trim 70 × 120 mm, front and back, printed on one A4 sheet at true size,
+   mounted either side of a board core and cut to a tag silhouette with a
+   punched hole for the green ribbon.
+
+   THE TAG IS A FOLIO PAGE AT 1:4.2. The chamfered head is the only shape
+   here that the twelve pages do not have; everything below it is the page
+   skeleton at tag scale — cream band, wordmark, rose rule, the engraving
+   double rule, content, a footer on a hairline. The cream band runs the
+   full width rather than ending in the 60° transition, which is the v1.0
+   masthead the brand kit still specifies for documents that are not folio
+   pages; the transition needs a 122 mm area block and there are 70 mm here.
+
+   Sizes are set by the measure, not by taste. The wordmark measures
+   143.3 mm at 38 pt, so 3.771 mm per point; the tag's 56 mm measure takes
+   "The Raven's" - the longer of the two lines, 11 of the 18 characters -
+   at 22 pt with 2 mm to spare. 24 pt overruns it.
+
+   The two faces carry the same silhouette and the same centred hole, so
+   they align when glued back to back without either being mirrored.
+
+   FRONT is the marketing face: mark, ornament, one claim.
+   BACK is the completion marker: composition, care in symbols and in
+   words, origin. Its wording is page 7's product-label copy, so the tag,
+   the sewn-in labels and the folio all state the same facts.
+
+   Depends on deck.css for .wordmark, .masthead-rule, .mark-band, the :root
+   area tokens, .tbl and the type utilities, and on
+   assets/house-mark.svg for the mark on the front divider. */
+
+/* ---- A4 sheet ---- */
+.sheet {
+  position: relative; box-sizing: border-box;
+  width: 210mm; height: 297mm;
+  padding: 14mm 18mm 11mm;
+  background: #FFFFFF; overflow: hidden;
+  display: flex; flex-direction: column;
+  font-family: 'PT Serif', Times, serif; color: #1A1A1A;
+}
+.sheet-head {
+  flex: none; display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 9pt; padding-bottom: 2mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.sheet-foot {
+  flex: none; display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 9pt; padding-top: 2mm; border-top: 0.12mm solid #1A1A1A;
+}
+.artwork-row { flex: none; display: flex; justify-content: center; gap: 16mm; margin: 6mm 0 2mm; }
+.face-label {
+  font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
+  text-align: center; margin-top: 2.5mm;
+}
+
+/* ---- Tag body ---- */
+/* The silhouette is a 26 mm flat top with 22 mm chamfers, so the shoulders
+   run at 45° and the hole sits in plain paper above the cream band rather
+   than punched through the wordmark. The outline and the hole are drawn as
+   an SVG sibling, outside the clip, so a stroke centred on the cut line is
+   not half-eaten by it. */
+.tag-wrap { position: relative; flex: none; width: 70mm; height: 120mm; }
+.tag {
+  position: absolute; inset: 0; box-sizing: border-box;
+  background: #FEFBFC; overflow: hidden;
+  clip-path: polygon(22mm 0, 48mm 0, 70mm 22mm, 70mm 120mm, 0 120mm, 0 22mm);
+  display: flex; flex-direction: column;
+}
+.tag-outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.tag-head { flex: none; height: 22mm; }
+
+/* Cream band. Bottom-aligned like the page masthead, so the rose rule sits
+   on the band's floor and the double rule follows it. */
+.tag-band {
+  flex: none; background: #F5EFE2; box-sizing: border-box;
+  padding: 6mm 7mm 5mm; display: flex; align-items: flex-end;
+}
+.tag .wordmark { font-size: 22pt; }
+.tag .masthead-rule { width: 24mm; margin-top: 2.5mm; }
+/* 0.53mm, matching .rule-heavy in deck.css — see the comment there for why
+   the pair cannot be authored at 0.4mm. Short version: 0.4mm is 1.51px at
+   1x and snaps to either 1 or 2 device rows depending on where the sheet
+   falls on the pixel grid, while the 0.12mm hairline always snaps up to 1,
+   so at some offsets the two lines rendered identically and the band closed
+   on a doubled hairline. 0.53mm is the smallest weight that is >= 2px, so
+   its floor is 2 rows everywhere. Both tags share these two classes. */
+.tag-rule-heavy { flex: none; margin: 2.5mm 7mm 0; height: 0.53mm; background: var(--school-purple, #5B2A86); }
+.tag-rule-fine { flex: none; margin: 0.9mm 7mm 0; height: 0.12mm; background: var(--school-purple, #5B2A86); }
+.tag-body { flex: 1; min-height: 0; margin: 0 7mm; display: flex; flex-direction: column; }
+.tag-foot {
+  flex: none; margin: 0 7mm 6mm; padding-top: 2mm;
+  border-top: 0.12mm solid var(--school-purple, #5B2A86);
+  display: flex; justify-content: space-between; font-size: 7pt;
+}
+
+/* ---- Front ---- */
+.tag-claim { font-size: 10pt; font-style: italic; line-height: 1.25; text-align: center; margin-top: 6mm; }
+/* Shared nightshade divider at 12.16mm high, between two hairlines. */
+.tag-mark { display: flex; align-items: center; gap: 2.5mm; --mark-h: 12.16mm; }
+.tag-mark .bar { flex: 1; height: 0.12mm; background: var(--school-purple, #5B2A86); }
+.tag-piece { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 15pt; line-height: 1.05; text-align: center; }
+.tag-hand {
+  font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+  line-height: 1.6; text-align: center;
+}
+
+/* ---- Back ---- */
+.tag-band-slim {
+  flex: none; background: #F5EFE2; box-sizing: border-box;
+  padding: 3.5mm 7mm; display: flex; justify-content: center;
+}
+.tag-band-slim .wordmark { font-size: 12pt; }
+.spec-head {
+  font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+  margin-top: 4.5mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.spec-line { font-size: 7.5pt; line-height: 1.4; margin-top: 2mm; }
+.spec-line b { font-weight: 700; }
+.care-row { display: flex; justify-content: space-between; margin-top: 3mm; }
+.care-sym { width: 9mm; height: 9mm; display: block; }
+.care-text { font-size: 6.5pt; line-height: 1.35; margin-top: 3mm; text-wrap: pretty; }
+.origin {
+  font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+  text-align: center; margin-top: auto; padding-bottom: 2mm;
+}
+
+/* ---- Notes panel ---- */
+/* Wedgwood blue: the swing tag is specified on page 7, inside the
+   Manufacturing Specification, so its production sheet takes that
+   chapter's colourway. */
+.notes { flex: 1; min-height: 0; display: flex; gap: 10mm; padding-top: 5mm; border-top: 0.4mm solid #1A1A1A; }
+.notes-col { flex: 1; min-width: 0; }
+.notes-kicker { font-size: 8pt; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 700; }
+.notes-title { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 17pt; line-height: 1.02; margin-top: 1.5mm; }
+.notes-rule { width: 34mm; height: 0.8mm; background: var(--area-border); margin: 2.5mm 0 3mm; }
+.notes h4 {
+  font-family: 'PT Serif', Times, serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin: 3.5mm 0 1.8mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.notes h4:first-child { margin-top: 0; }
+.notes ol, .notes ul { margin: 0; padding-left: 4.5mm; font-size: 8.5pt; line-height: 1.26; }
+.notes li { margin-bottom: 1.2mm; }
+.notes li:last-child { margin-bottom: 0; }
+.notes .tbl { font-size: 8.5pt; }
+.note {
+  font-size: 8pt; line-height: 1.28; margin-top: 3.5mm;
+  border-left: 0.8mm solid var(--area-border); padding-left: 3mm; text-wrap: pretty;
+}
+.note b { letter-spacing: 0.06em; text-transform: uppercase; font-size: 7.5pt; }

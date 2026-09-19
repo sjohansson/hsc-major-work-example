@@ -1,0 +1,15 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Drawing 6.3, production flat, the detachable collar laid open flat, scale 1 : 3. Style: a technical production flat for
+a manufacturing specification. Black line only on pure white, uniform line weight of about 0.5 pt at print size with a
+slightly heavier outline, no shading, no colour, no grey fill, no fabric texture, no figure, garment drawn symmetrically
+as it sits flat, seams as single lines, topstitching as dashed lines, gathers as short evenly spaced ticks along the
+seam. Nothing but the garment: no dimension lines, arrows, numbers, text, grain arrows, scale bars, title, border or
+watermark. All of those are overlaid by the page layout at fixed positions, so the garment must sit exactly where
+described. Draw a flat piqué collar opened out and seen from above: a shallow curved band with softly pointed ends, 7 cm
+deep at centre back, with a narrow stand along its inner edge drawn as a second curved strip about 2 cm deep. On the
+stand, four small circles evenly spaced for the snap sockets, two either side of centre back. A short dashed line at
+centre back for the fold, and the outer edge topstitching as a fine dashed line just inside the outline. Format:
+landscape, approximately 3:2; the printed box is 66.9 x 43.9 mm. Position: collar centred, spanning about 80% of the
+width, with the stand towards the top of the image and the collar points towards the bottom.

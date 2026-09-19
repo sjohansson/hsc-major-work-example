@@ -1,0 +1,19 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Cutting layout, scale 1 : 20, for the manufacturing specification page. Style: a technical production flat for a
+manufacturing specification. Black line only on pure white, uniform line weight of about 0.5 pt at print size with a
+slightly heavier outline, no shading, no colour, no grey fill, no fabric texture, no figure, garment drawn symmetrically
+as it sits flat, seams as single lines, topstitching as dashed lines, gathers as short evenly spaced ticks along the
+seam. Nothing but the garment: no dimension lines, arrows, numbers, text, grain arrows, scale bars, title, border or
+watermark. All of those are overlaid by the page layout at fixed positions, so the garment must sit exactly where
+described. Draw three horizontal strips of fabric stacked one above the other, each a long rectangle with its selvedges
+as the long edges and a fold line dashed along the top where the fabric is folded double. Top strip: black crepe satin,
+150 cm wide folded to 75 cm, 3 m long, with the bodice front on the fold, two bodice back pieces, the sleeve, the cuff
+and four long skirt panels arranged economically. Middle strip, the widest: black nylon tulle, 300 cm wide, 7 m long,
+carrying three long tier strips along the length, the carrier panel and two sleeves. Bottom strip, the shortest: white
+cotton piqué, 0.5 m, with two collars and two stands. Pattern pieces drawn as simple outlines with a short grainline
+arrow inside each, parallel to the selvedge; render each fabric strip with a different light hatch so they can be told
+apart: satin with a fine diagonal hatch, tulle with a fine cross hatch, piqué left white. Format: nearly square,
+approximately 1:1; the printed box is 78.2 x 76.4 mm with object-fit cover, so keep everything well inside the edges. No
+piece numbers or text; the page carries the fabric key.

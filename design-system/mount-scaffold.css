@@ -1,0 +1,125 @@
+/* Experiment mount scaffold — A4 working sheet.
+
+   The folio prints at A3. Its nine experiments each carry a 2 x 2 block of
+   empty mount slots on pages 9-11, and the physical samples have to be
+   trimmed to fit those slots before the A3 sheets come back from the
+   printer. This stylesheet reproduces the slots — and only the slots — at
+   true size on A4, so the same scaffold can be run off on the school's A4
+   printer and used as a cutting and matching guide.
+
+   ---- Where the slot size comes from ------------------------------------
+   Only one number below is chosen: --block-w. It is what deck.css gives a
+   .span2 on an A3 page —
+
+     .content   297 - 25 (left margin) - 15 (right)      = 257mm
+     .exp-row   6 columns, 5mm gaps: (257 - 25) / 6      = 38.6667mm
+     .span2     2 columns + one gap                      = 82.3333mm
+
+   — and from there .ms-block / .ms-grid / .ms-slot repeat the folio's
+   construction move for move: 0.3mm border, 4mm padding, two 1fr columns
+   4mm apart, slots 28mm tall and content-box. The slot width is never
+   written down; it falls out of the same arithmetic in the same order.
+
+   That is deliberate, because the arithmetic on paper is wrong. Blink
+   floors a border width to whole pixels and clamps a non-zero one up to
+   1px, so both the 0.3mm box border and the 0.12mm slot hairline print at
+   0.2646mm, not the width they are declared at. Hard-coding the nominal
+   figures (34.8667 x 28.24mm) built a slot 0.29mm short — small, but it is
+   a systematic 0.29mm on every one of thirty-six mounts, and the one thing
+   this sheet exists to get right. Inheriting the rounding instead makes the
+   two sheets identical by construction in whatever browser prints them.
+
+   Measured, the mount comes out 34.90 x 28.53mm across the rule on both.
+   Re-measure both if deck.css ever re-cuts the six-column grid. */
+
+/* ---- Why this sheet is plain ------------------------------------------
+   No masthead, no ornament, no page tint. It is a shop-floor tool that gets
+   cut into and thrown away, and #FEFBFC floods a whole A4 with ink for no
+   gain. deck.css is still linked for the area colour tokens, so the rule
+   under the title follows Trials & Proofs if that accent is ever
+   re-sampled. Nothing here reuses .page — that class is pinned to 420mm. */
+
+.ms-sheet {
+  position: relative;
+  /* 100%, not 210 x 297mm: deck-stage sizes the slide from the x-import
+     width/height in px, and a hard millimetre size that lands a fraction
+     over the page box is what makes a browser shrink-to-fit and quietly
+     lose true size. The padding below is in millimetres, the slots are in
+     millimetres, and those are the measurements that matter. */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10mm 14mm 9mm;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  color: #1A1A1A;
+  font-family: 'PT Serif', Times, serif;
+
+  /* The one authored dimension — a .span2 on the A3 page. Everything
+     inside the block derives from it; see the header comment. */
+  --block-w: 82.3333mm;
+  /* Overridden inline from the slotRule prop. Both variants land on the
+     same 1px rendered rule, so the choice cannot move the slot. */
+  --slot-rule: 0.12mm solid #1A1A1A;
+  --accent: #C9A264;
+}
+
+/* ---- Sheet head ---- */
+.ms-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8mm; }
+.ms-title { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 16pt; line-height: 1; }
+.ms-source { font-size: 9pt; letter-spacing: 0.09em; text-transform: uppercase; color: #5A5052; white-space: nowrap; }
+.ms-rule { height: 0.8mm; background: var(--accent); margin: 2.6mm 0 2.2mm; }
+.ms-area { font-size: 11pt; letter-spacing: 0.1em; text-transform: uppercase; }
+.ms-lede { font-size: 9.5pt; line-height: 1.35; color: #4A4244; margin-top: 1.4mm; max-width: 168mm; }
+
+/* ---- The blocks ----
+   max-content columns, centred: the blocks set the width, the sheet does
+   not set it for them. A fr column would hand the slots whatever is left
+   over after the page padding and the sizing would stop being true.
+
+   The gaps are as tight as they are because of sheet 3, the tallest of the
+   three: a two-line experiment head over a three-line caption (8.1) puts
+   its first row at 110.5mm, and at the head sizes above that lands the
+   footer about 13mm off the paper edge. Anything much looser and the foot
+   runs into the strip an A4 printer cannot reach. */
+.ms-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  align-content: start;
+  column-gap: 6mm;
+  row-gap: 5mm;
+  margin-top: 5mm;
+}
+
+.ms-block { width: var(--block-w); box-sizing: border-box; border: 0.3mm solid #1A1A1A; padding: 4mm; }
+.ms-exp { font-size: 12pt; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.2; margin-bottom: 3mm; }
+/* 1fr columns and a content-box slot, exactly as .mount-grid / .mount-slot
+   in deck.css. Fixed millimetre tracks here would be the hard-coding the
+   header comment warns off. */
+.ms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.ms-slot { height: 28mm; border: var(--slot-rule); }
+/* 12pt / 1.2 at the slot width is the folio's .mount-cap exactly, so a
+   caption that runs to two lines here runs to two lines there. */
+.ms-cap { font-size: 12pt; line-height: 1.2; margin-top: 1.5mm; }
+
+/* ---- The fourth cell: instructions, not artwork ---- */
+.ms-note { font-size: 10.5pt; line-height: 1.35; }
+.ms-note p { margin: 0 0 2.4mm; }
+.ms-note p:last-child { margin-bottom: 0; }
+.ms-note b { font-weight: 700; }
+
+/* ---- Print-scale check ----
+   Ten 10mm cells, alternate ones filled, hairline around the whole run:
+   100mm of ink measured end to end, with no tick to argue about. If a
+   printer has scaled the sheet this is where it shows. */
+.ms-cal { display: flex; align-items: center; gap: 6mm; margin-top: 5mm; }
+.ms-cal-bar { display: grid; grid-template-columns: repeat(10, 10mm); width: 100mm; height: 3mm; flex: none; outline: 0.15mm solid #1A1A1A; }
+.ms-cal-bar i:nth-child(odd) { background: #1A1A1A; }
+.ms-cal-txt { font-size: 9pt; line-height: 1.35; color: #4A4244; }
+
+/* ---- Foot ---- */
+.ms-foot { display: flex; justify-content: space-between; gap: 8mm; margin-top: 4mm;
+           font-size: 9pt; letter-spacing: 0.06em; text-transform: uppercase; color: #5A5052; }

@@ -1,0 +1,507 @@
+/* The Raven's Ledger - deck stylesheet.
+   Themable values arrive as custom properties set inline on each .page root
+   (--slate, --wine, --band-h), bound to the deck's props in the .dc.html.
+   Area colour tokens below are fixed theme values, not deck props. */
+
+/* ---- Area colour theming: each folio chapter (area) has five tokens —
+   field  (pale panel behind dateline / chapter transitions)
+   border (full-strength token for rules, borders and accents)
+   accent (deeper tone for plate dots and fine detail)
+   tint   (near-white wash for table cells and large backgrounds)
+   emph   (the accent taken down to text contrast — coloured type only)
+
+   emph is the only token that may be set as a font colour; the closing
+   statement's final clause on page 12 is its only use so far. It is each
+   area's accent mixed 80% toward the body ink #1A1A1A, so an emphasised
+   phrase reads in its own chapter's colour — the same family as the rule
+   stub, table heading and plate dots around it — instead of introducing a
+   hue the folio uses nowhere else.
+
+   The accents themselves are graphic tones and measure under 4.5:1 on the
+   #FEFBFC page, which fails NESA's requirement that font colour be "clear,
+   legible and distinct from the background" and prints washed out on the one
+   sentence that most needs to land. 80% is the mix at which all four clear
+   4.5:1 with margin (worst case designs, 4.63:1) while the hue is still
+   plainly the chapter's; the ratios below are measured against #FEFBFC. Keep
+   border and accent for graphics, where the contrast rule does not bite.
+
+   Values are literal rather than color-mix() so they survive without it and
+   so a marker's contrast check lands on a number written in this file. If an
+   accent is ever re-sampled, re-derive its emph with
+   color-mix(in srgb, <accent> 80%, #1A1A1A) and re-measure. ---- */
+:root {
+  /* Wednesday school purple: the house mark and the divider lines it sits in */
+  --school-purple: #5B2A86;
+  /* Area I - The Sources, Gathered (slate) */
+  --sources-field: #C8C9D6; --sources-border: #7C7F9E; --sources-accent: #6A6D86; --sources-tint: #EFF0F3; --sources-emph: #5A5C70; /* 6.38:1 */
+  /* Area II - The Designs, Weighed (bone) */
+  --designs-field: #DAD2C7; --designs-border: #A6957A; --designs-accent: #8D7F69; --designs-tint: #F4F2EF; --designs-emph: #766B59; /* 5.08:1 */
+  /* Area III - The Making (ash) */
+  --making-field: #C9D4DA; --making-border: #7F98A8; --making-accent: #6D818E; --making-tint: #F0F3F5; --making-emph: #5C6C77; /* 5.28:1 */
+  /* Area IV - Trials & Proofs (wine) */
+  --trials-field: #D8C1C6; --trials-border: #A26B78; --trials-accent: #8A5C67; --trials-tint: #F4EDEF; --trials-emph: #744F58; /* 6.80:1 */
+}
+
+/* Per-area mapping: set one area-* class beside .page on each page root and
+   the components below (masthead area block, table header/cells, plate dots,
+   title rules) pick up the generic --area-* tokens. */
+.area-sources { --area-field: var(--sources-field); --area-border: var(--sources-border); --area-accent: var(--sources-accent); --area-tint: var(--sources-tint); --area-emph: var(--sources-emph); }
+.area-designs { --area-field: var(--designs-field); --area-border: var(--designs-border); --area-accent: var(--designs-accent); --area-tint: var(--designs-tint); --area-emph: var(--designs-emph); }
+.area-making { --area-field: var(--making-field); --area-border: var(--making-border); --area-accent: var(--making-accent); --area-tint: var(--making-tint); --area-emph: var(--making-emph); }
+.area-trials { --area-field: var(--trials-field); --area-border: var(--trials-border); --area-accent: var(--trials-accent); --area-tint: var(--trials-tint); --area-emph: var(--trials-emph); }
+
+body { margin: 0; }
+a { color: #1A1A1A; text-decoration: underline; }
+a:hover { color: #8A5866; }
+
+/* ---- Page skeleton ---- */
+/* Coloured type comes from --area-emph (see the area table above), which every
+   .page resolves through its area-* class. A page without an area class leaves
+   it unset, the colour declaration is then invalid at computed-value time and
+   the text inherits the body ink — the safe direction to fail. */
+.page { position: relative; height: 420mm; box-sizing: border-box; display: flex; flex-direction: column; background: #FEFBFC; }
+.masthead { flex: none; background: #F5EFE2; min-height: var(--band-h); padding: 5mm 15mm 4mm 25mm; display: flex; align-items: flex-end; justify-content: space-between; gap: 10mm; box-sizing: border-box; }
+.wordmark { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 38pt; line-height: 0.92; color: #1A1A1A; }
+.masthead-rule { width: 30mm; height: 1.1mm; background: var(--slate); margin-top: 3mm; }
+/* ---- Dateline: two registers, area name over period title. The NESA area
+   name leads — uppercase, letterspaced, bold — because it is what a marker
+   hunts for; the folio's own period title sits under it in italic upper-and-
+   lower, so the two read as head and subtitle rather than as two competing
+   caps lines. Both are right-aligned.
+
+   The block is top-aligned (align-items: flex-start on .m2-area), so the area
+   name starts at the same height on all twelve pages and a two-line name
+   grows downward into the field instead of pushing its own first line up.
+   The 5mm top padding is not arbitrary: it lands the area name's cap top at
+   5.82mm, against the wordmark's at 5.84mm across the 60° seam — 0.02mm
+   apart, so the two heads read as one line of type interrupted by the
+   transition. That pairing assumes the cream side keeps its 38pt wordmark
+   bottom-aligned in a 26mm band; re-tune either and re-measure both.
+
+   Sizes are set by the worst case, measured in PT Serif at 122mm block width
+   (measured at 11.5pt, scaled ×12/11.5 — line-height and letter-spacing are
+   em-relative, so widths and heights scale linearly with font size):
+   the longest area name breaks to two lines at 91.0mm on the first, against
+   94.6mm of width at that line's height (same break point as at 11.5pt);
+   the longest period title is 59.8mm against 101mm. The whole block is
+   16.0mm at two lines, inside the 17mm the 26mm band leaves after padding —
+   so the band never grows and the 60° angle (which is derived from the band
+   prop, not measured) stays true. ---- */
+.kicker { font-family: 'PT Serif', Times, serif; text-align: right; color: #1A1A1A; }
+.kicker-area { font-size: 12pt; font-weight: 700; line-height: 1.12; letter-spacing: 0.11em; text-transform: uppercase; }
+.kicker-period { font-size: 12pt; font-style: italic; line-height: 1.2; margin-top: 1.4mm; }
+
+/* ---- Masthead variant: 60° chapter transition. The cream band ends in a
+   60° edge after the wordmark and the area field begins on that same edge,
+   so the two fills meet directly along one 60° line with no paper between.
+   slant = band height / tan(60°), derived from --band-h so the angle holds
+   at any bandH prop value. The area block's negative margin pulls it back
+   left by exactly the slant, landing its clipped edge on the cream's; the
+   joint renders as a single blended pixel, with no paper showing through.
+
+   Area block width is constrained at both ends. The upper bound holds: it
+   must stay <= page - 25mm cream padding - wordmark (143.3mm at 38pt)
+   = 128.8mm. The lower bound is now set by the widest dateline line — the
+   first line of the longest area name, 87.2mm — which must clear the 60°
+   edge where that line sits (12.4mm in, the same height on every page now
+   the block is top-aligned) as well as its own 15mm right padding: 114.6mm.
+   122mm sits inside both, with 7.4mm of dateline slack.
+
+   Vertically the dateline is never the binding side: two area-name lines
+   plus the period title come to 15.6mm, under the cream side's wordmark and
+   slate rule at 16.4mm, so the band floor stays where it always was. ---- */
+.masthead2 { --m2-slant: calc(var(--band-h, 26mm) * 0.57735); --m2-area-w: 122mm; flex: none; display: flex; min-height: var(--band-h); }
+.m2-cream { flex: 1; background: #F5EFE2; display: flex; align-items: flex-end; padding: 5mm 0 4mm 25mm; box-sizing: border-box; clip-path: polygon(0 0, 100% 0, calc(100% - var(--m2-slant)) 100%, 0 100%); }
+.m2-area { flex: none; width: var(--m2-area-w); margin-left: calc(-1 * var(--m2-slant)); background: var(--area-field, #F5EFE2); display: flex; align-items: flex-start; justify-content: flex-end; padding: 5mm 15mm 4mm 6mm; box-sizing: border-box; clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%); }
+/* The double rule that closes the masthead: a heavy line over a hairline.
+   0.53mm, not the 0.4mm this used to be, because of how the pair rasterises
+   on a 1x screen. A browser paints a background box on whole device pixels —
+   round(bottom) - round(top) — so the rendered weight depends on where the
+   box happens to fall on the pixel grid. 0.4mm is 1.51px, which snaps to
+   either 1 or 2 rows; 0.12mm is 0.45px, which always snaps up to exactly 1.
+   On the pages where the heavy rule landed on a 1-row offset the two lines
+   came out identical and the masthead closed on a doubled hairline instead
+   of the intended thick-over-thin. A page is 420mm = 1587.4px tall, so every
+   page in a stacked preview sits on a different fraction and the pair broke
+   on a different subset each time — pages 1, 2, 4, 7, 9 and 12 at 1x.
+
+   0.53mm is the smallest weight that is >= 2px (2.003px), so its floor is 2
+   rows at every offset and it can never collapse onto the hairline's single
+   row. Measured across offsets at 1x, 1.25x, 1.5x and 2x: thick-over-thin
+   on all of them, and uniformly 2:1, 3:1 and 4:1 at 1x, 1.5x and 2x.
+
+   On paper none of this applies — 0.53mm is 6 dots at 300dpi against the
+   hairline's 1.4 — but the printed weight now matches the proof on screen,
+   which the 0.4mm value only did on half the pages. The spine insert and
+   both swing tags carry the same device and were moved with it, so the
+   folio, .spine-rule-heavy and .tag-rule-heavy all state one weight. */
+.rule-heavy { flex: none; margin: 2.5mm 15mm 0 25mm; height: 0.53mm; background: var(--school-purple); }
+.rule-fine { flex: none; margin: 0.9mm 15mm 0 25mm; height: 0.12mm; background: var(--school-purple); }
+.content { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 11mm 15mm 0 25mm; }
+/* Area-coloured stub rule under a page's opening display line. flex: none is
+   load-bearing, not decorative: .content is a column flex box, so a bare
+   1.1mm child is the first thing the shrink algorithm eats when a page runs
+   long, and the rule fades out instead of the page visibly overflowing. */
+.rule-stub { flex: none; width: 60mm; height: 1.1mm; background: var(--area-border); margin-top: 4mm; }
+/* Running foot. The top margin is 3mm on all twelve pages — pages 5 and 12
+   used to override it to 9mm inline and no longer do, so the hairline sits at
+   one height off the content on every page. It matches the foot's own 3mm
+   padding-top, so the rule is centred in a 3mm-either-side band.
+
+   .content is flex: 1, so the 5mm this releases (6mm on the two pages that
+   overrode it) goes to the content box, not to the foot: the hairline moves
+   down the page by that much. On a page whose content stretches to fill —
+   3, 4, 6 and 7 — the white above the rule is now the 3mm margin and nothing
+   else, where it was 8mm. The bottom margin stays 8mm; that one is the
+   trim-side figure and is not the same number by coincidence. */
+.folio-footer { flex: none; margin: 3mm 15mm 8mm 25mm; padding-top: 3mm; border-top: 0.12mm solid var(--school-purple); display: flex; justify-content: space-between; font-family: 'PT Serif', Times, serif; font-size: 12pt; color: #1A1A1A; }
+/* Running foot: the house ornament set between two runs of type. Both tokens
+   below belong to .mark-band and are documented there; what is set here is
+   what a text run — as opposed to a hairline rule — needs of them.
+
+   --mark-space replaces the 1.6mm flex gap this row used to carry, so the
+   spacing is the mark's own margin and one number sets both sides. 2.5mm is
+   the figure the ornamented rule and the swing tag already print either side
+   of the drawn band, so the mark keeps the same air wherever it appears. The
+   old 1.6mm was 1.6 word spaces (PT Serif's 12pt word space measures
+   1.03mm), close enough to the words either side that the mark read as
+   punctuation inside the line rather than as the thing separating its two
+   halves; 2.5mm is 2.4 of them. The longest running feet are pages 10 to 12,
+   which carry the longest area name; they keep 38.9mm of slack between their
+   two groups at this figure, and page 1's, the shortest, keeps 94.4mm.
+
+   --mark-drop lowers the mark onto the type's optical centre. See .mark-band
+   for the measurement; 0.0625em is 1px at the footer's 12pt and 0.265mm on
+   paper. Set in em, so it holds if the running foot is ever re-sized. */
+.footer-mark { display: flex; align-items: center; --mark-space: 2.5mm; --mark-drop: 0.0625em; }
+/* Centre the stamen ring on the text, then apply the type's optical drop. */
+.footer-mark .mark-band {
+  top: calc(var(--mark-drop, 0em) - var(--mark-h, 6mm) * 37.25 / 457);
+}
+
+/* The house mark: the nightshade flower as linework in school purple, with
+   no bars of its own; the lines either side of it are always CSS hairlines,
+   so they can never fall off the page's own rules. The viewBox is cropped
+   to the drawing, 480 x 457 units, and --mark-h sets the printed ink
+   height: 6mm in the footer, 10mm in the opening and closing rules. */
+.mark-band {
+  flex: none; display: block;
+  height: var(--mark-h, 6mm); width: auto;
+  margin: 0 var(--mark-space, 0mm);
+  position: relative; top: var(--mark-drop, 0em);
+}
+/* Opening and closing rules share a 10mm ornament. The stamen ring sits at
+   y=480.25 within the SVG's y=214.5..671.5 crop, 37.25 units below its
+   centre. Lift the image by that offset so the ring sits on the axis of
+   the hairlines either side. */
+.mark-rule { --mark-h: 10mm; display: flex; align-items: center; gap: 2.5mm; }
+.mark-rule .mark-band, .tag-mark .mark-band { top: calc(var(--mark-h) * -37.25 / 457); }
+.mark-rule::before, .mark-rule::after { content: ""; flex: 1; height: 0.12mm; background: var(--school-purple); }
+
+/* ---- Standfirst: the folio's opening statement, page 1 only. It sits above
+   the first plate row so a marker has the item, its end-use and the claim the
+   record is kept to make before meeting any imagery — the promise the closing
+   statement on page 12 redeems.
+
+   It runs the full 257mm measure, like every other element on all twelve
+   pages — an inset text block was the only exception anywhere in the deck and
+   read as broken against the full-width hairline beneath it.
+
+   16pt is set by the rag, not by taste: at this measure it is the size at
+   which the passage fills four lines at 100 / 91 / 99 / 93 per cent of the
+   measure. Smaller leaves a stub — 13pt breaks the same copy at
+   97 / 99 / 99 / 16, a one-word last line. Re-measure the fills if the copy
+   is edited. Leading is 1.4, matching the closing statement, because 16pt
+   across 257mm is a long line for the eye to return on.
+
+   The size deliberately equals the page-12 closing statement while the weight
+   stays regular against its bold italic: same voice, lower volume. The close
+   has twelve pages of evidence behind it and has earned the emphasis; this
+   end only makes the promise. Raising this block to match would also give it
+   more visual mass than the 19pt criterion headings below it, which are what
+   a marker scans to find the marked sections.
+
+   The lead-in label is Fraunces, inline, so the block opens in the masthead's
+   voice. The .mark-rule below does the separating — there is no rule above,
+   since .rule-heavy / .rule-fine already close the masthead. That rule is the
+   same ornamented one that closes page 12, which is the point: the folio
+   opens and shuts on the same device. .standfirst-rule now carries only the
+   space above it; the drawing is all in .mark-rule. ---- */
+.standfirst { flex: none; margin-bottom: 8mm; }
+.standfirst-text { font-family: 'PT Serif', Times, serif; font-size: 16pt; line-height: 1.4; color: #1A1A1A; text-wrap: pretty; }
+.standfirst-lead { font-family: Fraunces, Georgia, serif; font-weight: 900; }
+.standfirst-rule { margin-top: 5mm; }
+
+/* ---- Plates: framed images with hairline inner border (::after) and four
+   .dot corner dots (z-index lifts them above the image, matching the old
+   overlay-div stacking). ---- */
+.plate { position: relative; background: #ffffff; border: 0.4mm solid #1A1A1A; display: flex; align-items: center; justify-content: center; padding: 5mm; }
+.plate::after { content: ""; position: absolute; inset: 1.8mm; border: 0.12mm solid #1A1A1A; }
+.dot { position: absolute; width: 1.6mm; height: 1.6mm; border-radius: 50%; background: var(--area-accent, var(--slate)); z-index: 1; }
+.dot-tl { top: 1mm; left: 1mm; }
+.dot-tr { top: 1mm; right: 1mm; }
+.dot-bl { bottom: 1mm; left: 1mm; }
+.dot-br { bottom: 1mm; right: 1mm; }
+.plate-img { position: absolute; top: 1.8mm; left: 1.8mm; width: calc(100% - 3.6mm); height: calc(100% - 3.6mm); }
+.img-cover { object-fit: cover; object-position: center 20%; }
+.img-contain { object-fit: contain; }
+
+/* ---- Captions ---- */
+/* align-items: flex-start, not the default stretch, so .plate-num keeps its
+   7mm circle instead of being pulled to the height of a three-line caption.
+   .caption-row is the eight source plates on pages 1–2 and nothing else. */
+.caption-row { display: flex; align-items: flex-start; gap: 3mm; margin-top: 2.5mm; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.3; color: #1A1A1A; }
+
+/* ---- Plate number: the caption's leading figure set in a chapter-coloured
+   roundel, pages 1–2. The eight source images are cross-referenced by number
+   in the body text of both pages ("images 1 to 4", "images 6 and 7", "image
+   8"), so the figure is a key a marker navigates by, not decoration — it has
+   to be findable at a glance across a four-up row. A bold 12pt digit sitting
+   in the caption's own type was not; it read as the first word of the
+   sentence.
+
+   THE SAME FAMILY AS .callout-dot, DELIBERATELY NOT THE SAME MEMBER. The
+   folio has one numbered-circle idiom already — the 6mm white, hairline-ringed
+   callouts on the manufacturing drawings (pages 6–8). Those carry a leader
+   line and point INTO an artwork, so they must stay quiet and let the drawing
+   read through. This one labels a whole plate from outside it and should be
+   the assertive member: filled with the chapter's field tone, a heavier 0.3mm
+   ring, and the display face rather than the caption's PT Serif. Filled means
+   source plate; outlined means part of my own drawing. Keep that split — one
+   circle doing both jobs makes the numbers on page 6 look like plate numbers.
+
+   FILL IS --area-field, NOT --area-accent, and the reason is contrast. The
+   accents are graphic tones (see the area table at the top of this file): ink
+   on --sources-accent measures 4.71:1 and on --designs-accent only 3.99:1,
+   under the 4.5:1 the folio holds itself to, and reversing white out is worse
+   still (3.70:1 and 3.97:1). The field tones are pale, so ink on
+   --sources-field is 6.36:1 with the hue still plainly the chapter's — and
+   the digit stays in the same ink as the caption it leads, which the reversed
+   version broke. Measured against the tones as written, not eyeballed.
+
+   7mm is set from the caption's line box, which is 5.5mm at 12pt/1.3: large
+   enough to break the text line's silhouette and be seen as a mark rather
+   than a word, small enough that it is not a drop figure competing with the
+   19pt criterion headings below. The -0.7mm top margin lands the circle's
+   centre on 2.75mm, the first line's box centre, against a cap centre of
+   2.86mm — 0.11mm apart, so the figure reads as sitting ON the caption's
+   first line rather than floating above it. Re-derive both if the caption
+   size or leading moves.
+
+   Fraunces 900 at 13pt puts 3.3mm of cap inside the 6.4mm the ring leaves —
+   52%, which fills the disc without crowding it. It centres geometrically:
+   at line-height 1 the digit's centre lands 0.005em below the box centre
+   (0.02mm here), so no optical nudge is needed, unlike the running foot's
+   ornament.
+
+   COSTS ~5mm OF CAPTION MEASURE. The circle plus its 3mm gap takes 10mm of a
+   60.5mm page-1 column where the old digit took 5mm. Measured against the
+   previous build, that is exactly one more line on all four page-1 captions
+   (five to six); page 2's narrower column holds at three. Page 1 carries
+   roughly 38mm of slack in its two text columns, so a 5.5mm line is
+   affordable — but it is spent, not free, and a re-write of the caption copy
+   should not assume it back. ---- */
+.plate-num {
+  flex: 0 0 7mm; height: 7mm; margin-top: -0.7mm; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--area-field, var(--slate)); border: 0.3mm solid #1A1A1A;
+  font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 13pt; line-height: 1; color: #1A1A1A;
+}
+.caption-it { font-family: 'PT Serif', Times, serif; font-size: 12pt; font-style: italic; line-height: 1.3; color: #1A1A1A; margin-top: 2.5mm; }
+
+/* ---- Image credits: the newspaper picture-credit block for all eight
+   source plates on pages 1-2, set once on page 2 under the screen influence
+   columns at the foot of the span4 text column — keyed by bold numerals
+   to the same figures the roundels carry. The captions keep only what
+   identifies the object (origin, date, lesson); holding institution and
+   accession live here. Set at the folio's 12pt floor, not newspaper
+   agate: NESA's legibility rule ("no smaller than size 12") binds
+   credits as much as body copy. The span4's natural content ends ~30mm
+   short of the content box (the "page 2 is full" measure was the grid
+   row stretched by the plate rail, not this column), which is what
+   funds the block's ~3 lines. Full citations, URLs and verification
+   notes stay in assets/plates.json. */
+.image-credits { margin-top: auto; padding-top: 2.5mm; border-top: 0.12mm solid #1A1A1A; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.3; color: #1A1A1A; }
+
+/* ---- Type utilities ---- */
+.body { font-family: 'PT Serif', Times, serif; font-size: 12.5pt; line-height: 1.3; color: #1A1A1A; }
+.serif { font-family: 'PT Serif', Times, serif; }
+.display { font-family: Fraunces, Georgia, serif; font-weight: 900; }
+.mono { font-family: 'Courier New', monospace; }
+.caps { letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---- Grid utilities ---- */
+.grid6 { display: grid; grid-template-columns: repeat(6, 1fr); }
+.span2 { grid-column: span 2; }
+.span3 { grid-column: span 3; }
+.span4 { grid-column: span 4; }
+
+/* ---- Tables: area-border header row, area-tint cells, hairline borders
+   (brand slate / neutral tint where no area class is set). Cell padding is
+   uniform per table; set --cell-pad on the table when it differs from the
+   1.3mm default. Add .tbl-key / .tbl-af to centre a first integer-key /
+   last A-or-F column. ---- */
+.tbl { width: 100%; border-collapse: collapse; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; color: #1A1A1A; }
+.tbl th, .tbl td { padding: var(--cell-pad, 1.3mm); border: 0.12mm solid #1A1A1A; }
+.tbl th { text-align: left; background: var(--area-border, var(--slate)); font-weight: 700; }
+.tbl td { background: var(--area-tint, #F0F0F3); }
+.tbl-key th:first-child, .tbl-key td:first-child { text-align: center; }
+.tbl-af th:last-child, .tbl-af td:last-child { text-align: center; }
+
+/* ---- Experiment pages (9–11) ---- */
+.exp-row { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 5mm; }
+.exp-first { margin-top: 5mm; padding-bottom: 4mm; border-bottom: 0.4mm solid #1A1A1A; }
+.exp-mid { padding: 4mm 0; border-bottom: 0.4mm solid #1A1A1A; }
+.exp-last { padding-top: 4mm; }
+.exp-title { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 18pt; line-height: 1.05; margin-bottom: 3mm; }
+.amrc { display: grid; grid-template-columns: 34mm 1fr; column-gap: 5mm; row-gap: 2mm; }
+.amrc-label { letter-spacing: 0.1em; text-transform: uppercase; font-size: 12pt; }
+.mount-box { border: 0.3mm solid #1A1A1A; padding: 4mm; }
+.mount-head { font-family: 'PT Serif', Times, serif; font-size: 12pt; letter-spacing: 0.1em; text-transform: uppercase; color: #1A1A1A; margin-bottom: 3mm; }
+.mount-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.mount-slot { height: 28mm; border: 0.12mm solid #1A1A1A; }
+.mount-cap { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.2; margin-top: 1.5mm; color: #1A1A1A; }
+
+/* ---- Manufacturing pages (6–8) ---- */
+.abs-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.piece { position: relative; height: 80mm; border: 0.3mm solid #1A1A1A; background: repeating-linear-gradient(45deg, #ffffff, #ffffff 3mm, #F5EFE2 3mm, #F5EFE2 6mm); }
+.scale-chip { position: absolute; bottom: 5mm; left: 5mm; border: 0.12mm solid #1A1A1A; background: #ffffff; padding: 1.8mm 2.5mm; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; color: #1A1A1A; }
+.callout-dot { width: 6mm; height: 6mm; border-radius: 50%; border: 0.3mm solid #1A1A1A; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1; }
+
+/* ---- Grain lines and dimensions on the technical flats (page 6) ----
+   Third member of the drawing-annotation family: the callout dots point INTO
+   an artwork and the scale chips make a claim about one; these put NESA's two
+   named drawing requirements — the position of the grain line, and finished
+   dimensions — ON the flats themselves. Ink only, no rings or fills, so they
+   read as part of the drawing, and 12pt PT Serif because dimension figures
+   are text and the folio's 12pt floor applies to them as much as to body
+   copy. Placements are inline mm offsets inside each plate's padding box,
+   taken from the placeholder plate geometry in assets/plates.json - the
+   same geometry the callout leaders are measured off. Re-measure when real
+   flats replace the placeholders.
+
+   .dim-note carries the plate's own white as its ground, so a note can sit
+   across drawn lines and stay legible without a border — a bordered box here
+   would read as a second scale chip. The grain arrow is heavier than the
+   0.12mm dimension hairlines (0.35mm shaft, 3mm heads against 2.2mm): on a
+   pattern drawing the grain symbol is the one mark that must be findable at
+   arm's length, and the dimension lines must not compete with it. */
+.grainline { position: absolute; width: 0.35mm; background: #1A1A1A; }
+.grainline::before, .grainline::after { content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 1.2mm solid transparent; border-right: 1.2mm solid transparent; }
+.grainline::before { top: 0; border-bottom: 3mm solid #1A1A1A; }
+.grainline::after { bottom: 0; border-top: 3mm solid #1A1A1A; }
+.grain-label { position: absolute; top: 50%; left: 1.6mm; transform: translateY(-50%); writing-mode: vertical-rl; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1; letter-spacing: 0.1em; text-transform: uppercase; color: #1A1A1A; }
+.dim-v { position: absolute; width: 0.12mm; background: #1A1A1A; }
+.dim-v::before, .dim-v::after { content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 0.8mm solid transparent; border-right: 0.8mm solid transparent; }
+.dim-v::before { top: 0; border-bottom: 2.2mm solid #1A1A1A; }
+.dim-v::after { bottom: 0; border-top: 2.2mm solid #1A1A1A; }
+.dim-h { position: absolute; height: 0.12mm; background: #1A1A1A; }
+.dim-h::before, .dim-h::after { content: ""; position: absolute; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 0.8mm solid transparent; border-bottom: 0.8mm solid transparent; }
+.dim-h::before { left: 0; border-right: 2.2mm solid #1A1A1A; }
+.dim-h::after { right: 0; border-left: 2.2mm solid #1A1A1A; }
+.dim-leader { position: absolute; background: #1A1A1A; }
+.dim-note { position: absolute; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; color: #1A1A1A; background: #ffffff; padding: 0.4mm 1mm; white-space: nowrap; }
+
+/* ---- Page 7: swing tag reverse, reproduced at true size ----
+   The third column of the labels grid carries the tag's back face itself,
+   not a 12pt restatement of its copy: NESA asks for the prototype label in
+   the documentation, and the reverse is the face that proves the
+   words-here/symbols-there split the note beside it argues. Geometry and
+   type are swing-tag.css's at 1:1 — trim 70 × 120mm, 22mm head with the
+   punch at 35/11, spec at 7.5pt, care at 6.5pt, symbols at 9mm. A
+   true-size reproduction is artwork like the flats above it, not folio
+   body copy; the 12pt floor is held by the two label boxes and the note,
+   which carry the same wording (change one, change all — the sheet in
+   Swing Tag.dc.html repeats it a third time).
+
+   Every rule is scoped under .p7-tagwrap because the swing tag production
+   sheet links deck.css before swing-tag.css: unscoped copies of these
+   class names would silently double up there.
+
+   HEIGHT IS THE PAGE'S BINDING CONSTRAINT. Measured on the built preview:
+   the old text box ran 115.7mm and the labels block had 10.3mm of
+   auto-margin slack above it, so the 120mm tag lands with ~6mm to spare
+   and there is no room for a caption line in the column — the section
+   heading names the face and the scale instead. If the page ever needs
+   the space back, scale the wrap before cutting content: 0.9 keeps the
+   care symbols at 8.1mm. */
+.p7-tagwrap { position: relative; width: 70mm; height: 120mm; margin: 0 auto; font-family: 'PT Serif', Times, serif; color: #1A1A1A; }
+.p7-tagwrap .tag {
+  position: absolute; inset: 0; box-sizing: border-box;
+  background: #FEFBFC; overflow: hidden;
+  clip-path: polygon(22mm 0, 48mm 0, 70mm 22mm, 70mm 120mm, 0 120mm, 0 22mm);
+  display: flex; flex-direction: column;
+}
+.p7-tagwrap .tag-outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.p7-tagwrap .tag-head { flex: none; height: 22mm; }
+.p7-tagwrap .tag-band-slim {
+  flex: none; background: #F5EFE2; box-sizing: border-box;
+  padding: 3.5mm 7mm; display: flex; justify-content: center;
+}
+.p7-tagwrap .tag-band-slim .wordmark { font-size: 12pt; }
+.p7-tagwrap .tag-rule-heavy { flex: none; margin: 2.5mm 7mm 0; height: 0.53mm; background: var(--school-purple); }
+.p7-tagwrap .tag-rule-fine { flex: none; margin: 0.9mm 7mm 0; height: 0.12mm; background: var(--school-purple); }
+.p7-tagwrap .tag-body { flex: 1; min-height: 0; margin: 0 7mm; display: flex; flex-direction: column; }
+.p7-tagwrap .spec-head {
+  font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+  margin-top: 4.5mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
+}
+.p7-tagwrap .spec-line { font-size: 7.5pt; line-height: 1.4; margin-top: 2mm; }
+.p7-tagwrap .spec-line b { font-weight: 700; }
+.p7-tagwrap .care-row { display: flex; justify-content: space-between; margin-top: 3mm; }
+.p7-tagwrap .care-sym { width: 9mm; height: 9mm; display: block; }
+.p7-tagwrap .care-text { font-size: 6.5pt; line-height: 1.35; margin-top: 3mm; text-wrap: pretty; }
+.p7-tagwrap .origin {
+  font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+  text-align: center; margin-top: auto; padding-bottom: 2mm;
+}
+.p7-tagwrap .tag-foot {
+  flex: none; margin: 0 7mm 6mm; padding-top: 2mm;
+  border-top: 0.12mm solid var(--school-purple);
+  display: flex; justify-content: space-between; font-size: 7pt;
+}
+
+/* ---- Timeline to completion (page 8) ---- A four-milestone vertical
+   timeline under the order-of-construction columns, corroborating the
+   "management of item(s) to completion" criterion the item is marked on.
+
+   THE BUDGET IS 33.0mm AND IT IS HARD. Measured on the built preview: the
+   three-column block ends at 366.9mm from the page top, the costing column
+   already stretches the grid row to 383.3mm, and the content box ends at
+   399.9mm (footer top 402.9mm less its 3mm margin). Everything past that
+   paints over the running foot — .content has flex: 1 / min-height: 0 and
+   nothing clips inside the page. This block spends 4mm of margin plus four
+   12pt rows at 1.25 with 1.6mm gaps = 26.0mm, totalling 30.0mm and leaving
+   3mm of air above the footer rule.
+
+   THE HEAD IS A SIDE LABEL, NOT A LINE ABOVE, because the stacked version
+   does not fit: a caps head plus its gap costs ~6.3mm, which lands the
+   stacked total at ~35mm against the 33mm budget. The 34mm + 5mm-gap side
+   column is the .amrc geometry from pages 9-11, so the folio already has
+   this idiom; the two-line head (~10.6mm) hides inside the rows' 26mm.
+
+   ROWS MUST STAY ONE LINE EACH — a single wrap adds 5.3mm and eats the
+   air. The text column runs ~124mm (span4 168.7mm - 34mm label - 5mm gap
+   - 6mm dot gutter), roughly 60 characters of 12pt PT Serif; keep each
+   milestone under that and re-run the preview probe after editing copy.
+
+   The connector is drawn in the chapter's graphic tones, where the 4.5:1
+   contrast rule does not bite (see the area table at the top of this
+   file): line in --area-border, dots in --area-accent, matching the plate
+   dots. The line is 0.35mm — the grain-arrow shaft weight, the folio's
+   "findable but not competing" line — and its geometry is derived, not
+   eyeballed: dots are 1.6mm at left: 0, so the shared centre is 0.8mm;
+   the line sits at left 0.625mm (0.8 - 0.35/2) and stops 2.65mm short of
+   the rows box's ends, the centre of a 5.3mm first/last line box, so it
+   spans dot-centre to dot-centre. Dot top 1.85mm = 2.65 - 0.8. All four
+   re-derive if the row size or leading moves. ---- */
+.tl { margin-top: 4mm; display: grid; grid-template-columns: 34mm 1fr; column-gap: 5mm; }
+.tl-head { font-size: 12pt; line-height: 1.3; color: #1A1A1A; }
+.tl-rows { position: relative; display: grid; row-gap: 1.6mm; align-content: start; }
+.tl-rows::before { content: ""; position: absolute; left: 0.625mm; top: 2.65mm; bottom: 2.65mm; width: 0.35mm; background: var(--area-border, var(--slate)); }
+.tl-row { position: relative; padding-left: 6mm; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.25; color: #1A1A1A; }
+.tl-row::before { content: ""; position: absolute; left: 0; top: 1.85mm; width: 1.6mm; height: 1.6mm; border-radius: 50%; background: var(--area-accent, var(--slate)); }
+
+.swatch { width: 50mm; }
+.swatch-box { width: 50mm; height: 50mm; border: 0.3mm solid #1A1A1A; }
+.swatch-cap { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.25; color: #1A1A1A; margin-top: 2.5mm; }
