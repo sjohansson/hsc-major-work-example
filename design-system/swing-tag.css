@@ -6,8 +6,8 @@
 
    THE TAG IS A FOLIO PAGE AT 1:4.2. The chamfered head is the only shape
    here that the twelve pages do not have; everything below it is the page
-   skeleton at tag scale — cream band, wordmark, rose rule, the engraving
-   double rule, content, a footer on a hairline. The cream band runs the
+   skeleton at tag scale — cream band, wordmark, rose rule, the stitched
+   hem, content, a footer on a stitch row. The cream band runs the
    full width rather than ending in the 60° transition, which is the v1.0
    masthead the brand kit still specifies for documents that are not folio
    pages; the transition needs a 122 mm area block and there are 70 mm here.
@@ -72,55 +72,81 @@
    on the band's floor and the double rule follows it. */
 .tag-band {
   flex: none; background: #F5EFE2; box-sizing: border-box;
-  padding: 6mm 7mm 5mm; display: flex; align-items: flex-end;
+  padding: 6mm 7mm 4.5mm; display: flex; align-items: flex-end;
 }
 .tag .wordmark { font-size: 22pt; }
 .tag .masthead-rule { width: 24mm; margin-top: 2.5mm; }
-/* 0.53mm, matching .rule-heavy in deck.css — see the comment there for why
-   the pair cannot be authored at 0.4mm. Short version: 0.4mm is 1.51px at
+/* Heavy edge over a stitch row, matching .rule-heavy / .rule-fine in
+   deck.css. 0.53mm — see the comment there for why
+   the edge cannot be authored at 0.4mm. Short version: 0.4mm is 1.51px at
    1x and snaps to either 1 or 2 device rows depending on where the sheet
    falls on the pixel grid, while the 0.12mm hairline always snaps up to 1,
    so at some offsets the two lines rendered identically and the band closed
    on a doubled hairline. 0.53mm is the smallest weight that is >= 2px, so
    its floor is 2 rows everywhere. Both tags share these two classes. */
 .tag-rule-heavy { flex: none; margin: 2.5mm 7mm 0; height: 0.53mm; background: var(--school-purple, #5B2A86); }
-.tag-rule-fine { flex: none; margin: 0.9mm 7mm 0; height: 0.12mm; background: var(--school-purple, #5B2A86); }
-.tag-body { flex: 1; min-height: 0; margin: 0 7mm; display: flex; flex-direction: column; }
+.tag-rule-fine { flex: none; margin: 1.4mm 7mm 0; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
+/* The body is what is left of 120mm after head, band, rules and foot: about
+   53mm on the front, 71mm on the back. It is a column flex box with 2.5mm
+   of bottom padding so the last line of either face clears the foot's
+   stitch by a measured amount rather than by luck. Everything inside is
+   sized to fit that box; when the copy changes, re-measure on the built
+   sheet before touching the type sizes. */
+.tag-body { flex: 1; min-height: 0; margin: 0 7mm; padding-bottom: 2.5mm; box-sizing: border-box; display: flex; flex-direction: column; }
 .tag-foot {
-  flex: none; margin: 0 7mm 6mm; padding-top: 2mm;
-  border-top: 0.12mm solid var(--school-purple, #5B2A86);
+  flex: none; margin: 0 7mm 6mm; padding-top: 2.5mm;
+  background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); background-position: 0 0;
   display: flex; justify-content: space-between; font-size: 7pt;
 }
 
 /* ---- Front ---- */
-.tag-claim { font-size: 10pt; font-style: italic; line-height: 1.25; text-align: center; margin-top: 6mm; }
-/* Shared nightshade divider at 12.16mm high, between two hairlines. */
-.tag-mark { display: flex; align-items: center; gap: 2.5mm; --mark-h: 12.16mm; }
-.tag-mark .bar { flex: 1; height: 0.12mm; background: var(--school-purple, #5B2A86); }
+.tag-claim { font-size: 10pt; font-style: italic; line-height: 1.25; text-align: center; margin-top: 3.5mm; }
+/* Shared house mark between two stitch rows (see --stitch in deck.css). 9mm,
+   not the 12.16mm it was when the drawing carried its own bars: the flower
+   alone at 12mm was the largest thing on the face after the wordmark. */
+.tag-mark { display: flex; align-items: center; gap: 2.5mm; --mark-h: 9mm; }
+.tag-mark .bar { flex: 1; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .tag-piece { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 15pt; line-height: 1.05; text-align: center; }
+/* Four authored lines, never wrapped. Measured on the built sheet, a 7pt
+   tracked capital with its word spaces runs about 1.5mm, so the 56mm
+   measure holds 37 characters and "Overskirt hooks off · collar snaps on"
+   at 37 broke to an orphan "on" by a hair. Two claims per line is the
+   rhythm anyway: each line names one thing done by hand. */
 .tag-hand {
   font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
-  line-height: 1.6; text-align: center;
+  line-height: 1.45; text-align: center;
 }
 
 /* ---- Back ---- */
+/* The back carries three spec lines, a care row and four lines of care
+   copy in 71mm of body; every figure below was taken in 0.5mm steps until
+   the origin line cleared the foot's stitch by its own 3mm on the built
+   sheet with real fonts. The same numbers are repeated for the page 7 copy
+   under .p7-tagwrap in deck.css: change both. */
 .tag-band-slim {
   flex: none; background: #F5EFE2; box-sizing: border-box;
-  padding: 3.5mm 7mm; display: flex; justify-content: center;
+  padding: 3mm 7mm; display: flex; justify-content: center;
 }
 .tag-band-slim .wordmark { font-size: 12pt; }
 .spec-head {
   font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
-  margin-top: 4.5mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
+  margin-top: 3mm; padding-bottom: 1mm; border-bottom: 0.12mm solid #1A1A1A;
 }
-.spec-line { font-size: 7.5pt; line-height: 1.4; margin-top: 2mm; }
+/* Hanging term: each spec line is a two-column grid, the term in a 13mm
+   column and the description beside it, so a wrapped description aligns
+   under its own first word instead of running back under the term. 13mm
+   holds "Overskirt", the widest term, at 7pt bold with 0.8mm to spare. */
+.spec-line { font-size: 7pt; line-height: 1.3; margin-top: 1.5mm; display: grid; grid-template-columns: 13mm 1fr; column-gap: 1mm; }
 .spec-line b { font-weight: 700; }
-.care-row { display: flex; justify-content: space-between; margin-top: 3mm; }
-.care-sym { width: 9mm; height: 9mm; display: block; }
-.care-text { font-size: 6.5pt; line-height: 1.35; margin-top: 3mm; text-wrap: pretty; }
+.care-row { display: flex; justify-content: space-between; margin-top: 2.5mm; }
+.care-sym { width: 7mm; height: 7mm; display: block; }
+.care-text { font-size: 6pt; line-height: 1.3; margin-top: 2mm; text-wrap: pretty; }
+/* Origin line: pushed to the floor of the body by the auto margin, with a
+   3mm floor of its own so it never sits closer to the foot's stitch than
+   the foot's own text does. */
 .origin {
   font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
-  text-align: center; margin-top: auto; padding-bottom: 2mm;
+  text-align: center; margin-top: auto; padding-top: 3mm;
 }
 
 /* ---- Notes panel ---- */

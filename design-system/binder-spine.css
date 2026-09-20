@@ -158,8 +158,9 @@
   clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
-/* Double rule and running foot on the page's own margins, plus 3 mm of
-   bleed at each end: 25 + 3 left, 15 + 3 right.
+/* Heavy edge over a stitch row (see --stitch in deck.css) and the running
+   foot on the page's own margins, plus 3 mm of bleed at each end: 25 + 3
+   left, 15 + 3 right.
 
    The heavy weight is 0.53mm, matching .rule-heavy in deck.css — see the
    comment there for why the pair cannot be authored at 0.4mm. Short
@@ -168,7 +169,7 @@
    hairline always snaps up to 1, so at some offsets the two lines rendered
    identically. 0.53mm is the smallest weight that is >= 2px. */
 .spine-rule-heavy { flex: none; margin: 2.5mm 18mm 0 28mm; height: 0.53mm; background: var(--school-purple, #5B2A86); }
-.spine-rule-fine { flex: none; margin: 0.9mm 18mm 0 28mm; height: 0.12mm; background: var(--school-purple, #5B2A86); }
+.spine-rule-fine { flex: none; margin: 1.4mm 18mm 0 28mm; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .spine-foot {
   flex: 1; min-height: 0; margin: 0 18mm 3mm 28mm;
   display: flex; align-items: center; justify-content: space-between;

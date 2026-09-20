@@ -32,6 +32,33 @@
 :root {
   /* Wednesday school purple: the house mark and the divider lines it sits in */
   --school-purple: #5B2A86;
+  /* ---- Stitch row. The fine rule under the masthead, the running foot's
+     rule and the lines either side of the house mark are drawn as a row of
+     topstitching rather than a plain line: the cream band is a panel of
+     cloth and the heavy rule is its folded edge, so the line beneath it is
+     the stitch that holds the hem. One SVG tile, authored in millimetres so
+     it prints at 1:1: a 2.5mm stitch, a 1mm gap, 0.35mm thread with round
+     ends, in school purple. The colour is written into the tile because a
+     data: URI cannot read a custom property; change both together.
+
+     background-repeat: round no-repeat is load-bearing, both halves of it.
+     round stretches the tile by a hair so every row starts and ends on a
+     whole stitch instead of the chopped fragment repeat-x leaves at
+     whichever end the width falls on; no-repeat on the second axis keeps
+     the row to one line where the stitch is painted onto a box taller than
+     itself, as it is on the running foot. round alone tiles both ways and
+     fills the foot with stripes.
+
+     The thread is 0.35mm, not the 0.53mm the heavy rule needs. That figure
+     exists because a solid line's weight is all it has, and 1.3px snapping
+     to one row or two changed what the masthead said. A stitch reads by its
+     length and rhythm; 2.5mm is 9.4px at 1x, so a row that snaps thin still
+     reads as stitching, and on paper 0.35mm is four dots at 300dpi, a real
+     topstitch. The tile box is 0.5mm so the round thread ends are not
+     clipped. ---- */
+  --stitch-h: 0.5mm;
+  --stitch-tile: 3.5mm 0.5mm;
+  --stitch: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='3.5mm' height='0.5mm' viewBox='0 0 3.5 0.5'><line x1='0.18' y1='0.25' x2='2.68' y2='0.25' stroke='%235B2A86' stroke-width='0.35' stroke-linecap='round'/></svg>");
   /* Area I - The Sources, Gathered (slate) */
   --sources-field: #C8C9D6; --sources-border: #7C7F9E; --sources-accent: #6A6D86; --sources-tint: #EFF0F3; --sources-emph: #5A5C70; /* 6.38:1 */
   /* Area II - The Designs, Weighed (bone) */
@@ -113,8 +140,15 @@ a:hover { color: #8A5866; }
 .masthead2 { --m2-slant: calc(var(--band-h, 26mm) * 0.57735); --m2-area-w: 122mm; flex: none; display: flex; min-height: var(--band-h); }
 .m2-cream { flex: 1; background: #F5EFE2; display: flex; align-items: flex-end; padding: 5mm 0 4mm 25mm; box-sizing: border-box; clip-path: polygon(0 0, 100% 0, calc(100% - var(--m2-slant)) 100%, 0 100%); }
 .m2-area { flex: none; width: var(--m2-area-w); margin-left: calc(-1 * var(--m2-slant)); background: var(--area-field, #F5EFE2); display: flex; align-items: flex-start; justify-content: flex-end; padding: 5mm 15mm 4mm 6mm; box-sizing: border-box; clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%); }
-/* The double rule that closes the masthead: a heavy line over a hairline.
-   0.53mm, not the 0.4mm this used to be, because of how the pair rasterises
+/* The double rule that closes the masthead: a heavy line over a stitch row.
+   Read as cloth, the cream band is a panel, the heavy rule its folded edge
+   and the row beneath it the topstitch that holds the hem (see --stitch on
+   :root). The stitch sits 1.4mm under the edge, not the 0.9mm the old
+   hairline did, because a stitch row has a height of its own and at 0.9mm
+   the thread touched the fold.
+
+   The heavy rule is 0.53mm, not the 0.4mm it used to be, because of how a
+   thick-over-thin pair rasterises
    on a 1x screen. A browser paints a background box on whole device pixels —
    round(bottom) - round(top) — so the rendered weight depends on where the
    box happens to fall on the pixel grid. 0.4mm is 1.51px, which snaps to
@@ -134,19 +168,24 @@ a:hover { color: #8A5866; }
    hairline's 1.4 — but the printed weight now matches the proof on screen,
    which the 0.4mm value only did on half the pages. The spine insert and
    both swing tags carry the same device and were moved with it, so the
-   folio, .spine-rule-heavy and .tag-rule-heavy all state one weight. */
+   folio, .spine-rule-heavy and .tag-rule-heavy all state one weight. The
+   stitch row that replaced the hairline is not subject to any of this: it
+   reads by stitch length, not weight, so it cannot collapse into the edge. */
 .rule-heavy { flex: none; margin: 2.5mm 15mm 0 25mm; height: 0.53mm; background: var(--school-purple); }
-.rule-fine { flex: none; margin: 0.9mm 15mm 0 25mm; height: 0.12mm; background: var(--school-purple); }
+.rule-fine { flex: none; margin: 1.4mm 15mm 0 25mm; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 11mm 15mm 0 25mm; }
 /* Area-coloured stub rule under a page's opening display line. flex: none is
    load-bearing, not decorative: .content is a column flex box, so a bare
    1.1mm child is the first thing the shrink algorithm eats when a page runs
    long, and the rule fades out instead of the page visibly overflowing. */
 .rule-stub { flex: none; width: 60mm; height: 1.1mm; background: var(--area-border); margin-top: 4mm; }
-/* Running foot. The top margin is 3mm on all twelve pages — pages 5 and 12
-   used to override it to 9mm inline and no longer do, so the hairline sits at
-   one height off the content on every page. It matches the foot's own 3mm
-   padding-top, so the rule is centred in a 3mm-either-side band.
+/* Running foot. The rule over it is a stitch row (see --stitch on :root),
+   painted as the foot's own background along its top edge; padding-top is
+   3.5mm so the 3mm of air under the old hairline is kept below the 0.5mm
+   stitch box. The top margin is 3mm on all twelve pages — pages 5 and 12
+   used to override it to 9mm inline and no longer do, so the stitch sits at
+   one height off the content on every page and is centred in a 3mm-either-
+   side band.
 
    .content is flex: 1, so the 5mm this releases (6mm on the two pages that
    overrode it) goes to the content box, not to the foot: the hairline moves
@@ -154,7 +193,7 @@ a:hover { color: #8A5866; }
    3, 4, 6 and 7 — the white above the rule is now the 3mm margin and nothing
    else, where it was 8mm. The bottom margin stays 8mm; that one is the
    trim-side figure and is not the same number by coincidence. */
-.folio-footer { flex: none; margin: 3mm 15mm 8mm 25mm; padding-top: 3mm; border-top: 0.12mm solid var(--school-purple); display: flex; justify-content: space-between; font-family: 'PT Serif', Times, serif; font-size: 12pt; color: #1A1A1A; }
+.folio-footer { flex: none; margin: 3mm 15mm 8mm 25mm; padding-top: 3.5mm; background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); background-position: 0 0; display: flex; justify-content: space-between; font-family: 'PT Serif', Times, serif; font-size: 12pt; color: #1A1A1A; }
 /* Running foot: the house ornament set between two runs of type. Both tokens
    below belong to .mark-band and are documented there; what is set here is
    what a text run — as opposed to a hairline rule — needs of them.
@@ -180,8 +219,8 @@ a:hover { color: #8A5866; }
 }
 
 /* The house mark: the nightshade flower as linework in school purple, with
-   no bars of its own; the lines either side of it are always CSS hairlines,
-   so they can never fall off the page's own rules. The viewBox is cropped
+   no bars of its own; the lines either side of it are always CSS stitch
+   rows, so they can never fall off the page's own rules. The viewBox is cropped
    to the drawing, 480 x 457 units, and --mark-h sets the printed ink
    height: 6mm in the footer, 10mm in the opening and closing rules. */
 .mark-band {
@@ -193,10 +232,10 @@ a:hover { color: #8A5866; }
 /* Opening and closing rules share a 10mm ornament. The stamen ring sits at
    y=480.25 within the SVG's y=214.5..671.5 crop, 37.25 units below its
    centre. Lift the image by that offset so the ring sits on the axis of
-   the hairlines either side. */
+   the stitch rows either side. */
 .mark-rule { --mark-h: 10mm; display: flex; align-items: center; gap: 2.5mm; }
 .mark-rule .mark-band, .tag-mark .mark-band { top: calc(var(--mark-h) * -37.25 / 457); }
-.mark-rule::before, .mark-rule::after { content: ""; flex: 1; height: 0.12mm; background: var(--school-purple); }
+.mark-rule::before, .mark-rule::after { content: ""; flex: 1; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 
 /* ---- Standfirst: the folio's opening statement, page 1 only. It sits above
    the first plate row so a marker has the item, its end-use and the claim the
@@ -436,28 +475,28 @@ a:hover { color: #8A5866; }
 .p7-tagwrap .tag-head { flex: none; height: 22mm; }
 .p7-tagwrap .tag-band-slim {
   flex: none; background: #F5EFE2; box-sizing: border-box;
-  padding: 3.5mm 7mm; display: flex; justify-content: center;
+  padding: 3mm 7mm; display: flex; justify-content: center;
 }
 .p7-tagwrap .tag-band-slim .wordmark { font-size: 12pt; }
 .p7-tagwrap .tag-rule-heavy { flex: none; margin: 2.5mm 7mm 0; height: 0.53mm; background: var(--school-purple); }
-.p7-tagwrap .tag-rule-fine { flex: none; margin: 0.9mm 7mm 0; height: 0.12mm; background: var(--school-purple); }
-.p7-tagwrap .tag-body { flex: 1; min-height: 0; margin: 0 7mm; display: flex; flex-direction: column; }
+.p7-tagwrap .tag-rule-fine { flex: none; margin: 1.4mm 7mm 0; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
+.p7-tagwrap .tag-body { flex: 1; min-height: 0; margin: 0 7mm; padding-bottom: 2.5mm; box-sizing: border-box; display: flex; flex-direction: column; }
 .p7-tagwrap .spec-head {
   font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
-  margin-top: 4.5mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
+  margin-top: 3mm; padding-bottom: 1mm; border-bottom: 0.12mm solid #1A1A1A;
 }
-.p7-tagwrap .spec-line { font-size: 7.5pt; line-height: 1.4; margin-top: 2mm; }
+.p7-tagwrap .spec-line { font-size: 7pt; line-height: 1.3; margin-top: 1.5mm; display: grid; grid-template-columns: 13mm 1fr; column-gap: 1mm; }
 .p7-tagwrap .spec-line b { font-weight: 700; }
-.p7-tagwrap .care-row { display: flex; justify-content: space-between; margin-top: 3mm; }
-.p7-tagwrap .care-sym { width: 9mm; height: 9mm; display: block; }
-.p7-tagwrap .care-text { font-size: 6.5pt; line-height: 1.35; margin-top: 3mm; text-wrap: pretty; }
+.p7-tagwrap .care-row { display: flex; justify-content: space-between; margin-top: 2.5mm; }
+.p7-tagwrap .care-sym { width: 7mm; height: 7mm; display: block; }
+.p7-tagwrap .care-text { font-size: 6pt; line-height: 1.3; margin-top: 2mm; text-wrap: pretty; }
 .p7-tagwrap .origin {
   font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
-  text-align: center; margin-top: auto; padding-bottom: 2mm;
+  text-align: center; margin-top: auto; padding-top: 3mm;
 }
 .p7-tagwrap .tag-foot {
-  flex: none; margin: 0 7mm 6mm; padding-top: 2mm;
-  border-top: 0.12mm solid var(--school-purple);
+  flex: none; margin: 0 7mm 6mm; padding-top: 2.5mm;
+  background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); background-position: 0 0;
   display: flex; justify-content: space-between; font-size: 7pt;
 }
 

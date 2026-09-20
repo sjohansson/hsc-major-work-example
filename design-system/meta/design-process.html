@@ -126,7 +126,7 @@
         garment without naming a television programme in the masthead.</li>
       <li><b>Borrow one convention from the garment's period, and only one.</b> The dress is a 2022 screen
         costume corrected through 1905, 1926 and 1955. The pages borrow the engraved double rule under a masthead from printed ephemera of that
-        span: a heavy line over a hairline. Above it is identity, below it is content. Nothing else on the page
+        span, and sew it: a heavy edge over a row of topstitching. Above it is identity, below it is content. Nothing else on the page
         is period pastiche. The grid is a modern six-column grid and the tables are plain.</li>
       <li><b>Two typefaces, one job each.</b> A fat face for the titles, because the fat faces of the 1820s to
         1900s make the same historical case the pages argue. A large-bodied text face for everything a marker
@@ -229,7 +229,7 @@
     </div>
     <p class="mp-cap"><b>The artwork.</b> The mark is one SVG, <code>assets/house-mark.svg</code>: five petals as an
       outline with a vein in each and a stamen ring, all stroked in school purple. It carries no bars of its own.
-      The lines either side of it are always the page's CSS hairlines, so the mark cannot draw a line that
+      The lines either side of it are always the page's CSS stitch rows, so the mark cannot draw a line that
       misses them. The viewBox is cropped to the drawing, 480 x 457 units, so the box is the drawing and nothing
       more. Anything that needs the mark links this file; there is no other copy.</p>
 
@@ -256,7 +256,7 @@
     <p class="mp-cap"><b>How it works.</b> The mark is sized by its ink, not its file. <code>.mark-band</code>
       sets the image height from <code>--mark-h</code> and lets the width follow: 6 mm in the foot, 10 mm in the
       ornamented rule. The stamen ring sits 37.25 units below the centre of the 457 unit crop, so the rule lifts the image
-      by 37.25 / 457 of its height and the ring sits on the axis of the hairlines either side. The foot does the
+      by 37.25 / 457 of its height and the ring sits on the axis of the stitch rows either side. The foot does the
       same sum, then adds a drop of 0.0625 em, one pixel at 12 pt, to land the ring on the type's optical centre. The air
       either side is <code>--mark-space</code>, 2.5 mm, which is 2.4 word spaces of 12 pt PT Serif: enough that the
       mark separates the two halves of the line rather than reading as punctuation inside it.</p>
@@ -288,10 +288,16 @@
         <div class="rule-fine"></div>
       </div>
     </div>
-    <p class="mp-cap"><b>The double rule.</b> 0.53 mm over a 0.12 mm hairline, 0.9 mm apart, full width of the
-      content box. The engraved rule that separates identity from content on every page. 0.53 mm rather than a
-      rounder 0.4 mm because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the pages, which
-      collapsed the pair to a doubled hairline.</p>
+    <p class="mp-cap"><b>The hem.</b> A 0.53 mm edge over a row of topstitching, 1.4 mm apart, full width of the
+      content box, in school purple. It separates identity from content on every page, and it is read as cloth:
+      the cream band is a panel, the heavy line its folded edge, the row beneath it the stitch that holds the
+      hem. The stitch is one SVG tile, 2.5 mm of 0.35 mm thread with round ends and a 1 mm gap, repeated with
+      <code>background-repeat: round</code> so every row starts and ends on a whole stitch. The edge is 0.53 mm
+      rather than a rounder 0.4 mm because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the
+      pages, which collapsed the old thick-over-thin pair to a doubled hairline. The stitch is exempt from that
+      sum: it reads by its length, 9.4 px at 1x, not by its weight.</p>
+    <p class="mp-cap"><b>The running foot's rule.</b> The same stitch row, alone, over the foot on every page,
+      and either side of the house mark on the statement rules and the swing tag.</p>
     <p class="mp-cap"><b>The chapter transition.</b> The cream band ends in a 60 degree edge after the wordmark
       and the area field begins on the same edge. The slant is derived from the band height, so the angle holds
       if the band is retuned. The area block is 122 mm wide, constrained at both ends: wider and the wordmark is
