@@ -544,3 +544,10 @@ a:hover { color: #8A5866; }
 .swatch { width: 50mm; }
 .swatch-box { width: 50mm; height: 50mm; border: 0.3mm solid #1A1A1A; }
 .swatch-cap { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.25; color: #1A1A1A; margin-top: 2.5mm; }
+
+/* Page 7 keeps pattern labels separate from the generated artwork. */
+.pattern-piece {
+  box-sizing: border-box; background: #ffffff; display: flex; flex-direction: column; padding: 3mm; gap: 1.5mm;
+}
+.pattern-title, .pattern-caption { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; }
+.pattern-piece img { display: block; width: 100%; flex: 1; min-height: 0; object-fit: contain; }
