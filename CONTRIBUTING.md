@@ -26,7 +26,7 @@ npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
 python -m compileall -q scripts
 pwsh scripts/preview.ps1 -Item all -NoOpen
-python scripts/canva.py build --verify
+python .agents/skills/canva-sync/scripts/canva_sync.py build --verify
 ```
 
 CI runs the first three. The last two are the visual proof and take a minute.

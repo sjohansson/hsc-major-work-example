@@ -2,8 +2,9 @@
 
 The push direction is build -> verify -> extract -> ops. This is the read
 direction. The Canva connector is a conversation-side tool, so this script
-cannot call it; instead it takes the JSON that `read-design` returned, saved
-to a file, and diffs it against build/canva/canva-layout.json page by page:
+cannot call it; instead it takes the JSON the connector returned for the
+design, from a file or stdin, and diffs it against canva-layout.json page by
+page:
 
   - text in the repo layout that Canva does not have (missing)
   - text Canva has that the repo layout does not (extra: edited in Canva, or
@@ -11,8 +12,9 @@ to a file, and diffs it against build/canva/canva-layout.json page by page:
   - image asset ids on the Canva page that canva.local.json does not map
 
 With --refresh-ids it also rewrites the design id and the page id map in
-design-system/canva.local.json from the dump, which is how a fresh Canva
-design gets wired up after its pages are created.
+canva.local.json from the dump, which is how a fresh Canva design gets wired
+up after its pages are created. That file is the one thing outside the output
+folder this tool ever writes; the deck is never touched.
 
 The dump's shape is not pinned to one connector version. The walker accepts
 either the raw response or a bare list of pages, finds pages as the first
@@ -21,9 +23,9 @@ list of objects that carry elements, and reads text from any of the keys
 `media_id`. If a future response nests things differently, fix the walker
 here rather than the comparison.
 
-    python scripts/canva.py check --dump read-design.json
-    python scripts/canva.py check --dump read-design.json --page 03
-    python scripts/canva.py check --dump read-design.json --refresh-ids
+    canva_sync.py check --dump design.json
+    canva_sync.py check --dump - --page 03          # read the dump from stdin
+    canva_sync.py check --dump design.json --refresh-ids
 """
 
 from __future__ import annotations
@@ -34,8 +36,8 @@ import re
 import sys
 from pathlib import Path
 
-from .config import LOCAL, asset_ids, save_local
-from .config import LAYOUT_JSON as LAYOUT
+from . import COMMAND
+from .config import cfg
 
 TEXT_KEYS = ("text", "plain_text", "content")
 ASSET_KEYS = ("asset_id", "media_id")
@@ -102,7 +104,7 @@ def page_label(index: int) -> str:
 
 
 def compare(layout_pages, canva_pages, only=None):
-    known = set(asset_ids().values())
+    known = set(cfg().asset_ids().values())
     problems = 0
     by_label = {p["label"]: p for p in layout_pages}
     for i, cp in enumerate(canva_pages):
@@ -141,7 +143,8 @@ def compare(layout_pages, canva_pages, only=None):
 
 
 def refresh_ids(dump, canva_pages) -> None:
-    local = dict(LOCAL)
+    settings = cfg()
+    local = dict(settings.local)
     design_id = find_design_id(dump)
     if design_id:
         local["design_id"] = design_id
@@ -153,28 +156,40 @@ def refresh_ids(dump, canva_pages) -> None:
     if pages:
         local["pages"] = pages
     local.setdefault("assets", {})
-    save_local(local)
-    print(f"  wrote canva.local.json: design {local.get('design_id') or '(none)'}, {len(pages)} page ids")
+    written = settings.save_local(local)
+    print(f"  wrote {written}: design {local.get('design_id') or '(none)'}, "
+          f"{len(pages)} page ids", file=sys.stderr)
 
 
-def main(argv=None):
-    ap = argparse.ArgumentParser(prog="canva.py check", description=__doc__.splitlines()[0])
-    ap.add_argument("--dump", type=Path, required=True, help="saved read-design JSON")
-    ap.add_argument("--page", help="check one folio page label, e.g. 03")
+def main(argv=None, settings=None):
+    settings = settings or cfg()
+    ap = argparse.ArgumentParser(prog=f"{COMMAND} check", description=__doc__.splitlines()[0])
+    ap.add_argument("--dump", required=True,
+                    help="the connector's design JSON, a file path or - for stdin")
+    ap.add_argument("--page", help="check one page label, e.g. 03")
     ap.add_argument("--refresh-ids", action="store_true",
                     help="rewrite design id and page ids in canva.local.json from the dump")
     args = ap.parse_args(argv)
 
-    dump = json.loads(args.dump.read_text(encoding="utf-8"))
+    raw = sys.stdin.read() if args.dump == "-" else Path(args.dump).read_text(encoding="utf-8")
+    try:
+        dump = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        print(f"the dump is not JSON: {exc}", file=sys.stderr)
+        return 2
     canva_pages = find_pages(dump)
     if not canva_pages:
-        sys.exit("no pages found in the dump; see the walker notes in canva/check.py")
+        print("no pages found in the dump; see the walker notes at the top of check.py",
+              file=sys.stderr)
+        return 1
     if args.refresh_ids:
         refresh_ids(dump, canva_pages)
-    if not LAYOUT.exists():
-        print(f"  {LAYOUT} not found; run `python scripts/canva.py extract` to compare text")
+    layout = settings.layout_json
+    if not layout.exists():
+        print(f"  {layout} not found; run `{COMMAND} extract` to compare text",
+              file=sys.stderr)
         return 0
-    layout_pages = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    layout_pages = json.loads(layout.read_text(encoding="utf-8"))
     problems = compare(layout_pages, canva_pages, args.page)
     if problems:
         print(f"  {problems} page(s) differ")

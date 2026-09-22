@@ -31,7 +31,7 @@ A fictional HSC Textiles and Design Major Textiles Project folio: twelve A3 page
 items (binder spine insert, swing tag, product labels, mount scaffold). The pages are `.dc.html` design components
 rendered by `design-system/deck-stage.js` and `design-system/support.js`, styled by `design-system/deck.css` and
 one stylesheet per item. `scripts/preview.ps1` renders them to static HTML for a browser and a true-size print
-proof. `scripts/canva.py` flattens the deck for Canva and checks it back.
+proof. `canva_sync.py` flattens the deck for Canva and checks it back.
 
 Everything is invented. Never add a real student name, student number, school, teacher, or a photograph of a real
 person. Never add copyrighted material (commercial patterns, screen stills, magazine scans, exam papers, other
@@ -74,22 +74,25 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 - `design-system/meta/` the design notes page (the design process, the graphic elements as live specimens, and a
   ledger of changes, with the full colour system, token derivation, and masthead transitions).
   Built by `preview.ps1 -Item meta`.
-- `docs/` NESA marking facts, folio marking notes, brand kit, print specs, production items, Canva pipeline,
+- `docs/` NESA marking facts, folio marking notes, brand kit, print specs, production items, the Canva sync,
   and design rationale.
-- `scripts/` `preview.ps1`, `canva.py` and the `canva/` package, `make_placeholder_plates.py`.
+- `scripts/` `preview.ps1` and `make_placeholder_plates.py`.
+- `.agents/skills/canva-sync/` the self-contained Canva sync skill: its scripts, references and assets. The
+  sync is one way, repo to Canva; a Canva edit is reported, never written back into the deck.
 - `build/` generated output, ignored by git. Nothing generated is ever committed.
-- `design-system/canva.local.json` holds Canva design, page and asset ids. Ignored by git. The committed template
-  is `canva.local.example.json`.
+- `canva.config.json` at the repo root tells the sync where the deck, its stylesheet and its assets are.
+- `canva.local.json` holds Canva design, page and asset ids. Ignored by git. The committed template is
+  `.agents/skills/canva-sync/assets/canva.local.template.json`.
 
 ## Commands
 
 ```pwsh
 pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoOpen]
-python scripts/canva.py build [--verify] [--pdf]
-python scripts/canva.py extract
-python scripts/canva.py ops --page 01 --phase elements|format
-python scripts/canva.py check --dump read-design.json
-python scripts/canva.py all
+python .agents/skills/canva-sync/scripts/canva_sync.py build [--verify] [--pdf]
+python .agents/skills/canva-sync/scripts/canva_sync.py extract
+python .agents/skills/canva-sync/scripts/canva_sync.py ops --page 01 --phase elements|format
+python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json
+python .agents/skills/canva-sync/scripts/canva_sync.py all
 python scripts/make_placeholder_plates.py
 npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"

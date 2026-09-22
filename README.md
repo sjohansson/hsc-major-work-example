@@ -46,11 +46,11 @@ Public references, for inspiration only. No stills or press photographs are stor
 ```pwsh
 pwsh scripts/preview.ps1 -Item folio          # opens the deck in a browser; Ctrl+P prints at 100%
 python -m pip install -r requirements.txt
-python scripts/canva.py all                   # flatten, verify against the deck, extract, summarise
+python .agents/skills/canva-sync/scripts/canva_sync.py all                   # flatten, verify against the deck, extract, summarise
 ```
 
 See [AGENTS.md](AGENTS.md) for the rules, [docs/print-specifications.md](docs/print-specifications.md) for the
-print run, and [docs/canva-pipeline.md](docs/canva-pipeline.md) for the Canva round trip.
+print run, and [docs/canva-sync.md](docs/canva-sync.md) for the Canva round trip.
 
 ## Licence
 

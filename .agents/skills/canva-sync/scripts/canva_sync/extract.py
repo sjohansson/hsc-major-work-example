@@ -26,8 +26,8 @@ What cannot cross:
     with crop_media afterwards.
 
 Usage:
-    python scripts/canva.py extract            # writes build/canva/canva-layout.json
-    python scripts/canva.py extract --page 07  # one page, to stdout
+    canva_sync.py extract            # writes <output_dir>/canva-layout.json
+    canva_sync.py extract --page 07  # one page, to stdout
 """
 
 from __future__ import annotations
@@ -40,19 +40,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .config import (  # noqa: E402
-    BACKGROUND,
-    CANVA_H,
-    CANVA_W,
-    HEAD_FONTS,
-    PAGE_H_MM,
-    PAGE_W_MM,
-    ds_uri,
-    ensure_build_dir,
-    find_chrome,
-)
-from .config import EXPORT_HTML as DEFAULT_OUT  # noqa: E402
-from .config import LAYOUT_JSON as OUT_JSON  # noqa: E402
+from . import COMMAND  # noqa: E402
+from .config import cfg, find_chrome  # noqa: E402
 
 PAGE_RE = re.compile(
     r'(?s)(<div data-document-role="page".*?)(?=<div data-document-role="page"|</body>)'
@@ -272,7 +261,7 @@ def post_process(raw_els):
         elif k == "shape":
             fill = rgb_to_hex(e.get("fill")) if e.get("fill") not in (None, "PATTERN") else None
             if e.get("pattern"):
-                fill = "#F5EFE2"  # hatched plates flatten to their base tone
+                fill = cfg().pattern_fill  # hatched plates flatten to their base tone
             stroke = rgb_to_hex(e.get("stroke"))
             if fill is None and stroke is None and "path" not in e:
                 continue
@@ -306,7 +295,10 @@ def post_process(raw_els):
 
 
 def extract(chrome, only_page=None):
-    raw = DEFAULT_OUT.read_text(encoding="utf-8")
+    settings = cfg()
+    canva_w, canva_h = settings.canva_px
+    page_w, page_h = settings.page_mm
+    raw = settings.export_html.read_text(encoding="utf-8")
     body = raw.split("<body>", 1)[1]
     pages = []
     for m in PAGE_RE.finditer(body):
@@ -322,15 +314,15 @@ def extract(chrome, only_page=None):
         pages = [p for p in pages if p[0] == only_page]
 
     result = []
-    js = WALKER_JS.replace("%CANVA_W%", str(CANVA_W)).replace("%CANVA_H%", str(CANVA_H))
+    js = WALKER_JS.replace("%CANVA_W%", str(canva_w)).replace("%CANVA_H%", str(canva_h))
     with tempfile.TemporaryDirectory() as td:
         for label, notes, chunk in pages:
-            chunk = re.sub(r'(?<=["\'(])\./', ds_uri(), chunk)
+            chunk = re.sub(r'(?<=["\'(])\./', settings.deck_uri(), chunk)
             doc = (
                 '<!DOCTYPE html><html><head><meta charset="utf-8">\n'
-                f"{HEAD_FONTS}\n"
+                f"{settings.head_fonts}\n"
                 "<style>html,body{margin:0;padding:0;background:#fff}"
-                f".sheet{{position:relative;overflow:hidden;width:{PAGE_W_MM}mm;height:{PAGE_H_MM}mm}}</style>"
+                f".sheet{{position:relative;overflow:hidden;width:{page_w}mm;height:{page_h}mm}}</style>"
                 f'</head><body><div class="sheet">{chunk}</div>'
                 f"<script>{js}</script></body></html>"
             )
@@ -355,28 +347,31 @@ def extract(chrome, only_page=None):
                 counts[e["kind"]] = counts.get(e["kind"], 0) + 1
             print(f"  page {label}: {len(els)} elements  {counts}")
             result.append({"label": label, "notes": notes,
-                           "width": CANVA_W, "height": CANVA_H,
-                           "background": BACKGROUND, "elements": els})
+                           "width": canva_w, "height": canva_h,
+                           "background": settings.background, "elements": els})
     return result
 
 
-def main(argv=None):
-    ap = argparse.ArgumentParser(prog="canva.py extract", description=__doc__.splitlines()[0])
+def main(argv=None, settings=None):
+    settings = settings or cfg()
+    ap = argparse.ArgumentParser(prog=f"{COMMAND} extract", description=__doc__.splitlines()[0])
     ap.add_argument("--page", help="extract one page and print to stdout")
     ap.add_argument("--chrome")
     args = ap.parse_args(argv)
-    if not DEFAULT_OUT.exists():
-        sys.exit(f"{DEFAULT_OUT} not found; run `python scripts/canva.py build` first")
+    if not settings.export_html.exists():
+        print(f"{settings.export_html} not found; run `{COMMAND} build` first", file=sys.stderr)
+        return 3
     chrome = find_chrome(args.chrome)
     if not chrome:
-        sys.exit("no Chrome found")
+        print("no Chrome found; set CHROME_PATH or pass --chrome", file=sys.stderr)
+        return 3
     pages = extract(chrome, args.page)
     if args.page:
         print(json.dumps(pages, indent=1))
     else:
-        ensure_build_dir()
-        OUT_JSON.write_text(json.dumps(pages, indent=1), encoding="utf-8")
-        print(f"  wrote {OUT_JSON}")
+        settings.ensure_output_dir()
+        settings.write_text(settings.layout_json, json.dumps(pages, indent=1))
+        print(f"  wrote {settings.layout_json}", file=sys.stderr)
     return 0
 
 

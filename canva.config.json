@@ -1,6 +1,10 @@
 {
+  "deck_dir": "design-system",
   "deck": "Folio Deck.dc.html",
   "deck_css": "deck.css",
+  "assets_dir": "assets",
+  "output_dir": "build/canva",
+  "local_ids": "canva.local.json",
   "title": "The Raven's Ledger",
   "page_mm": [
     297.0,
@@ -11,6 +15,7 @@
     1588
   ],
   "background": "#FEFBFC",
+  "pattern_fill": "#F5EFE2",
   "props": {
     "slate": "#4A4E69",
     "wine": "#8C3B4A",
@@ -39,6 +44,5 @@
   },
   "known_residuals": {
     "12": 0.5
-  },
-  "output_dir": "build/canva"
+  }
 }

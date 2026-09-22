@@ -1,6 +1,6 @@
 # The Canva pipeline
 
-The repo is the source of truth. The deck named in `design-system/canva.config.json` is flattened into the shape
+The repo is the source of truth. The deck named in `canva.config.json` is flattened into the shape
 Canva can read, checked pixel for pixel against the real deck, measured into an element list, and turned into
 `edit-design` operations for the Canva connector. A read-back step compares what Canva holds against the repo.
 
@@ -10,22 +10,22 @@ There is no cover page. NESA has no such concept, and the Canva document matches
 
 ```text
 Folio Deck.dc.html + deck.css                    (source of truth)
-        |  python scripts/canva.py build
+        |  python .agents/skills/canva-sync/scripts/canva_sync.py build
         v
 build/canva/canva-import-rev.html                (flattened, pixel-verified against the deck)
-        |  python scripts/canva.py verify         proves it renders as the deck
-        |  python scripts/canva.py extract
+        |  python .agents/skills/canva-sync/scripts/canva_sync.py verify         proves it renders as the deck
+        |  python .agents/skills/canva-sync/scripts/canva_sync.py extract
         v
 build/canva/canva-layout.json                    (measured element list, 1123 x 1588 px per page)
-        |  python scripts/canva.py ops --page NN ...
+        |  python .agents/skills/canva-sync/scripts/canva_sync.py ops --page NN ...
         v
 edit-design operation arrays                     (pushed over the Canva connector)
         ^
-        |  python scripts/canva.py check --dump read-design.json
+        |  python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json
         |  compares what Canva returned against canva-layout.json
 ```
 
-`python scripts/canva.py all` runs build with verify, then extract, then an ops summary.
+`python .agents/skills/canva-sync/scripts/canva_sync.py all` runs build with verify, then extract, then an ops summary.
 
 ## What the flattener understands
 
@@ -41,8 +41,8 @@ per page by `known_residuals` in the config.
 
 | File | Holds | Committed |
 | --- | --- | --- |
-| `design-system/canva.config.json` | Deck filename, page size, prop values, webfonts, ornament and placeholder colours, known residuals, output folder | Yes |
-| `design-system/canva.local.json` | Design id, page id map, media-library asset id map for one Canva account | No. Template: `canva.local.example.json` |
+| `canva.config.json` | Deck filename, page size, prop values, webfonts, ornament and placeholder colours, known residuals, output folder | Yes |
+| `canva.local.json` | Design id, page id map, media-library asset id map for one Canva account | No. Template: `canva.local.example.json` |
 | `build/canva/canva-import-rev.html` | The flattened deck, pages in reverse order (the shape Canva's importer reads) | No |
 | `build/canva/canva-layout.json` | Per page: ordered shapes, images and texts with geometry and style | No |
 | `build/canva/verify/` | Reference and export renders and diffs from the last verify | No |
@@ -52,11 +52,11 @@ Setup: `pip install -r requirements.txt`, and Chrome or Edge on `PATH` or named 
 ## The push loop (per page, in a session with the Canva connector)
 
 1. `read-design` with `open_transaction: true` gives a transaction id.
-2. `python scripts/canva.py ops --page NN --phase elements --chunk-size 250 --chunk 1`. Paste the output into
+2. `python .agents/skills/canva-sync/scripts/canva_sync.py ops --page NN --phase elements --chunk-size 250 --chunk 1`. Paste the output into
    `edit-design` with `page_index` set to the folio page number. The first op carries the page's speaker notes.
 3. The response echoes the page document. The text locator ids, in document order, are the `add_text` ops in
    order. Write them to a file, one per line.
-4. `python scripts/canva.py ops --page NN --phase format --ids <file>`. Paste into `edit-design`. This applies
+4. `python .agents/skills/canva-sync/scripts/canva_sync.py ops --page NN --phase format --ids <file>`. Paste into `edit-design`. This applies
    sizes, weights, italics, colours, alignment and line heights, because `add_text` cannot carry styling.
 5. Check the returned thumbnail against the repo page, then `finalize: commit`.
 
@@ -68,9 +68,9 @@ That is enough to generate and inspect ops on a fresh clone.
 Save the JSON that `read-design` returns and run:
 
 ```pwsh
-python scripts/canva.py check --dump read-design.json
-python scripts/canva.py check --dump read-design.json --page 03
-python scripts/canva.py check --dump read-design.json --refresh-ids
+python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json
+python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json --page 03
+python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json --refresh-ids
 ```
 
 Per page it reports text in the repo layout that Canva lacks, text Canva has that the repo does not (edited in
@@ -96,7 +96,7 @@ its pages exist. Edits made in Canva are reported, not written back into the dec
 
 ## Other routes
 
-- `python scripts/canva.py build --pdf` also writes `build/canva/canva-import-A3.pdf`, a true-size A3 PDF of
+- `python .agents/skills/canva-sync/scripts/canva_sync.py build --pdf` also writes `build/canva/canva-import-A3.pdf`, a true-size A3 PDF of
   the twelve pages (about 100 MB, since the plates are embedded at print resolution). Canva's own upload takes PDF
   but rebuilds it less editably. A fallback, not the pipeline.
 - The flattened HTML doubles as the payload for the connector's `import-design-from-url`, which needs a public

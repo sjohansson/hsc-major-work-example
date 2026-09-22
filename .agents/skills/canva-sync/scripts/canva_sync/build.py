@@ -3,7 +3,7 @@ r"""Flatten the folio deck into the single self-contained file Canva can import.
 
 WHY THIS EXISTS
 ---------------
-The deck named in `design-system/canva.config.json` is the source of truth for
+The deck named in `canva.config.json` is the source of truth for
 the twelve A3 pages, and it is written the way a stylesheet-backed document should
 be: classes, custom properties, pseudo-elements, `calc()`, real `<table>`s.
 Canva's HTML import understands none of that. It reads a document as a flat
@@ -81,15 +81,14 @@ SVG placeholders from assets/plates.json), are left alone.
 
 USAGE
 -----
-    python scripts/canva.py build                 # build the export
-    python scripts/canva.py build --verify        # build, then diff every page
-                                                  # against the real deck in
-                                                  # headless Chrome
-    python scripts/canva.py build --order fwd     # pages 1..12 file order
-    python scripts/canva.py build --pdf           # also print a true-size A3 PDF
+    canva_sync.py build                 # build the export
+    canva_sync.py build --verify        # build, then diff every page against
+                                        # the real deck in headless Chrome
+    canva_sync.py build --order fwd     # pages 1..12 file order
+    canva_sync.py build --pdf           # also print a true-size A3 PDF
 
-Output lands in build/canva/ (ignored by git). Settings come from
-design-system/canva.config.json; see canva/config.py.
+Output lands in the config's output_dir and nowhere else. Settings come from
+canva.config.json, found by the discovery order in config.py.
 
 Requires: beautifulsoup4, tinycss2 (and Pillow for --verify).
     python -m pip install beautifulsoup4 tinycss2 pillow
@@ -115,24 +114,8 @@ except ImportError:  # pragma: no cover - dependency guard
     sys.exit("beautifulsoup4 is required: python -m pip install beautifulsoup4")
 
 
-from .config import (  # noqa: E402
-    DECK,
-    DECK_CSS,
-    DS,
-    EXPORT_HTML,
-    EXPORT_PDF,
-    HEAD_FONTS,
-    PAGE_H_MM,
-    PAGE_W_MM,
-    PROPS,
-    THUMBNAIL,
-    TITLE,
-    ds_uri,
-    ensure_build_dir,
-    find_chrome,
-)
-
-DEFAULT_OUT = EXPORT_HTML
+from . import COMMAND  # noqa: E402
+from .config import cfg, find_chrome  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -715,7 +698,7 @@ def apply_masthead_rewrite(page: Tag, warnings):
         ml = area_style.get("margin-left", "0mm")
         slant_mm = abs(float(re.sub(r"[^0-9.\-]", "", ml) or 0))
         band_mm = float(re.sub(r"[^0-9.\-]", "", band) or 26)
-        field = area_style.pop("background", None) or "#F5EFE2"
+        field = area_style.pop("background", None) or cfg().pattern_fill
 
         cream.attrs["style"] = style_string(
             [(k, v) for k, v in cream_style.items()]
@@ -1118,13 +1101,15 @@ SECTION_RE = re.compile(r"(?s)<section([^>]*)>(.*?)</section>")
 SVG_RE = re.compile(r"(?s)<svg\b.*?</svg>")
 
 
-def substitute_props(text: str, warnings) -> str:
+def substitute_props(text: str, warnings, props: dict | None = None) -> str:
+    props = cfg().props if props is None else props
+
     def repl(m):
         key = m.group(1)
-        if key not in PROPS:
+        if key not in props:
             warnings.append(f"unresolved deck prop {{{{ {key} }}}}")
             return ""
-        return PROPS[key]
+        return props[key]
 
     return re.sub(r"\{\{\s*(\w+)\s*\}\}", repl, text)
 
@@ -1132,7 +1117,7 @@ def substitute_props(text: str, warnings) -> str:
 def repoint_assets(text: str) -> str:
     def repl(m):
         stem = m.group(1)
-        if (DS / "assets" / f"{stem}.jpg").exists():
+        if (cfg().assets_dir / f"{stem}.jpg").exists():
             return f"./assets/{stem}.jpg"
         return m.group(0)
 
@@ -1147,7 +1132,7 @@ def load_sections(warnings):
     folio leads with an EMPTY first sleeve for paperwork - and the Canva
     document must match the deck page for page.
     """
-    raw = DECK.read_text(encoding="utf-8")
+    raw = cfg().deck.read_text(encoding="utf-8")
     out = []
     for m in SECTION_RE.finditer(raw):
         attrs, body = m.group(1), m.group(2)
@@ -1297,10 +1282,12 @@ def run_measure(sections, chrome, warnings):
         warnings.append("no Chrome found; column splits and grain labels not measured")
         return {"cols": {}, "grain": {}}
 
+    settings = cfg()
+    page_w, page_h = settings.page_mm
     parts = []
     for label, _notes, body in sections:
         body = substitute_props(body, warnings)
-        body = re.sub(r'(?<=["\'(])\./', ds_uri(), body)
+        body = re.sub(r'(?<=["\'(])\./', settings.deck_uri(), body)
         # Number the measurable elements in document order, per page, so the
         # keys line up with the same enumeration on the flattened side.
         ci = [0]
@@ -1320,7 +1307,8 @@ def run_measure(sections, chrome, warnings):
             gi[0] += 1
             return out
 
-        body = re.sub(r"<span[^>]*class=\"grain-label\"[^>]*>", tag_grain, body)
+        grain_class = settings.rewrite_classes["grain_label"]
+        body = re.sub(rf"<span[^>]*class=\"{grain_class}\"[^>]*>", tag_grain, body)
 
         ti = [0]
 
@@ -1332,13 +1320,13 @@ def run_measure(sections, chrome, warnings):
         body = re.sub(r"<table\b", tag_table, body)
         parts.append(
             f'<div class="sheet" style="position:relative;overflow:hidden;'
-            f'width:{PAGE_W_MM}mm;height:{PAGE_H_MM}mm">{body}</div>'
+            f'width:{page_w}mm;height:{page_h}mm">{body}</div>'
         )
 
     page = (
         '<!DOCTYPE html><html><head><meta charset="utf-8">\n'
-        f"{HEAD_FONTS}\n"
-        f'<link rel="stylesheet" href="{ds_uri()}deck.css">\n'
+        f"{settings.head_fonts}\n"
+        f'<link rel="stylesheet" href="{settings.deck_css_uri()}">\n'
         "<style>html,body{margin:0;padding:0;background:#fff}</style>\n"
         f"</head><body>{''.join(parts)}\n<script>{MEASURE_JS}</script></body></html>"
     )
@@ -1410,11 +1398,13 @@ def build_page(label, notes, body, rules, root_vars, measures, warnings):
     serialize(page, svgs, buf)
     inner = "".join(buf)
 
+    settings = cfg()
+    page_w, page_h = settings.page_mm
     wrapper = (
         f'<div data-document-role="page" data-label="{escape_attr(label)}"'
         f' data-speaker-notes="{escape_attr(notes)}"'
-        f' style="width:{fmt_num(PAGE_W_MM)}mm;height:{fmt_num(PAGE_H_MM)}mm;'
-        f'overflow:hidden;background:#FEFBFC;position:relative">\n{inner}\n</div>'
+        f' style="width:{fmt_num(page_w)}mm;height:{fmt_num(page_h)}mm;'
+        f'overflow:hidden;background:{settings.background};position:relative">\n{inner}\n</div>'
     )
     return wrapper
 
@@ -1440,11 +1430,13 @@ def write_pdf(pages, chrome, out_pdf: Path, warnings):
         f'<div style="break-after:page;page-break-after:always">{html}</div>'
         for _label, html in pages
     )
-    body = re.sub(r'(?<=["\'(])\./', ds_uri(), body)
+    settings = cfg()
+    page_w, page_h = settings.page_mm
+    body = re.sub(r'(?<=["\'(])\./', settings.deck_uri(), body)
     doc = (
         '<!DOCTYPE html><html><head><meta charset="utf-8">\n'
-        f"{HEAD_FONTS}\n<style>\n"
-        f"  @page {{ size: {PAGE_W_MM}mm {PAGE_H_MM}mm; margin: 0; }}\n"
+        f"{settings.head_fonts}\n<style>\n"
+        f"  @page {{ size: {page_w}mm {page_h}mm; margin: 0; }}\n"
         "  html, body { margin: 0; padding: 0; background: #ffffff; }\n"
         "  a { color: #1A1A1A; text-decoration: underline; }\n"
         "  /* Backgrounds and hairlines are the artwork, not ink the browser\n"
@@ -1479,9 +1471,11 @@ def write_pdf(pages, chrome, out_pdf: Path, warnings):
     return out_pdf
 
 
-def build(order="rev", chrome=None, out_path=DEFAULT_OUT):
+def build(order="rev", chrome=None, out_path=None):
+    settings = cfg()
+    out_path = Path(out_path) if out_path else settings.export_html
     warnings = []
-    rules, root_vars = load_stylesheet(DECK_CSS)
+    rules, root_vars = load_stylesheet(settings.deck_css)
     sections = load_sections(warnings)
     measures = run_measure(sections, chrome, warnings)
 
@@ -1492,12 +1486,17 @@ def build(order="rev", chrome=None, out_path=DEFAULT_OUT):
             pages.append((label, html))
 
     ordered = list(reversed(pages)) if order == "rev" else pages
+    thumb = settings.thumbnail
+    try:
+        deck_rel = settings.deck.relative_to(settings.root).as_posix()
+    except ValueError:
+        deck_rel = settings.deck.name
     doc = (
         '<!-- @dsCard group="Folio" name="A3 print export (flattened)" -->\n'
         "<!--\n"
         "  GENERATED FILE - DO NOT EDIT BY HAND.\n\n"
-        f"  Built from design-system/{DECK.name} and {DECK_CSS.name} by:\n\n"
-        "      python scripts/canva.py build --verify\n\n"
+        f"  Built from {deck_rel} and {settings.deck_css.name} by:\n\n"
+        f"      {COMMAND} build --verify\n\n"
         "  An edit made here is lost on the next build, and - worse - it makes\n"
         "  this file disagree with the deck, which is what left the previous\n"
         "  hand-written version a whole design revision behind. Change the deck\n"
@@ -1506,8 +1505,8 @@ def build(order="rev", chrome=None, out_path=DEFAULT_OUT):
         "-->\n"
         "<!DOCTYPE html>\n<html>\n<head>\n"
         '<meta charset="utf-8">\n'
-        f"<title>{escape_text(TITLE)} - A3 folio, flattened for Canva</title>\n"
-        f"{HEAD_FONTS}\n"
+        f"<title>{escape_text(settings.title)} - A3 folio, flattened for Canva</title>\n"
+        f"{settings.head_fonts}\n"
         "<style>\n"
         "  /* Deliberately no box-sizing reset: the deck is authored against\n"
         "     the initial content-box and states border-box per element. */\n"
@@ -1515,39 +1514,43 @@ def build(order="rev", chrome=None, out_path=DEFAULT_OUT):
         "  a { color: #1A1A1A; text-decoration: underline; }\n"
         "</style>\n"
         '<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" '
-        f'viewBox="0 0 100 100"><rect width="100" height="100" fill="{THUMBNAIL["fill"]}"/>'
+        f'viewBox="0 0 100 100"><rect width="100" height="100" fill="{thumb["fill"]}"/>'
         '<text x="50" y="62" font-size="34" font-family="Georgia,serif" fill="#fff" '
-        f'text-anchor="middle">{escape_text(THUMBNAIL["text"])}</text></svg></template>\n'
+        f'text-anchor="middle">{escape_text(thumb["text"])}</text></svg></template>\n'
         "</head>\n<body>\n"
         + "\n\n".join(html for _label, html in ordered)
         + "\n</body>\n</html>\n"
     )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(doc, encoding="utf-8")
+    settings.write_text(out_path, doc, extra=out_path)
     return out_path, [lbl for lbl, _ in ordered], warnings, pages
 
 
-def main(argv=None):
-    ap = argparse.ArgumentParser(prog="canva.py build", description=__doc__.splitlines()[0])
+def main(argv=None, settings=None):
+    settings = settings or cfg()
+    ap = argparse.ArgumentParser(prog=f"{COMMAND} build", description=__doc__.splitlines()[0])
     ap.add_argument("--order", choices=("rev", "fwd"), default="rev")
-    ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--chrome")
     ap.add_argument("--verify", action="store_true",
                     help="screenshot every page twice - real deck and export - and diff")
-    ap.add_argument("--pdf", nargs="?", const=str(EXPORT_PDF),
+    ap.add_argument("--pdf", nargs="?", const="",
                     help="also print an A3 PDF, cover first - the file Canva's own "
                          "upload will take, since it does not accept HTML")
     args = ap.parse_args(argv)
 
-    ensure_build_dir()
+    settings.ensure_output_dir()
     chrome = find_chrome(args.chrome)
     out, labels, warnings, pages = build(
         order=args.order, chrome=chrome, out_path=args.out
     )
     print(f"  wrote {out}  ({len(labels)} pages: {', '.join(labels)})")
 
-    if args.pdf:
-        pdf = write_pdf(pages, chrome, Path(args.pdf), warnings)
+    if args.pdf is not None:
+        target = Path(args.pdf) if args.pdf else settings.export_pdf
+        if not settings.writable(target, extra=target):
+            print(f"refusing to write the PDF to {target}", file=sys.stderr)
+            return 2
+        pdf = write_pdf(pages, chrome, target, warnings)
         if pdf:
             mb = pdf.stat().st_size / 1024 / 1024
             print(f"  wrote {pdf}  ({len(pages)} A3 pages, {mb:.1f} MB, pages 01-12)")

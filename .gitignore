@@ -16,4 +16,4 @@ __pycache__/
 /build/
 
 # Canva account identifiers (design id, page ids, asset ids)
-design-system/canva.local.json
+/canva.local.json
