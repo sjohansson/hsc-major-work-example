@@ -522,9 +522,25 @@ a:hover { color: #8A5866; }
 .revision-pattern { border: 0.12mm solid #1A1A1A; padding: 2mm; background: #ffffff; font-size: 12pt; line-height: 1.15; }
 .revision-pattern b { display: block; margin-bottom: 1mm; }
 .revision-layouts { display: flex; gap: 5mm; margin: 4mm 0; }
+/* Page 7 product labels. The three boxes are the sewn labels from
+   Product Labels.dc.html enlarged for reading: the same six registers in
+   the same order, wordmark, piece, fibre, the five care symbols, the care
+   note, the origin, and the same words. Change the copy on the label sheet
+   and change it here (docs/production-items.md). The wordmark is 15 pt,
+   the copy is 12 pt, the floor for folio type, and the symbols are 6.5 mm
+   on the swing tag's 24 unit drawing at a 1.4 stroke. The symbols read as
+   a row across the 82 mm box with the 6.5 mm cells spread by
+   space-between, so the fibre line above and the note below set the
+   measure and the row does not. */
 .revision-labels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
-.revision-labels div { border: 0.3mm solid #1A1A1A; padding: 2.5mm; background: #ffffff; }
-.revision-labels p { margin: 1.5mm 0 0; }
+.revision-labels > div { border: 0.3mm solid #1A1A1A; padding: 2.5mm; background: #ffffff; font-size: 12pt; line-height: 1.25; }
+.revision-labels .wordmark { font-size: 15pt; line-height: 1; }
+.revision-labels .label-piece { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2mm; }
+.revision-labels .label-spec { margin-top: 1mm; }
+.revision-labels .label-care { display: flex; justify-content: space-between; margin: 2mm 2mm 0; }
+.revision-labels .care-sym { width: 6.5mm; height: 6.5mm; display: block; }
+.revision-labels .label-note { margin-top: 1.5mm; }
+.revision-labels .label-origin { margin-top: 1mm; }
 .revision-trial { display: grid; grid-template-columns: 2fr 1fr; gap: 5mm; padding: 4mm 0; border-bottom: 0.3mm solid #1A1A1A; }
 .revision-trial .amrc { grid-template-columns: 32mm 1fr; gap: 2mm 3mm; }
 .revision-trial .body { line-height: 1.24; }

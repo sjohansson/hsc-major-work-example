@@ -38,8 +38,9 @@ reads, for a printable fabric sheet or a label printer, and sheet 2 mirrored, fo
 prints face down. Each sheet's banner states its orientation. Sheet 3 is the unmirrored reading proof at true size
 and 150 per cent, sheet 4 the production notes for both. The dress label sits in the left side seam below
 the waist, the overskirt label inside the band at the left opening, and the collar label inside the collar stand at
-centre back. The three care rows differ because the fibres differ. Page 7 enlarges the same component sizes,
-fibres, and care in words. Dress size is 10, overskirt waist is 68 cm, and collar neck is 38 cm.
+centre back. The three care rows differ because the fibres differ. Page 7 shows the same three labels enlarged for
+reading: the same six registers, the same symbols and the same words, at 12 pt with 6.5 mm symbols. Change a word
+on one and change it on the other. Dress size is 10, overskirt waist is 68 cm, and collar neck is 38 cm.
 
 ## Mount scaffold
 
