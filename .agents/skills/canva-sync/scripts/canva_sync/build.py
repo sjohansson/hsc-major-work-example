@@ -532,6 +532,28 @@ def expand_inset(prop, value):
 
 DROP_PROPS = {"content"}
 
+CSS_ESCAPE_RE = re.compile(r"\\([0-9a-fA-F]{1,6})\s?")
+
+
+def pseudo_content(decls):
+    """The text a ::before or ::after puts on the page, or "".
+
+    `content` is dropped from the style attribute - it means nothing without
+    the pseudo-element - so the text has to be lifted out here instead. Most
+    decorative pseudo-elements are `content: ""` and give nothing back, which
+    is the answer this returns for them. Only a quoted string becomes text;
+    counters, attr() and images are not resolved, and say so in a warning."""
+    value = ""
+    for prop, v in decls:
+        if prop == "content":
+            value = v.strip()
+    if not value or value in ("none", "normal", '""', "''"):
+        return ""
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        inner = value[1:-1]
+        return CSS_ESCAPE_RE.sub(lambda m: chr(int(m.group(1), 16)), inner)
+    return ""
+
 
 def finalise_decls(decls, env, warnings, where):
     """Cascade output -> the literal declarations that go in style=""."""
@@ -604,8 +626,15 @@ class Flattener:
             if not pdecls:
                 continue
             pfinal = finalise_decls(pdecls, local_env, self.warnings, f"{where}::{pseudo}")
-            div = Tag(name="div")
+            text = pseudo_content(pdecls)
+            # A decorative pseudo-element is a box, so a div. One that carries
+            # text is inline, and has to be a span: a div inside a <p> closes
+            # the paragraph when the browser parses the export back, which
+            # moves everything below it down the page.
+            div = Tag(name="span" if text else "div")
             div["style"] = style_string(pfinal)
+            if text:
+                div.string = text
             if position == 0:
                 el.insert(0, div)
             else:
@@ -634,19 +663,22 @@ def _find_by_marker(root: Tag, marker: str):
 
 
 def mark_structural(soup: BeautifulSoup):
-    """Tag the elements the rewrites need before their classes are stripped."""
+    """Tag the elements the rewrites need before their classes are stripped.
+
+    The marker names are fixed, because the rewrites are; the classes that
+    carry them come from the config, so another deck can name them its way."""
+    names = cfg().rewrite_classes
+    markers = [(names["masthead"], "masthead2"),
+               (names["masthead_base"], "m2-cream"),
+               (names["masthead_field"], "m2-area"),
+               (names["kicker"], "kicker"),
+               (names["grain_label"], "grain-label")]
     for el in soup.find_all(True):
         classes = el_classes(el)
-        if "masthead2" in classes:
-            el["data-x"] = "masthead2"
-        elif "m2-cream" in classes:
-            el["data-x"] = "m2-cream"
-        elif "m2-area" in classes:
-            el["data-x"] = "m2-area"
-        elif "kicker" in classes:
-            el["data-x"] = "kicker"
-        elif "grain-label" in classes:
-            el["data-x"] = "grain-label"
+        for cls, marker in markers:
+            if cls in classes:
+                el["data-x"] = marker
+                break
 
 
 def apply_masthead_rewrite(page: Tag, warnings):
@@ -706,11 +738,12 @@ def apply_masthead_rewrite(page: Tag, warnings):
         area_style["position"] = "relative"
         area.attrs["style"] = style_string([(k, v) for k, v in area_style.items()])
 
-        area_w_mm = float(re.sub(r"[^0-9.\-]", "", area_style.get("width", "122mm")) or 122)
+        # left:0 right:0 rather than a measured width: the wedge then takes the
+        # area block's own width whatever the deck sized it to, which a fixed
+        # number only did for one page geometry.
         wedge = Tag(name="div")
         wedge["style"] = (
-            "position:absolute;top:0;left:0;height:0;"
-            f"width:{fmt_num(area_w_mm - slant_mm)}mm;"
+            "position:absolute;top:0;left:0;right:0;height:0;"
             f"border-left:{fmt_num(slant_mm)}mm solid transparent;"
             f"border-bottom:{fmt_num(band_mm)}mm solid {field}"
         )

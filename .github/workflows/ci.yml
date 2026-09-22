@@ -39,3 +39,12 @@ jobs:
 
       - name: Python compiles
         run: python -m compileall -q scripts .agents/skills/canva-sync/scripts
+
+      - name: Canva sync dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Canva sync doctor (fixture deck)
+        run: python .agents/skills/canva-sync/scripts/canva_sync.py doctor --config .agents/skills/canva-sync/assets/fixtures/mini-deck/canva.config.json
+
+      - name: Canva sync selftest
+        run: python .agents/skills/canva-sync/scripts/canva_sync.py selftest --config .agents/skills/canva-sync/assets/fixtures/mini-deck/canva.config.json

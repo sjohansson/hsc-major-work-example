@@ -1,0 +1,143 @@
+/* The fixture stylesheet. Every construct here is one the flattener has to
+   resolve: custom properties, calc(), a child combinator, !important beating
+   a more specific rule, ::before, a table, a multicol block, vertical text
+   and a clip-path pair. Keep it small; keep it exhaustive. */
+
+:root {
+  --ink: #1A1A1A;
+  --field: #4A4E69;
+  --paper: #FEFBFC;
+  --band: 20mm;
+  --gutter: 6mm;
+}
+
+.page {
+  box-sizing: border-box;
+  position: relative;
+  width: 148mm;
+  height: 210mm;
+  padding: var(--gutter);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, serif;
+}
+
+.masthead2 {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  min-height: var(--band);
+  margin-bottom: 5mm;
+}
+
+.m2-cream {
+  box-sizing: border-box;
+  flex: 0 0 60%;
+  padding: 2mm 3mm;
+  background: var(--paper);
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--band) / 1.7320508) 100%, 0 100%);
+}
+
+.m2-area {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  margin-left: calc(0mm - var(--band) / 1.7320508);
+  padding: 2mm 3mm 2mm calc(var(--band) / 1.7320508 + 3mm);
+  background: var(--field);
+  clip-path: polygon(calc(var(--band) / 1.7320508) 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.title {
+  margin: 0;
+  font-size: 9mm;
+  line-height: 1;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--paper);
+  font-size: 3.4mm;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.standfirst {
+  margin: 0 0 4mm;
+  font-size: 3.8mm;
+}
+
+.standfirst::before {
+  content: "Note: ";
+  color: var(--field);
+}
+
+/* column-count is inline on the element: the flattener measures the
+   browser's real column break, and it finds the block by its inline
+   style the same way the deck states it. */
+.cols {
+  margin-bottom: 4mm;
+  font-size: 3.2mm;
+}
+
+.cols p {
+  margin: 0 0 2mm;
+}
+
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 4mm;
+  font-size: 3.2mm;
+}
+
+table.spec th {
+  font-weight: bold;
+}
+
+table.spec th,
+table.spec td {
+  border: 0.3mm solid var(--field);
+  padding: 1mm 1.5mm;
+  text-align: left;
+}
+
+table.spec tbody > tr > .note {
+  font-style: italic;
+}
+
+.plate {
+  position: relative;
+  width: 60mm;
+  height: 40mm;
+  margin-bottom: 4mm;
+}
+
+.plate > img {
+  width: 100%;
+  height: 100%;
+}
+
+.grain-label {
+  position: absolute;
+  top: 4mm;
+  left: 2mm;
+  writing-mode: vertical-rl;
+  font-size: 2.8mm;
+  letter-spacing: 0.1em;
+}
+
+.mark {
+  display: block;
+  margin-bottom: 4mm;
+}
+
+.tail {
+  margin: 0 0 2.5mm;
+}
+
+/* Beats .page .tail on !important alone, not on specificity. If the cascade
+   ignores the flag the export moves this line and verify catches it. */
+.tail {
+  margin-top: 6mm !important;
+  font-size: 3mm;
+}

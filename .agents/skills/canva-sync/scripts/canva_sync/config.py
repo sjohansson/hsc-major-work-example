@@ -38,9 +38,16 @@ from pathlib import Path
 CONFIG_NAME = "canva.config.json"
 SEARCH_RELATIVE = (CONFIG_NAME, f"design-system/{CONFIG_NAME}")
 
+# The deck classes the structural rewrites look for. The rewrites themselves
+# are fixed - a clipped masthead pair becomes border triangles, a grain label
+# becomes a rotated text box - but which classes carry them is the deck's
+# business, so a config can rename them without touching build.py.
 DEFAULT_REWRITE_CLASSES = {
-    "structural": ["evidence-table", "spec-table", "plate-grid", "grain-labels"],
-    "grain_label": "grain-labels",
+    "masthead": "masthead2",
+    "masthead_base": "m2-cream",
+    "masthead_field": "m2-area",
+    "kicker": "kicker",
+    "grain_label": "grain-label",
 }
 
 
@@ -182,17 +189,26 @@ class Settings:
     # -- the one-way guard ---------------------------------------------------
 
     def writable(self, path: Path, extra: Path | None = None) -> bool:
-        """Where the sync is allowed to write.
+        """Where the sync is allowed to write, in order:
 
-        Never inside the deck folder, whatever else is asked: that folder is
-        the source of truth and the sync only ever reads it. Otherwise: under
-        output_dir, the local id file, or a destination the caller named on the
-        command line (--out, --keep)."""
+        1. under output_dir, always. This is first because a config may
+           legitimately put the output folder inside the deck folder.
+        2. never anywhere else inside the deck folder, whatever is asked. That
+           folder is the source of truth and the sync only reads it, so not
+           even an explicit --out may aim there.
+        3. under a destination the caller named on the command line
+           (--out, --keep).
+        4. the local id file, the one thing written back from Canva.
+        """
         p = Path(path).resolve()
+        out = self.output_dir.resolve()
+        if p == out or out in p.parents:
+            return True
         deck_dir = self.deck_dir.resolve()
         if p == deck_dir or deck_dir in p.parents:
             return False
-        for base in (self.output_dir.resolve(), *([Path(extra).resolve()] if extra else ())):
+        if extra:
+            base = Path(extra).resolve()
             if p == base or base in p.parents:
                 return True
         return p == self.local_path.resolve()

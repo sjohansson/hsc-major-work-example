@@ -1,0 +1,44 @@
+<!-- A one page deck that exercises every construct the flattener rewrites.
+     It is not a folio: it exists so `canva_sync.py selftest` can build,
+     verify, extract and generate ops without a real repository. -->
+<section data-label="01" data-speaker-notes="One fixture page. Every rewrite the flattener does is on it.">
+  <div class="page">
+
+    <div class="masthead2">
+      <div class="m2-cream">
+        <h1 class="title">Mini deck</h1>
+      </div>
+      <div class="m2-area">
+        <p class="kicker">Fixture {{ edition }}</p>
+      </div>
+    </div>
+
+    <p class="standfirst">A page built to be flattened. Student number {{ studentNo }}.</p>
+
+    <div class="cols" style="column-count:2;column-gap:6mm">
+      <p>Column text that runs over the break so the column rewrite has something to split.
+         The flattener measures where the browser broke it and emits one text box per column.</p>
+      <p>A second paragraph, so the split is not trivial.</p>
+    </div>
+
+    <table class="spec">
+      <tbody>
+        <tr><th colspan="2">Spec</th></tr>
+        <tr><td>Width</td><td>120 mm</td></tr>
+        <tr><td class="note">Height</td><td>80 mm</td></tr>
+      </tbody>
+    </table>
+
+    <div class="plate">
+      <img src="./assets/plate.svg" alt="Fixture plate">
+      <span class="grain-label">grain</span>
+    </div>
+
+    <svg class="mark" viewBox="0 0 40 40" width="40" height="40">
+      <circle cx="20" cy="20" r="16" fill="none" stroke="#5A5C70" stroke-width="2"></circle>
+    </svg>
+
+    <p class="tail">Last line, which the margin override moves.</p>
+
+  </div>
+</section>

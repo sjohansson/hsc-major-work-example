@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentskills.io/canva-sync/canva.config.schema.json",
+  "title": "canva-sync configuration",
+  "description": "Tells the canva-sync skill where one repository's deck is and how it should be flattened. Every path is relative to the folder this file sits in, which the skill treats as the repository root. config.py validates the same rules by hand, so the bundle needs no JSON-schema dependency; this file is for editors and for reading.",
+  "type": "object",
+  "required": ["deck"],
+  "additionalProperties": false,
+  "properties": {
+    "deck_dir": {
+      "type": "string",
+      "default": "design-system",
+      "description": "Folder holding the deck, its stylesheet and its assets."
+    },
+    "deck": {
+      "type": "string",
+      "description": "The deck file, relative to deck_dir. Its <section> elements are the pages, in data-label order."
+    },
+    "deck_css": {
+      "type": "string",
+      "default": "deck.css",
+      "description": "The stylesheet whose cascade the flattener re-implements, relative to deck_dir."
+    },
+    "assets_dir": {
+      "type": "string",
+      "default": "assets",
+      "description": "Images and plates, relative to deck_dir. Must be inside deck_dir so the deck's ./assets refs resolve."
+    },
+    "output_dir": {
+      "type": "string",
+      "default": "build/canva",
+      "description": "Everything generated goes here and nowhere else. Ignore it in git."
+    },
+    "local_ids": {
+      "type": "string",
+      "default": "canva.local.json",
+      "description": "Canva account identifiers, relative to the repository root. Ignore it in git: it names one person's design."
+    },
+    "dialect": {
+      "type": "string",
+      "default": "claude-canva-connector",
+      "description": "Which file under assets/dialects/ spells the operations for your connector."
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the flattened export document."
+    },
+    "page_mm": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" },
+      "default": [297.0, 420.0],
+      "description": "Page width and height in millimetres. The deck's real size, not Canva's."
+    },
+    "canva_px": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" },
+      "default": [1123, 1588],
+      "description": "Page size in pixels for the Canva design, which is the coordinate space the element list uses."
+    },
+    "background": {
+      "type": "string",
+      "description": "The page ground colour, as a hex string."
+    },
+    "pattern_fill": {
+      "type": "string",
+      "default": "#F5EFE2",
+      "description": "Flat tone a hatched or patterned fill collapses to, since Canva has no hatch."
+    },
+    "props": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Values for the deck's {{ name }} placeholders. Every placeholder in the deck needs one; doctor reports the ones that do not."
+    },
+    "google_fonts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Google Fonts family specifiers loaded into the render, e.g. 'PT+Serif:ital,wght@0,400;0,700;1,400'. Font families do not cross into Canva; these are for the verify render."
+    },
+    "thumbnail": {
+      "type": "object",
+      "description": "Two-letter mark and fill for the export's thumbnail template.",
+      "properties": {
+        "text": { "type": "string" },
+        "fill": { "type": "string" }
+      }
+    },
+    "placeholder": {
+      "type": "object",
+      "description": "Fill and stroke of the rectangle that stands in for an image with no mapped asset id.",
+      "properties": {
+        "fill": { "type": "string" },
+        "stroke": { "type": "string" }
+      }
+    },
+    "known_residuals": {
+      "type": "object",
+      "additionalProperties": { "type": "number" },
+      "description": "Per page label, a per-cent difference that is real, understood and not a regression. Raises verify's tolerance for that page alone. Write down why in the doc, or it becomes a place to hide regressions."
+    },
+    "rewrite_classes": {
+      "type": "object",
+      "description": "Which deck classes carry the structural rewrites. The rewrites are fixed; the class names are the deck's business.",
+      "properties": {
+        "masthead": { "type": "string", "default": "masthead2" },
+        "masthead_base": { "type": "string", "default": "m2-cream" },
+        "masthead_field": { "type": "string", "default": "m2-area" },
+        "kicker": { "type": "string", "default": "kicker" },
+        "grain_label": { "type": "string", "default": "grain-label" }
+      }
+    }
+  }
+}

@@ -7,6 +7,9 @@
     canva_sync.py ops     --summary [--json]
     canva_sync.py check   --dump design.json [--refresh-ids]
     canva_sync.py probe   --tools tools.json
+    canva_sync.py doctor  [--full] [--json]
+    canva_sync.py selftest
+    canva_sync.py guard   --hook
     canva_sync.py all
 
 Every command takes `--config PATH`; without it the config is discovered by
@@ -33,7 +36,8 @@ import sys
 from . import COMMAND
 from .config import ConfigError, activate, load
 
-STEPS = ("build", "verify", "extract", "ops", "check", "probe")
+# Commands that need a loaded config (all but the inert guard).
+STEPS = ("build", "verify", "extract", "ops", "check", "probe", "doctor", "selftest")
 ALL_SEQUENCE = (("build", ["--verify"]), ("extract", []), ("ops", ["--summary"]))
 
 
@@ -56,6 +60,9 @@ def _dispatch(name, argv, settings):
     if name == "probe":
         from . import dialect
         return dialect.main(argv, settings)
+    if name in ("doctor", "selftest"):
+        from . import doctor
+        return doctor.main(argv, settings, mode=name)
     raise AssertionError(name)
 
 
@@ -97,6 +104,12 @@ def main(argv=None) -> int:
 
     cmd, rest = argv[0], argv[1:]
     rest, explicit = _split_config(rest)
+
+    # The guard runs inside an agent host's hook and must never fail loudly:
+    # with no config it simply allows everything.
+    if cmd == "guard":
+        from . import doctor
+        return doctor.guard_main(rest, explicit)
 
     if cmd not in (*STEPS, "all"):
         print(f"unknown command {cmd!r}\n\nrun `{COMMAND} --help`", file=sys.stderr)
