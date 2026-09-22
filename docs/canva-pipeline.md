@@ -27,6 +27,16 @@ edit-design operation arrays                     (pushed over the Canva connecto
 
 `python scripts/canva.py all` runs build with verify, then extract, then an ops summary.
 
+## What the flattener understands
+
+Build re-implements the `deck.css` cascade in Python: selector matching, specificity, source order, the element's
+own inline style, then `!important` last. Selectors may use descendant and child combinators (`a b`, `a > b`),
+`:first-child`, `:last-child` and `::before` / `::after`. Sibling combinators (`+`, `~`) and other pseudo-classes
+are not supported, and a stylesheet rule that uses one stops the build with an error rather than dropping the rule.
+Anything the cascade gets subtly wrong shows up in verify as a pixel difference, which is why `all` runs verify
+before anything is pushed. Verify's default tolerance is 0.35 per cent of a page's pixels (`--tolerance`), raised
+per page by `known_residuals` in the config.
+
 ## Files
 
 | File | Holds | Committed |
@@ -77,12 +87,18 @@ its pages exist. Edits made in Canva are reported, not written back into the dec
   brand kit also wants the sixteen area hexes from the top of `deck.css`.
 - Hatched fills on the pattern-piece plates flatten to their base tone.
 - Images map by filename to asset ids in `canva.local.json`. Upload the assets in the Canva app first, then
-  record the ids. Unmapped images push as placeholder rectangles that can be filled afterwards.
+  record the ids. Unmapped images push as placeholder rectangles that can be filled afterwards. The one exception
+  is the house mark named under `ornament` in the config: unmapped, it pushes as two flat shapes (an oval beside a
+  ringed disc) in the ornament colours, a stand-in for the drawn flower rather than a copy of it. Map
+  `house-mark.svg` to an uploaded asset to get the real mark.
+- `ops --summary` lists every image the deck uses that the local map does not cover. Run it after any rename under
+  `design-system/assets/`, because the map is keyed by filename and goes stale silently.
 
 ## Other routes
 
 - `python scripts/canva.py build --pdf` also writes `build/canva/canva-import-A3.pdf`, a true-size A3 PDF of
-  the twelve pages. Canva's own upload takes PDF but rebuilds it less editably. A fallback, not the pipeline.
+  the twelve pages (about 100 MB, since the plates are embedded at print resolution). Canva's own upload takes PDF
+  but rebuilds it less editably. A fallback, not the pipeline.
 - The flattened HTML doubles as the payload for the connector's `import-design-from-url`, which needs a public
   URL. Publish it somewhere only if that route is wanted.
 

@@ -25,8 +25,12 @@ WHAT IT DOES
   1.  Lifts each `<section>` out of the deck, exactly as scripts/preview.ps1
       does, and substitutes the values renderVals() would have produced.
   2.  Runs the deck.css cascade in Python - selector matching, specificity,
-      source order, then the element's own inline style last - so every
-      element ends up with one literal style attribute and no class.
+      source order, the element's own inline style, then `!important`
+      declarations last - so every element ends up with one literal style
+      attribute and no class. Selectors may use descendant and child
+      combinators, `:first-child`, `:last-child` and `::before`/`::after`.
+      Anything else (`+`, `~`, other pseudo-classes) stops the build with
+      an error rather than silently dropping the rule.
   3.  Resolves custom properties and `calc()` to literals. `--area-border`
       on a page root becomes the chapter's actual hex; `calc(--band-h *
       0.57735)` becomes 15.0111mm. What cannot reduce (`calc(100% - 3.6mm)`)
@@ -137,14 +141,15 @@ DEFAULT_OUT = EXPORT_HTML
 class Rule:
     """One selector out of one CSS rule, with its declarations."""
 
-    __slots__ = ("compounds", "pseudo", "spec", "order", "decls", "text")
+    __slots__ = ("compounds", "pseudo", "spec", "order", "decls", "important", "text")
 
-    def __init__(self, compounds, pseudo, spec, order, decls, text):
+    def __init__(self, compounds, pseudo, spec, order, decls, text, important=None):
         self.compounds = compounds  # list of dicts, ancestor-first
         self.pseudo = pseudo        # None | 'before' | 'after'
         self.spec = spec            # (a, b, c)
         self.order = order
-        self.decls = decls          # list of (prop, value)
+        self.decls = decls          # list of (prop, value), normal weight
+        self.important = important or []  # list of (prop, value) flagged !important
         self.text = text
 
 
@@ -173,17 +178,34 @@ def parse_compound(part: str):
 
 
 def parse_selector(sel: str):
-    """Descendant combinators and compounds only - all deck.css needs."""
+    """Descendant and child combinators and compounds - all deck.css needs.
+
+    Each compound carries `child`: True when it must be the direct child of
+    the compound before it (`a > b`), False for a plain descendant (`a b`).
+    """
     sel = sel.strip()
     pseudo = None
     m = re.search(r"::(before|after)$", sel)
     if m:
         pseudo = m.group(1)
         sel = sel[: m.start()]
-    if ">" in sel or "+" in sel or "~" in sel:
+    if "+" in sel or "~" in sel:
         raise ValueError(f"unsupported combinator in {sel!r}")
-    parts = [p for p in sel.split() if p]
-    compounds = [parse_compound(p) for p in parts]
+    compounds = []
+    child = False
+    for tok in re.split(r"(\s*>\s*|\s+)", sel):
+        tok = tok.strip()
+        if not tok:
+            continue
+        if tok == ">":
+            child = True
+            continue
+        comp = parse_compound(tok)
+        comp["child"] = child
+        child = False
+        compounds.append(comp)
+    if child or not compounds:
+        raise ValueError(f"malformed selector {sel!r}")
     a = 0
     b = sum(len(c["classes"]) + len(c["pseudo"]) for c in compounds)
     c = sum(1 for x in compounds if x["tag"]) + (1 if pseudo else 0)
@@ -203,10 +225,12 @@ def load_stylesheet(path: Path):
             continue
         prelude = tinycss2.serialize(node.prelude).strip()
         decls = []
+        important = []
         for d in tinycss2.parse_declaration_list(node.content, skip_whitespace=True):
             if d.type != "declaration":
                 continue
-            decls.append((d.lower_name, tinycss2.serialize(d.value).strip()))
+            pair = (d.lower_name, tinycss2.serialize(d.value).strip())
+            (important if d.important else decls).append(pair)
         for sel in [s.strip() for s in prelude.split(",") if s.strip()]:
             order += 1
             if sel == ":root":
@@ -216,7 +240,7 @@ def load_stylesheet(path: Path):
             if ":hover" in sel:
                 continue
             compounds, pseudo, spec = parse_selector(sel)
-            rules.append(Rule(compounds, pseudo, spec, order, decls, sel))
+            rules.append(Rule(compounds, pseudo, spec, order, decls, sel, important))
     return rules, root_vars
 
 
@@ -255,17 +279,25 @@ def compound_matches(el: Tag, comp) -> bool:
 
 
 def rule_matches(el: Tag, ancestors, rule: Rule) -> bool:
+    """Match right to left. `pool` is the ancestor chain nearest-first, so a
+    child combinator pins the next compound to pool[0]; a descendant
+    combinator may skip ahead."""
     if not compound_matches(el, rule.compounds[-1]):
         return False
-    remaining = list(reversed(rule.compounds[:-1]))
     pool = list(reversed(ancestors))
-    for comp in remaining:
-        while pool:
-            cand = pool.pop(0)
-            if compound_matches(cand, comp):
-                break
+    need_child = rule.compounds[-1]["child"]
+    for comp in reversed(rule.compounds[:-1]):
+        if need_child:
+            if not pool or not compound_matches(pool.pop(0), comp):
+                return False
         else:
-            return False
+            while pool:
+                cand = pool.pop(0)
+                if compound_matches(cand, comp):
+                    break
+            else:
+                return False
+        need_child = comp["child"]
     return True
 
 
@@ -564,6 +596,10 @@ class Flattener:
             decls.extend(r.decls)
         if pseudo is None:
             decls.extend(parse_inline_style(el.get("style", "")))
+        # !important declarations beat every normal one, including the
+        # element's inline style, and rank among themselves by specificity.
+        for r in matched:
+            decls.extend(r.important)
         return decls
 
     def walk(self, el: Tag, ancestors, env):
