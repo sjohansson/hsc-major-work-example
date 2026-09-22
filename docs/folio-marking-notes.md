@@ -150,7 +150,7 @@ every sample photograph was declined because the methods state the grid and the 
 
 ## 7. Rerunning the NESA analysis
 
-The artefact is always the exported PDF in the repo root, never the HTML or a preview. Record its export date, size,
+The artefact is always the exported PDF in `output/`, never the HTML or a preview. Record its export date, size,
 and SHA-256 so the next review knows which file it compared.
 
 Checks to run before reading a word:

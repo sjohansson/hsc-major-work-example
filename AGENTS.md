@@ -16,6 +16,10 @@ evidence issue:
 - [docs/folio-marking-notes.md](docs/folio-marking-notes.md): the premise this folio is marked under, the local
   standards, how a mark is placed, the evidence rules, and the rerun procedure.
 
+The Copilot agent in `.github/agents/nesa-assessor.agent.md` runs the marking procedure and the
+`get-nesa-grading-rules` skill in `.github/skills/` loads the two documents. Both defer to the documents; a rule
+changes in the documents, never in the agent.
+
 In short: the folio is marked as the finished submission a marker holds. A generated plate is marked on what it
 shows and what its caption says, and is never penalised for being digital. The physical samples and the garment
 are outside the PDF and are never guessed at. Marks are lost to unsupported claims, contradictions a ruler would
