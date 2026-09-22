@@ -3,7 +3,8 @@
 ## Folio pages
 
 - Sheet: A3, 297 x 420 mm, portrait, printed one side only.
-- Format: PDF, CMYK, 300 dpi (test 600 dpi for the plates).
+- Format: PDF with vector type and drawings; raster plates at 300 dpi. The browser export is RGB.
+  If the print shop needs CMYK, convert with its supplied press profile after approving the RGB proof.
 - No bleed and no printer margins. The page box is the sheet.
 - Binding margin: 25 mm on the left, held by the masthead and the page grid.
 - Type: nothing below 12 pt on a folio page (NESA rule). Body runs at 12.5 pt.
@@ -21,8 +22,8 @@ Print shop reference used for the A3 poster stock:
 | --- | --- | --- | --- |
 | Binder spine insert | A2, 420 x 594 mm | 59 x 436 mm | The strip is longer than A3, so it prints on A2, two up with a spare. |
 | Swing tag | A4 | 70 x 120 mm | Front and back on one sheet. Chamfered corner and punch hole are cut by hand. |
-| Product labels | A4 x 3 | 58 x 39 mm | Mirrored for iron-on transfer paper. Unmirrored (`-NoMirror`) for printable fabric sheets. |
-| Mount scaffold | A4 x 3 | 34.9 x 28.5 mm slots | Print at 100 % with margins set to none. Check the 100 mm calibration bar with a ruler before cutting. |
+| Product labels | A4 x 4 | 71 x 48 mm patch | Each cell is the finished patch with the 55 x 36 mm ruled box inset. Sheet 1 as it reads, for printable fabric sheets and a label printer. Sheet 2 mirrored, for iron-on transfer paper. Sheets 3 and 4 are the reading proof and the notes, plain paper only. |
+| Mount scaffold | A4 x 3 | 38 x 22 mm reference-offcut slots | Print at 100 % with margins set to none. Check the 100 mm calibration bar with a ruler before cutting. |
 
 ## Proofing
 
