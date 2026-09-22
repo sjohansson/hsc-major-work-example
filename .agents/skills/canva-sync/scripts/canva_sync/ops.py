@@ -1,33 +1,37 @@
 #!/usr/bin/env python3
-r"""Turn canva-layout.json into edit-design operation arrays.
+r"""Turn canva-layout.json into connector operation arrays.
 
-The push itself happens over the Canva MCP connector (a conversation-side
-tool, not an HTTP API this script could call), so this script's job is to
-make every payload mechanical and reproducible from the repo: the agent runs
-it, pastes the printed JSON into `edit-design`, and nothing about the pages
-is improvised at push time.
+The push itself happens over a Canva connector (a conversation-side tool, not
+an HTTP API this script could call), so this script's job is to make every
+payload mechanical and reproducible from the repo: the agent runs it, passes
+the printed JSON to the connector, and nothing about the pages is improvised
+at push time.
+
+What this module builds is an abstract operation per element - notes, shape,
+image, text, format - which says what has to happen without naming any one
+connector's vocabulary. `dialect.py` spells them. That is the seam: a
+connector with different op names is a new file under assets/dialects/, not a
+change here.
 
 Phases per page:
-    elements  ops that create everything: insert_shape / insert_fill /
-              add_text, in paint order. Chunked so one edit-design call
-              stays a sane size. `PAGE_ID` is a placeholder for the id the
-              add_page result returns.
-    format    add_text carries no styling, so every text element needs a
-              follow-up format_text. This phase consumes the element ids
-              the elements phase returned (one per add_text, in order) and
-              emits the format ops.
+    elements  everything that creates an element, in paint order. Chunked so
+              one connector call stays a sane size. `PAGE_ID` stands in for
+              the page id when canva.local.json does not have one yet.
+    format    created text carries no styling, so every text element needs a
+              follow-up format operation. This phase consumes the element ids
+              the elements phase returned (one per text, in order).
 
 Usage:
     canva_sync.py ops --page 01 --phase elements
     canva_sync.py ops --page 01 --phase elements --chunk 2
     canva_sync.py ops --page 01 --phase format --ids ids.txt
-    canva_sync.py ops --summary
+    canva_sync.py ops --page 01 --phase format --id-list a,b,c
+    canva_sync.py ops --summary [--json]
 
-Asset mapping: canva.local.json ("assets") maps repo image
-names to Canva media-library asset ids. Images with no mapping are emitted as
-a placeholder rect so the push can proceed and the image be dropped in
-afterwards. Page ids come from the same file ("pages"); without it every op
-carries the literal PAGE_ID for the caller to substitute.
+Asset mapping: canva.local.json ("assets") maps repo image names to Canva
+media-library asset ids. Images with no mapping are emitted as a placeholder
+rectangle so the push can proceed and the image be dropped in afterwards.
+Page ids come from the same file ("pages").
 """
 
 from __future__ import annotations
@@ -40,6 +44,8 @@ from pathlib import Path
 
 from . import COMMAND  # noqa: E402
 from .config import cfg  # noqa: E402
+from .dialect import DialectError  # noqa: E402
+from .dialect import load as load_dialect  # noqa: E402
 
 CHUNK_DEFAULT = 40
 
@@ -59,35 +65,39 @@ def shape_op(e) -> dict:
         path, vw, vh = circle_path(w, h), w, h
     else:
         path, vw, vh = f"M 0 0 H {w} V {h} H 0 Z", w, h
-    op = {"type": "insert_shape", "page_id": "PAGE_ID",
+    op = {"op": "shape", "page": "PAGE_ID",
           "top": e["y"], "left": e["x"], "width": w, "height": h,
           "path": path, "view_box_width": vw, "view_box_height": vh}
     if e.get("fill"):
-        op["color"] = e["fill"]
+        op["fill"] = e["fill"]
     if e.get("stroke"):
-        op["stroke_color"] = e["stroke"]
+        op["stroke"] = e["stroke"]
         op["stroke_weight"] = max(e.get("sw", 1), 0.5)
     return op
 
 
-def image_op(e, assets) -> dict:
+def placeholder_op(e) -> dict:
+    """An unmapped image: a hairline-stroked rectangle where the image goes."""
     placeholder = cfg().placeholder
+    return {"op": "shape", "page": "PAGE_ID",
+            "top": e["y"], "left": e["x"], "width": e["w"], "height": e["h"],
+            "path": f"M 0 0 H {e['w']} V {e['h']} H 0 Z",
+            "view_box_width": e["w"], "view_box_height": e["h"],
+            "fill": placeholder["fill"], "stroke": placeholder["stroke"],
+            "stroke_weight": 1}
+
+
+def image_op(e, assets) -> dict:
     aid = assets.get(e["asset"])
     if not aid:
-        # placeholder rect; the asset name rides in a hairline-stroked frame
-        return {"type": "insert_shape", "page_id": "PAGE_ID",
-                "top": e["y"], "left": e["x"], "width": e["w"], "height": e["h"],
-                "path": f"M 0 0 H {e['w']} V {e['h']} H 0 Z",
-                "view_box_width": e["w"], "view_box_height": e["h"],
-                "color": placeholder["fill"], "stroke_color": placeholder["stroke"],
-                "stroke_weight": 1}
-    return {"type": "insert_fill", "page_id": "PAGE_ID", "asset_type": "image",
+        return placeholder_op(e)
+    return {"op": "image", "page": "PAGE_ID",
             "asset_id": aid, "alt_text": e["asset"],
             "top": e["y"], "left": e["x"], "width": e["w"], "height": e["h"]}
 
 
 def text_op(e) -> dict:
-    op = {"type": "add_text", "page_id": "PAGE_ID", "text": e["text"],
+    op = {"op": "text", "page": "PAGE_ID", "text": e["text"],
           "top": e["y"], "left": e["x"], "width": max(e["w"], 8)}
     if e.get("rot"):
         op["rotation"] = e["rot"]
@@ -95,13 +105,14 @@ def text_op(e) -> dict:
 
 
 def format_op(e, element_id) -> dict:
-    f = {"font_size": int(e["size"]), "color": e["color"],
-         "text_align": e["align"], "line_height": e["lh"]}
+    op = {"op": "format", "element_id": element_id,
+          "font_size": int(e["size"]), "color": e["color"],
+          "text_align": e["align"], "line_height": e["lh"]}
     if e.get("bold"):
-        f["font_weight"] = "bold"
+        op["font_weight"] = "bold"
     if e.get("italic"):
-        f["font_style"] = "italic"
-    return {"type": "format_text", "element_id": element_id, "formatting": f}
+        op["font_style"] = "italic"
+    return op
 
 
 class OpsError(Exception):
@@ -129,6 +140,21 @@ def is_page_ground(e, page):
             and e["w"] >= page["width"] - 2 and e["h"] >= page["height"] - 2)
 
 
+def summary(pages, assets, chunk_size):
+    per_page = []
+    for p in pages:
+        els = [e for e in p["elements"] if not is_page_ground(e, p)]
+        per_page.append({
+            "label": p["label"],
+            "ops": len(els),
+            "chunks": (len(els) + chunk_size - 1) // chunk_size,
+            "texts": sum(1 for e in els if e["kind"] == "text"),
+        })
+    missing = sorted({e["asset"] for p in pages for e in p["elements"]
+                      if e["kind"] == "image" and e["asset"] not in assets})
+    return {"chunk_size": chunk_size, "pages": per_page, "unmapped_assets": missing}
+
+
 def main(argv=None, settings=None):
     settings = settings or cfg()
     ap = argparse.ArgumentParser(prog=f"{COMMAND} ops", description=__doc__.splitlines()[0])
@@ -136,24 +162,32 @@ def main(argv=None, settings=None):
     ap.add_argument("--phase", choices=("elements", "format"))
     ap.add_argument("--chunk", type=int, help="print only this 1-based chunk")
     ap.add_argument("--chunk-size", type=int, default=CHUNK_DEFAULT)
-    ap.add_argument("--ids", help="file of element ids, one per line, in add_text order")
+    ap.add_argument("--ids", help="file of element ids, one per line, in text order, or - for stdin")
+    ap.add_argument("--id-list", help="element ids as one comma-separated list")
+    ap.add_argument("--dialect", help="override the dialect named in the config")
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--json", action="store_true", help="print the summary as JSON")
     args = ap.parse_args(argv)
 
     assets = settings.asset_ids()
+    try:
+        spelling = load_dialect(args.dialect or settings.dialect)
+    except DialectError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
 
     if args.summary:
-        pages = load_layout()
-        for p in pages:
-            els = [e for e in p["elements"] if not is_page_ground(e, p)]
-            texts = sum(1 for e in els if e["kind"] == "text")
-            n_chunks = (len(els) + args.chunk_size - 1) // args.chunk_size
-            print(f"  page {p['label']}: {len(els)} ops in {n_chunks} chunk(s), "
-                  f"{texts} texts to format")
-        missing = sorted({e["asset"] for p in pages for e in p["elements"]
-                          if e["kind"] == "image" and e["asset"] not in assets})
-        if missing:
-            print(f"  unmapped assets ({len(missing)}): {', '.join(missing)}")
+        data = summary(load_layout(), assets, args.chunk_size)
+        if args.json:
+            print(json.dumps(data, indent=2))
+            return 0
+        for row in data["pages"]:
+            print(f"  page {row['label']}: {row['ops']} ops in {row['chunks']} chunk(s), "
+                  f"{row['texts']} texts to format", file=sys.stderr)
+        if data["unmapped_assets"]:
+            names = ", ".join(data["unmapped_assets"])
+            print(f"  unmapped assets ({len(data['unmapped_assets'])}): {names}",
+                  file=sys.stderr)
         return 0
 
     if not args.page or not args.phase:
@@ -164,8 +198,13 @@ def main(argv=None, settings=None):
     pid = settings.page_id(args.page)
 
     if args.phase == "elements":
-        ops = [{"type": "replace_speaker_notes", "page_id": pid,
-                "notes": page.get("notes", "")[:5000]}]
+        if not spelling.can("create_elements"):
+            print(f"dialect {spelling.name!r} cannot create elements: {spelling.data.get('description', '')}\n"
+                  f"publish {settings.export_html} at a public HTTPS URL and import it with "
+                  f"the connector's import-from-URL tool instead, then use this dialect to "
+                  f"correct text.", file=sys.stderr)
+            return 1
+        ops = [{"op": "notes", "page": pid, "notes": page.get("notes", "")[:5000]}]
         for e in els:
             if e["kind"] == "shape":
                 ops.append(shape_op(e))
@@ -173,7 +212,7 @@ def main(argv=None, settings=None):
                 ops.append(image_op(e, assets))
             else:
                 ops.append(text_op(e))
-        ops = [({**o, "page_id": pid} if o.get("page_id") == "PAGE_ID" else o) for o in ops]
+        ops = [({**o, "page": pid} if o.get("page") == "PAGE_ID" else o) for o in ops]
 
         # Round everything: sub-pixel precision is noise to Canva and pure
         # payload weight here (a path float can carry 13 decimals).
@@ -186,20 +225,40 @@ def main(argv=None, settings=None):
                     o[k] = round(v, 1)
                 elif k == "path":
                     o[k] = _round_path(v)
-        chunks = [ops[i:i + args.chunk_size] for i in range(0, len(ops), args.chunk_size)]
+        try:
+            rendered = spelling.render_all(ops)
+        except DialectError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        chunks = [rendered[i:i + args.chunk_size]
+                  for i in range(0, len(rendered), args.chunk_size)]
         if args.chunk:
             print(json.dumps(chunks[args.chunk - 1], separators=(",", ":")))
         else:
             print(f"{len(chunks)} chunk(s) of <= {args.chunk_size} ops; "
                   f"use --chunk N to print one", file=sys.stderr)
     elif args.phase == "format":
-        ids = Path(args.ids).read_text(encoding="utf-8").split()
+        if not spelling.can("format_text"):
+            print(f"dialect {spelling.name!r} cannot format text", file=sys.stderr)
+            return 1
+        if args.id_list:
+            ids = [i.strip() for i in args.id_list.split(",") if i.strip()]
+        elif args.ids == "-":
+            ids = sys.stdin.read().split()
+        elif args.ids:
+            ids = Path(args.ids).read_text(encoding="utf-8").split()
+        else:
+            ap.error("--phase format needs --ids or --id-list")
         texts = [e for e in els if e["kind"] == "text"]
         if len(ids) != len(texts):
             print(f"id count {len(ids)} != text count {len(texts)}", file=sys.stderr)
             return 1
         ops = [format_op(e, i) for e, i in zip(texts, ids)]
-        print(json.dumps(ops, separators=(",", ":")))
+        try:
+            print(json.dumps(spelling.render_all(ops), separators=(",", ":")))
+        except DialectError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
     return 0
 
 

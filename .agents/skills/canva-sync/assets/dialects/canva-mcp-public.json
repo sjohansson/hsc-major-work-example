@@ -1,0 +1,29 @@
+{
+  "name": "canva-mcp-public",
+  "status": "verified",
+  "description": "Canva's documented public MCP server at mcp.canva.com. Its editing transaction applies replace_text and find_and_replace_text, so it can change the text of a design that already exists but cannot create a page's shapes, images or text. Building a design from this repository over this connector means importing the flattened HTML from a public URL and then correcting text here.",
+  "required_tools": [
+    "start-editing-transaction",
+    "perform-editing-operations",
+    "commit-editing-transaction",
+    "cancel-editing-transaction",
+    "get-design-content"
+  ],
+  "apply_tool": "perform-editing-operations",
+  "capabilities": {
+    "create_elements": false,
+    "speaker_notes": false,
+    "format_text": false,
+    "transactions": true,
+    "import_from_url": true
+  },
+  "ops": {
+    "replace_text": {
+      "type": "replace_text",
+      "emit": [
+        ["from", "element_id", "element_id"],
+        ["from", "text", "text"]
+      ]
+    }
+  }
+}

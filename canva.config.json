@@ -5,6 +5,7 @@
   "assets_dir": "assets",
   "output_dir": "build/canva",
   "local_ids": "canva.local.json",
+  "dialect": "claude-canva-connector",
   "title": "The Raven's Ledger",
   "page_mm": [
     297.0,

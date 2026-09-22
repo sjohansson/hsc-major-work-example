@@ -6,6 +6,7 @@
     canva_sync.py ops     --page 01 --phase elements|format [...]
     canva_sync.py ops     --summary [--json]
     canva_sync.py check   --dump design.json [--refresh-ids]
+    canva_sync.py probe   --tools tools.json
     canva_sync.py all
 
 Every command takes `--config PATH`; without it the config is discovered by
@@ -32,7 +33,7 @@ import sys
 from . import COMMAND
 from .config import ConfigError, activate, load
 
-STEPS = ("build", "verify", "extract", "ops", "check")
+STEPS = ("build", "verify", "extract", "ops", "check", "probe")
 ALL_SEQUENCE = (("build", ["--verify"]), ("extract", []), ("ops", ["--summary"]))
 
 
@@ -52,6 +53,9 @@ def _dispatch(name, argv, settings):
     if name == "check":
         from . import check
         return check.main(argv, settings)
+    if name == "probe":
+        from . import dialect
+        return dialect.main(argv, settings)
     raise AssertionError(name)
 
 
