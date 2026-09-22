@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76mm" height="54mm" viewBox="0 0 76 54">
+  <title>Carrier seam line, scale 1:15; broken tier diagrams labelled by piece number.</title>
+  <style>text { font-family: 'PT Serif', Georgia, serif; font-size: 4.26px; fill: #1A1A1A; stroke: none; }
+  path, rect, circle, ellipse { fill: none; stroke: #1A1A1A; stroke-width: 0.22; stroke-linejoin: round; }
+  .alter { stroke: #8C3B4A; } .old { stroke-dasharray: 1 0.7; } .seam { stroke-dasharray: 0.5 0.5; }
+  </style>
+  <g transform="translate(25 2) scale(0.666666667)" stroke-width="0.33"><path class="alter" d="M-17,0 H17 L33,64 H-33 Z"/><path d="M0,16 L0,50" /><path d="M-1,18 L0,16 L1,18 M-1,48 L0,50 L1,48"/><path d="M-21.5,14 h2 M19.5,14 h2 M-26.5,34 h2 M24.5,34 h2"/></g><text x="2" y="51" text-anchor="start" font-weight="400">10 carrier, cut 4</text><path class="alter" d="M51,4 H58 l1,-1 l2,2 l1,-1 H72 V11 H62 l-1,1 l-2,-2 l-1,1 H51 Z"/><text x="53" y="9" text-anchor="start" font-weight="400">7</text><path class="alter" d="M51,19 H58 l1,-1 l2,2 l1,-1 H72 V26 H62 l-1,1 l-2,-2 l-1,1 H51 Z"/><text x="53" y="24" text-anchor="start" font-weight="400">8</text><path class="alter" d="M51,38 H58 l1,-1 l2,2 l1,-1 H72 V45 H62 l-1,1 l-2,-2 l-1,1 H51 Z"/><text x="53" y="43" text-anchor="start" font-weight="400">9</text>
+<path d="M62,9 H70 M64,8 L62,9 L64,10 M68,8 L70,9 L68,10"/><path d="M62,24 H70 M64,23 L62,24 L64,25 M68,23 L70,24 L68,25"/><path d="M62,43 H70 M64,42 L62,43 L64,44 M68,42 L70,43 L68,44"/></svg>

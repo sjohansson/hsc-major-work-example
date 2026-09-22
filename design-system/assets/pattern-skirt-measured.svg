@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76mm" height="54mm" viewBox="0 0 76 54">
+  <title>Skirt seam line and facing, scale 1:15.</title>
+  <style>text { font-family: 'PT Serif', Georgia, serif; font-size: 4.26px; fill: #1A1A1A; stroke: none; }
+  path, rect, circle, ellipse { fill: none; stroke: #1A1A1A; stroke-width: 0.22; stroke-linejoin: round; }
+  .alter { stroke: #8C3B4A; } .old { stroke-dasharray: 1 0.7; } .seam { stroke-dasharray: 0.5 0.5; }
+  </style>
+  <g transform="translate(24 2) scale(0.666666667)" stroke-width="0.33"><path class="alter" d="M-8.5,0 H8.5 Q9.5,10 12,20 L30,68 H-30 L-12,20 Q-9.5,10 -8.5,0 Z"/><path class="seam" d="M-29,66 H29"/><path d="M0,20 L0,48" /><path d="M-1,22 L0,20 L1,22 M-1,46 L0,48 L1,46"/><path d="M-13,20 h2 M11,20 h2"/></g><path d="M50,5 Q55,5 55,1 L57.667,1 Q57.667,7.667 50,7.667 Z M62,3 Q67,4 70,1 L72.667,2 Q68,7 62,5.667 Z"/><text x="48" y="30" text-anchor="start" font-weight="400">15 facing</text><text x="48" y="36" text-anchor="start" font-weight="400">front fold,</text><text x="48" y="42" text-anchor="start" font-weight="400">back pair</text><text x="2" y="51" text-anchor="start" font-weight="400">11 skirt, cut 4</text>
+<path d="M52,12 V21 M51,14 L52,12 L53,14 M51,19 L52,21 L53,19 M67,12 V21 M66,14 L67,12 L68,14 M66,19 L67,21 L68,19"/></svg>

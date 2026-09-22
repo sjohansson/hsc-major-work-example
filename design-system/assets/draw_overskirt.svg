@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60.9 56.6" width="60.9mm" height="56.6mm" fill="none" stroke="#1A1A1A" stroke-width="0.25" stroke-linejoin="round" stroke-linecap="round">
+  <g transform="scale(0.85714)">
+  <!-- Overskirt, flat, front, band open at the left. Drawn at 1 : 12 and scaled by 12/14 to 1 : 14.
+       Band 83 cm = 69.2 mm; carrier 68 cm wide = 56.7 mm, 64 cm deep = 53.3 mm;
+       tiers set at 0, 14, 34 cm (0, 11.7, 28.3 mm), 18, 26, 34 cm deep. -->
+  <!-- band, grosgrain over petersham -->
+  <rect x="1" y="6" width="69.2" height="3.3" />
+  <path d="M1 6.6 H70.2 M1 8.7 H70.2" stroke-dasharray="0.6 0.5" stroke-width="0.15" />
+  <!-- overlap 15 cm = 12.5 mm at the left, two snaps -->
+  <path d="M13.5 6 V9.3" stroke-dasharray="0.8 0.6" />
+  <circle cx="4.5" cy="7.65" r="0.75" />
+  <circle cx="9.5" cy="7.65" r="0.75" />
+  <!-- bars at the left end, hooks at the right end -->
+  <path d="M2.2 6.7 V8.6 M3.2 6.7 V8.6" stroke-width="0.45" />
+  <path d="M66.5 6.7 v1.9 M67.8 6.7 v1.9 M69.1 6.7 v1.9" stroke-width="0.45" />
+  <path d="M66.5 6.7 q-0.8 0.9 0 1.9 M67.8 6.7 q-0.8 0.9 0 1.9 M69.1 6.7 q-0.8 0.9 0 1.9" stroke-width="0.2" />
+  <!-- carrier, gathered into the band from 13.5 to 70.2; 15 cm opening at top left -->
+  <path d="M13.5 9.3 L12.5 62.6 H63.5 L62.5 9.3" />
+  <path d="M13.5 9.3 V21.8" stroke-dasharray="0.8 0.6" stroke-width="0.4" />
+  <!-- gathering ticks into the band -->
+  <path d="M16 9.3 v1.6 M19 9.3 v1.6 M22 9.3 v1.6 M25 9.3 v1.6 M28 9.3 v1.6 M31 9.3 v1.6 M34 9.3 v1.6 M37 9.3 v1.6 M40 9.3 v1.6 M43 9.3 v1.6 M46 9.3 v1.6 M49 9.3 v1.6 M52 9.3 v1.6 M55 9.3 v1.6 M58 9.3 v1.6 M61 9.3 v1.6" stroke-width="0.15" />
+  <!-- tier 1: set at 0, 18 cm deep (15 mm) -->
+  <path d="M13.5 9.3 Q38 10.3 62.5 9.3" stroke-width="0.4" />
+  <path d="M12.6 24.3 q2 0.8 4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t3.4 0" />
+  <path d="M15 9.6 v14.5 M20 9.8 v14.5 M25 10 v14.3 M30 10.1 v14.2 M35 10.2 v14.1 M40 10.2 v14.1 M45 10.1 v14.2 M50 10 v14.3 M55 9.8 v14.5 M60 9.6 v14.7" stroke-width="0.12" />
+  <!-- tier 2: set at 14 cm (11.7 mm below the band), 26 cm deep (21.7 mm) -->
+  <path d="M13.3 21 Q38 22 62.7 21" stroke-width="0.4" />
+  <path d="M12.9 42.7 q2 0.8 4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t3 0" />
+  <path d="M15 21.3 v21 M20 21.5 v21 M25 21.7 v20.8 M30 21.8 v20.7 M35 21.9 v20.6 M40 21.9 v20.6 M45 21.8 v20.7 M50 21.7 v20.8 M55 21.5 v21 M60 21.3 v21.2" stroke-width="0.12" />
+  <!-- tier 3: set at 34 cm (28.3 mm below the band), 34 cm deep (28.3 mm) -->
+  <path d="M13 37.6 Q38 38.6 63 37.6" stroke-width="0.4" />
+  <path d="M11.5 65.4 q2 0.9 4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4 0 t4.6 0" />
+  <path d="M12.5 62.6 L11.5 65.4 M63.5 62.6 L64.5 65.4" />
+  <path d="M15 37.9 v27.3 M20 38.1 v27.2 M25 38.3 v27 M30 38.4 v26.9 M35 38.5 v26.8 M40 38.5 v26.8 M45 38.4 v26.9 M50 38.3 v27 M55 38.1 v27.2 M60 37.9 v27.4" stroke-width="0.12" />
+  <!-- grain, carrier -->
+  <path d="M38 46 V58" stroke-width="0.3" />
+  <path d="M37 47.2 L38 46 L39 47.2 M37 56.8 L38 58 L39 56.8" fill="#1A1A1A" stroke="none" />
+</g>
+</svg>

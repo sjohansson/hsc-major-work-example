@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76mm" height="40mm" viewBox="0 0 76 40">
+  <title>Back bodice seam lines, scale 1:15.</title>
+  <style>text { font-family: 'PT Serif', Georgia, serif; font-size: 4.26px; fill: #1A1A1A; stroke: none; }
+  path, rect, circle, ellipse { fill: none; stroke: #1A1A1A; stroke-width: 0.22; stroke-linejoin: round; }
+  .alter { stroke: #8C3B4A; } .old { stroke-dasharray: 1 0.7; } .seam { stroke-dasharray: 0.5 0.5; }
+  </style>
+  <g transform="translate(8 4) scale(0.666666667)" stroke-width="0.33"><path d="M0,2 Q4,3 7,0 L12,2 Q9,14 10,24 L8.5,44 H0 Z"/><path class="alter" d="M-1.5,2 V44"/><path class="old" d="M0,47 H8.5"/><path d="M4,15 L4,35" /><path d="M3,17 L4,15 L5,17 M3,33 L4,35 L5,33"/><path d="M9,20 h2 M7.5,44 h2"/><path class="alter" d="M0,44 H8.5"/></g><g transform="translate(38 4) scale(0.666666667)" stroke-width="0.33"><path d="M0,2 L8,4 Q7,14 12,20 L8.5,44 H0 Q2,29 2,24 Q1,13 0,2 Z"/><path class="old" d="M0,47 H8.5"/><path d="M5,21 L5,38" /><path d="M4,23 L5,21 L6,23 M4,36 L5,38 L6,36"/><path d="M9,20 h2 M7.5,44 h2"/><path class="alter" d="M0,44 H8.5"/></g><text x="9" y="38" text-anchor="start" font-weight="400">3 CB, pair</text><text x="38" y="38" text-anchor="start" font-weight="400">4 side, pair</text>
+</svg>

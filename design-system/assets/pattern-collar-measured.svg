@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76mm" height="54mm" viewBox="0 0 76 54">
+  <title>Collar and stand seam lines at 1:15. Collar neck arc 38 cm; centre back depth 7 cm.</title>
+  <style>text { font-family: 'PT Serif', Georgia, serif; font-size: 4.26px; fill: #1A1A1A; stroke: none; }
+  path, rect, circle, ellipse { fill: none; stroke: #1A1A1A; stroke-width: 0.22; stroke-linejoin: round; }
+  .alter { stroke: #8C3B4A; } .old { stroke-dasharray: 1 0.7; } .seam { stroke-dasharray: 0.5 0.5; }
+  </style>
+  <path class="alter" d="M23.41916,9.80990 A4.838310269993618,4.838310269993618 0 1 1 18.58084,9.80990 L17.74911,5.06824 L16.24751,5.76845 A9.504976936660285,9.504976936660285 0 1 0 25.75249,5.76845 L24.25089,5.06824 Z"/><path d="M21,15 L21,21" /><path d="M20,17 L21,15 L22,17 M20,19 L21,21 L22,19"/><text x="39" y="11" text-anchor="start" font-weight="400">13 collar</text><text x="39" y="17" text-anchor="start" font-weight="400">cut 2 + I1</text><rect class="alter" x="8" y="29" width="25.333333" height="1.333333"/><text x="39" y="31" text-anchor="start" font-weight="400">14 stand</text><text x="39" y="37" text-anchor="start" font-weight="400">cut 2 + I1</text><text x="2" y="52" text-anchor="start" font-weight="400">12 band: 85 x 4 cm cut</text>
+<path d="M11,34 H30 M13,33 L11,34 L13,35 M28,33 L30,34 L28,35"/><path class="alter" d="M8,41 H20 l1,-1 l2,2 l1,-1 H33 V43.667 H24 l-1,1 l-2,-2 l-1,1 H8 Z"/></svg>

@@ -6,16 +6,16 @@
 
    THE TAG IS A FOLIO PAGE AT 1:4.2. The chamfered head is the only shape
    here that the twelve pages do not have; everything below it is the page
-   skeleton at tag scale — cream band, wordmark, rose rule, the stitched
+   skeleton at tag scale - cream band, wordmark, rose rule, the stitched
    hem, content, a footer on a stitch row. The cream band runs the
    full width rather than ending in the 60° transition, which is the v1.0
    masthead the brand kit still specifies for documents that are not folio
    pages; the transition needs a 122 mm area block and there are 70 mm here.
 
    Sizes are set by the measure, not by taste. The wordmark measures
-   143.3 mm at 38 pt, so 3.771 mm per point; the tag's 56 mm measure takes
+   129.17 mm at 38 pt, so 3.399 mm per point; the tag's 56 mm measure takes
    "The Raven's" - the longer of the two lines, 11 of the 18 characters -
-   at 22 pt with 2 mm to spare. 24 pt overruns it.
+   at 22 pt with room around it. Re-measured on 22 September 2026.
 
    The two faces carry the same silhouette and the same centred hole, so
    they align when glued back to back without either being mirrored.
@@ -77,7 +77,7 @@
 .tag .wordmark { font-size: 22pt; }
 .tag .masthead-rule { width: 24mm; margin-top: 2.5mm; }
 /* Heavy edge over a stitch row, matching .rule-heavy / .rule-fine in
-   deck.css. 0.53mm — see the comment there for why
+   deck.css. 0.53mm - see the comment there for why
    the edge cannot be authored at 0.4mm. Short version: 0.4mm is 1.51px at
    1x and snaps to either 1 or 2 device rows depending on where the sheet
    falls on the pixel grid, while the 0.12mm hairline always snaps up to 1,
