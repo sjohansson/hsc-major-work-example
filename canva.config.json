@@ -32,12 +32,6 @@
     "text": "RL",
     "fill": "#4A4E69"
   },
-  "ornament": {
-    "asset": "house-mark.svg",
-    "primary": "#1A1A1A",
-    "secondary": "#1A1A1A",
-    "secondary_stroke": "#1A1A1A"
-  },
   "placeholder": {
     "fill": "#EEEDEA",
     "stroke": "#5A5C70"

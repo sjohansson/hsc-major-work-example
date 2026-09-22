@@ -41,7 +41,7 @@ per page by `known_residuals` in the config.
 
 | File | Holds | Committed |
 | --- | --- | --- |
-| `canva.config.json` | Deck filename, page size, prop values, webfonts, ornament and placeholder colours, known residuals, output folder | Yes |
+| `canva.config.json` | Deck filename, page size, prop values, webfonts, placeholder colours, known residuals, output folder | Yes |
 | `canva.local.json` | Design id, page id map, media-library asset id map for one Canva account | No. Template: `canva.local.example.json` |
 | `build/canva/canva-import-rev.html` | The flattened deck, pages in reverse order (the shape Canva's importer reads) | No |
 | `build/canva/canva-layout.json` | Per page: ordered shapes, images and texts with geometry and style | No |
@@ -87,10 +87,7 @@ its pages exist. Edits made in Canva are reported, not written back into the dec
   brand kit also wants the sixteen area hexes from the top of `deck.css`.
 - Hatched fills on the pattern-piece plates flatten to their base tone.
 - Images map by filename to asset ids in `canva.local.json`. Upload the assets in the Canva app first, then
-  record the ids. Unmapped images push as placeholder rectangles that can be filled afterwards. The one exception
-  is the house mark named under `ornament` in the config: unmapped, it pushes as two flat shapes (an oval beside a
-  ringed disc) in the ornament colours, a stand-in for the drawn flower rather than a copy of it. Map
-  `house-mark.svg` to an uploaded asset to get the real mark.
+  record the ids. Unmapped images push as placeholder rectangles that can be filled afterwards.
 - `ops --summary` lists every image the deck uses that the local map does not cover. Run it after any rename under
   `design-system/assets/`, because the map is keyed by filename and goes stale silently.
 

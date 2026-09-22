@@ -70,33 +70,6 @@ def shape_op(e) -> dict:
     return op
 
 
-def ornament_ops(e):
-    """The house mark drawn as two shapes: an oval in the primary colour beside
-    a ringed disc in the secondary. Used wherever the ornament asset named in
-    canva.config.json appears and no asset id is mapped for it."""
-    ornament = cfg().data.get("ornament", {})
-    h = e["h"]
-    rose_d = h * 0.9
-    cy = e["y"] + e["h"] / 2
-    sage_w, sage_h = h * 0.75, h * 0.42
-    return [
-        {"type": "insert_shape", "page_id": "PAGE_ID",
-         "top": cy - sage_h / 2, "left": e["x"], "width": sage_w, "height": sage_h,
-         "path": circle_path(sage_w, sage_h) if sage_w == sage_h else
-                 f"M 0 {sage_h/2} A {sage_w/2} {sage_h/2} 0 1 0 {sage_w} {sage_h/2} "
-                 f"A {sage_w/2} {sage_h/2} 0 1 0 0 {sage_h/2} Z",
-         "view_box_width": sage_w, "view_box_height": sage_h,
-         "color": ornament.get("primary", "#888888"), "rotation": -28},
-        {"type": "insert_shape", "page_id": "PAGE_ID",
-         "top": cy - rose_d / 2, "left": e["x"] + sage_w + h * 0.2,
-         "width": rose_d, "height": rose_d,
-         "path": circle_path(rose_d, rose_d),
-         "view_box_width": rose_d, "view_box_height": rose_d,
-         "color": ornament.get("secondary", "#AAAAAA"),
-         "stroke_color": ornament.get("secondary_stroke", "#666666"), "stroke_weight": 1},
-    ]
-
-
 def image_op(e, assets) -> dict:
     placeholder = cfg().placeholder
     aid = assets.get(e["asset"])
@@ -197,11 +170,7 @@ def main(argv=None, settings=None):
             if e["kind"] == "shape":
                 ops.append(shape_op(e))
             elif e["kind"] == "image":
-                if e["asset"] == settings.data.get("ornament", {}).get("asset") \
-                        and e["asset"] not in assets:
-                    ops.extend(ornament_ops(e))
-                else:
-                    ops.append(image_op(e, assets))
+                ops.append(image_op(e, assets))
             else:
                 ops.append(text_op(e))
         ops = [({**o, "page_id": pid} if o.get("page_id") == "PAGE_ID" else o) for o in ops]

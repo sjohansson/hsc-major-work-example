@@ -265,7 +265,6 @@ TYPES = {
     "placeholder": dict,
     "known_residuals": dict,
     "rewrite_classes": dict,
-    "ornament": dict,
     "google_fonts": list,
     "page_mm": list,
     "canva_px": list,
@@ -289,6 +288,11 @@ def validate_schema(data: dict) -> list[str]:
             problems.append(f"unknown key {key!r}")
         elif not isinstance(value, want):
             problems.append(f"{key!r} must be {want.__name__}, got {type(value).__name__}")
+    if "ornament" in data:
+        problems.append(
+            "'ornament' was removed in canva-sync 1.0: an unmapped mark now pushes as "
+            "the ordinary placeholder rectangle. Delete the key and map the asset id."
+        )
     for key in ("page_mm", "canva_px"):
         v = data.get(key)
         if isinstance(v, list) and len(v) != 2:
