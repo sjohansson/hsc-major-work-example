@@ -88,15 +88,17 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 
 ```pwsh
 pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoOpen]
+python .agents/skills/canva-sync/scripts/canva_sync.py doctor [--full]
 python .agents/skills/canva-sync/scripts/canva_sync.py build [--verify] [--pdf]
 python .agents/skills/canva-sync/scripts/canva_sync.py extract
 python .agents/skills/canva-sync/scripts/canva_sync.py ops --page 01 --phase elements|format
-python .agents/skills/canva-sync/scripts/canva_sync.py check --dump read-design.json
+python .agents/skills/canva-sync/scripts/canva_sync.py check --dump design.json
 python .agents/skills/canva-sync/scripts/canva_sync.py all
+python .agents/skills/canva-sync/scripts/canva_sync.py selftest
 python scripts/make_placeholder_plates.py
 npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
-python -m compileall -q scripts
+python -m compileall -q scripts .agents/skills/canva-sync/scripts
 ```
 
 Setup: `python -m venv .venv`, `pip install -r requirements.txt`. Chrome or Edge on `PATH`, or `CHROME_PATH` set,

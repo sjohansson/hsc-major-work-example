@@ -1,6 +1,7 @@
 {
   "version": "0.2",
   "language": "en,en-AU",
+  "enableGlobDot": true,
   "ignorePaths": [
     "build/**",
     ".venv/**",
@@ -23,6 +24,7 @@
     "educationstandards",
     "emph",
     "Fraunces",
+    "frontmatter",
     "georgette",
     "grainline",
     "grainlines",
@@ -50,6 +52,8 @@
     "pymupdf",
     "rasterisation",
     "retuned",
+    "richtexts",
+    "selftest",
     "srgb",
     "standfirst",
     "staystitch",
