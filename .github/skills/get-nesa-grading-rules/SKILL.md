@@ -1,6 +1,13 @@
 ---
 name: get-nesa-grading-rules
-description: Use web search and logic to download current guidance cffor the subject to use as the marking reference
+description: Load the marking reference for this repo before any grading, marking, or review task
 ---
 
-Using web search, search the NESA web site for grading guides for the current subject. Once downloaded, use these grading resources for any grading activities.
+# Get NESA grading rules
+
+Read `docs/nesa-marking-facts.md` for what NESA marks and the mark ranges, then `docs/folio-marking-notes.md` for
+the premise, the placing method, the evidence rules, and the rerun procedure. Use both as the marking reference
+for any grading activity.
+
+The facts file was checked against the NESA pages it lists on 22 September 2026. If a rerun is more than a term
+later, open those pages again and note any change before marking.

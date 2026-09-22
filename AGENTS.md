@@ -2,19 +2,24 @@
 
 Rules for anyone, human or agent, working on this repo. Read all of it before touching the folio or the scripts.
 
-## Critical grading rule for agents
+## Marking rule for agents
 
-This project is a fictional HSC Textiles and Design folio used as both a teaching example and a design record. When grading any folio or reviewing evidence, do not assume the digital PDF must contain literal physical fabric mounts on every page.
+This project is a fictional HSC Textiles and Design folio built as an AI teaching solution: the student makes the
+work, the AI marks it against the published criteria. An agent never writes folio prose, draws plates, or invents
+results for a real student. It marks, measures, and points at evidence.
 
-The correct grading premise is explained in [docs/agent-grading-rules.md](docs/agent-grading-rules.md). Read it before assessing any page, claim, or evidence issue. In short:
+Two documents govern any marking, review, or grading task. Read both before assessing a page, a claim, or an
+evidence issue:
 
-- this folio is a teaching and documentation artefact, not only a digital sample board
-- digital swatches, rendered plates, and explanatory diagrams are acceptable where the purpose is teaching or explanation
-- the real evidence may exist in the actual garment, the sample box, the mounted display item, or the physical project work
-- an agent should grade the coherence of the design process, experimentation, and final outcome, not demand a literal physical textile mount on every page of the PDF
-- the agent must not penalise the folio simply because the exported PDF uses digital representations instead of a literal photo of every fabric sample on every page
+- [docs/nesa-marking-facts.md](docs/nesa-marking-facts.md): what NESA marks, the mark ranges verbatim, the page
+  rules, and what NESA does not require.
+- [docs/folio-marking-notes.md](docs/folio-marking-notes.md): the premise this folio is marked under, the local
+  standards, how a mark is placed, the evidence rules, and the rerun procedure.
 
-This is a deliberate grading assumption for this repo, and it must be respected when reviewing evidence or scoring work.
+In short: the folio is marked as the finished submission a marker holds. A generated plate is marked on what it
+shows and what its caption says, and is never penalised for being digital. The physical samples and the garment
+are outside the PDF and are never guessed at. Marks are lost to unsupported claims, contradictions a ruler would
+find, and missing required elements, not to format.
 
 ## What this repo is
 
@@ -31,7 +36,7 @@ students' folios). Link to public sources instead. The design brief is in `READM
 ## Writing rules
 
 The folio text is written by a fictional Year 12 student, first person, and is marked against
-`docs/nesa-folio-requirements.md`. Every sentence has to earn its place inside the page limits.
+`docs/nesa-marking-facts.md`. Every sentence has to earn its place inside the page limits.
 
 - Plain prose. Short sentences. Say the thing, then stop.
 - No AI jargon and no marketing-speak. Banned: "delve", "leverage", "unlock", "seamless", "robust", "journey",
@@ -65,8 +70,8 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 - `design-system/meta/` the design notes page (the design process, the graphic elements as live specimens, and a
   ledger of changes, with the full colour system, token derivation, and masthead transitions).
   Built by `preview.ps1 -Item meta`.
-- `docs/` requirements, brand kit, print specs, production items, Canva pipeline, self-assessment method, marking
-  notes, and the dated grading reviews.
+- `docs/` NESA marking facts, folio marking notes, brand kit, print specs, production items, Canva pipeline,
+  and design rationale.
 - `scripts/` `preview.ps1`, `canva.py` and the `canva/` package, `make_placeholder_plates.py`.
 - `build/` generated output, ignored by git. Nothing generated is ever committed.
 - `design-system/canva.local.json` holds Canva design, page and asset ids. Ignored by git. The committed template

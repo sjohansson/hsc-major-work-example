@@ -8,7 +8,7 @@ for the folio's identity: names, colours, type and the masthead construction. Th
 ## Section names
 
 Section names follow NESA's Major Textiles Project marking guidelines exactly (see
-[nesa-folio-requirements.md](nesa-folio-requirements.md), Part A.1). Two rulings:
+[nesa-marking-facts.md](nesa-marking-facts.md), section 1). Two rulings:
 
 1. "Design Inspiration" is singular.
 1. "Investigation, Experimentation and Evaluation" uses "and", never "&". The ampersand is reserved for period

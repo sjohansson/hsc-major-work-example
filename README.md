@@ -37,7 +37,7 @@ Public references, for inspiration only. No stills or press photographs are stor
 | --- | --- |
 | `design-system/` | The twelve-page A3 folio deck and the four production items (binder spine, swing tag, product labels, mount scaffold) as `.dc.html` design components, their stylesheets, the two runtime files, and the Canva config. |
 | `design-system/assets/` | Placeholder plates generated from `plates.json`. Swap in real artwork with the same filenames. |
-| `docs/` | NESA folio requirements, the brand kit, print specifications, the production items, the Canva pipeline and the self-assessment method. |
+| `docs/` | NESA marking facts, the folio marking notes, the brand kit, print specifications, the production items and the Canva pipeline. |
 | `scripts/` | `preview.ps1` (static preview and true-size print proof), `canva.py` (the Canva pipeline), `make_placeholder_plates.py`. |
 | `build/` | Generated output. Ignored by git. |
 
