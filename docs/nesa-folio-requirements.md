@@ -354,7 +354,7 @@ Primary sources this checklist is derived from. NESA content has been migrating 
    [Assessment and reporting page](https://www.nsw.gov.au/education-and-training/nesa/curriculum/tas/textiles-and-design-stage-6-2013/assessment-and-reporting)
 
 4. **HSC Textiles and Design marking guidelines — major projects** — the marking criteria and band descriptors for the four folio sections and the item.
-   [Marking guidelines PDF](https://educationstandards.nsw.edu.au/wps/wcm/connect/88f7be1a-60c7-4e07-9c31-38bd0b156926/textiles-design-marking-guidelines-major-projects.pdf?MOD=AJPERES) *(link subject to migration — if broken, request the current copy from the supervising teacher or search the title)*
+   [Marking guidelines PDF, 2024](https://www.nsw.gov.au/sites/default/files/noindex/2025-03/textiles-and-design-marking-guidelines-major-projects-2024.pdf) *(the earlier educationstandards.nsw.edu.au link now redirects to the NESA landing page; if this one breaks, request the current copy from the supervising teacher or search the title)*
 
 5. **Performance band descriptions — Textiles and Design** — what Band 1–6 achievement looks like for the course.
    [Band descriptions page](https://www.nsw.gov.au/education-and-training/nesa/curriculum/tas/textiles-and-design-stage-6-2013/performance-band-descriptions)
