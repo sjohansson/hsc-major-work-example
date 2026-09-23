@@ -1,0 +1,57 @@
+name: Wiki
+
+# One way: docs/ is the source. Every run replaces the whole wiki, so an edit made in the wiki is lost.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/**
+      - scripts/docs_to_wiki.py
+      - .github/workflows/wiki.yml
+  workflow_dispatch:
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Build wiki pages
+        run: python scripts/docs_to_wiki.py --out build/wiki
+
+      - name: Clone wiki
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" build/wiki-repo
+
+      - name: Replace wiki contents
+        run: |
+          find build/wiki-repo -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R build/wiki/. build/wiki-repo/
+
+      - name: Commit and push
+        working-directory: build/wiki-repo
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki already matches docs/."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: sync from ${GITHUB_SHA::7}"
+          git push origin HEAD
