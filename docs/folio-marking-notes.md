@@ -179,6 +179,12 @@ reviews are working output, not documentation. If a review changes a rule, the r
 `nesa-marking-facts.md`, and the folio change is recorded in the CHANGELOG. A review on its own takes no CHANGELOG
 entry.
 
+A review that is published goes to `docs/nesa-grading-review-<agent>.md`, one file per marking agent, for example
+`nesa-grading-review-claude.md`. `docs/` is the wiki source, so the published review is in the repo and on the
+wiki, and one agent's scoring stays separate from another's. A rerun by the same agent replaces its file; the
+dated working copy stays in `build/reviews/`. A published review is a reading of one export, so it names that
+export's date and SHA-256 at the top and goes stale when the folio changes.
+
 Run `npx markdownlint-cli2` and cspell on the review before handing it over.
 
 ### Compliance audit
