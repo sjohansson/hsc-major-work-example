@@ -46,8 +46,8 @@ The push itself needs a Canva connector, which is a conversation-side tool rathe
 call. That is what the agent is for.
 
 The agent is [.agents/agents/canva-sync.md](../.agents/agents/canva-sync.md). It is written for any host and
-holds the whole procedure: what the agent reads, what it may not have, and what the arguments mean. Two thin
-wrappers wire it into the hosts this repo uses, and [agents.md](agents.md) compares all three:
+holds the whole procedure: what the agent reads, what it may not have, and what the arguments mean. Three thin
+wrappers wire it into the hosts this repo uses, and [agents.md](agents.md) compares the host controls:
 
 - **GitHub Copilot / VS Code**: pick the **Canva Sync** agent
   ([.github/agents/canva-sync.agent.md](../.github/agents/canva-sync.agent.md)) and give it page labels, `all`,
@@ -56,6 +56,10 @@ wrappers wire it into the hosts this repo uses, and [agents.md](agents.md) compa
   ([.claude/agents/canva-sync.md](../.claude/agents/canva-sync.md)), for example "sync the deck to Canva" or
   "check Canva against the repo". It disallows the edit tools and runs a hook that denies a write outside the
   output folder.
+- **Codex**: explicitly delegate to **canva-sync**
+  ([.codex/agents/canva-sync.toml](../.codex/agents/canva-sync.toml)) with page labels, `all`, `check`, or no
+  arguments. Its permission profile scopes script writes, and its hook denies direct file edits. Follow the
+  project and hook trust setup in [agents.md](agents.md#using-the-codex-agents) before the first run.
 
 The agent reads [.agents/skills/canva-sync/SKILL.md](../.agents/skills/canva-sync/SKILL.md) and follows the
 gates in it: doctor, then build with verify, then extract, then an answered assets summary, then a connector

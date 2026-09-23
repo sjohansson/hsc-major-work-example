@@ -39,7 +39,7 @@ Public references, for inspiration only. No stills or press photographs are stor
 | `design-system/assets/` | Placeholder plates generated from `plates.json`. Swap in real artwork with the same filenames. |
 | `docs/` | NESA marking facts, the folio marking notes, the brand kit, print specifications, the production items, the Canva sync and the agents. |
 | `scripts/` | `preview.ps1` (static preview and true-size print proof), `make_placeholder_plates.py`. |
-| `.agents/` | The agents and skills, written for any host. `.github/agents/` and `.claude/agents/` hold the Copilot and Claude Code wrappers. See [docs/agents.md](docs/agents.md). |
+| `.agents/` | Shared agents and skills. `.github/agents/`, `.claude/agents/`, and `.codex/agents/` hold the Copilot, Claude Code, and Codex wrappers. See [docs/agents.md](docs/agents.md). |
 | `.agents/skills/canva-sync/` | The Canva sync, as a self-contained agent skill. One way: the repo is the source of truth. |
 | `build/` | Generated output. Ignored by git. |
 
