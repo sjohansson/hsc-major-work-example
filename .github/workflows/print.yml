@@ -1,0 +1,45 @@
+name: Print
+
+# Prints the folio and the production items to PDF, checks every page count and sheet size, and keeps the PDFs
+# as a run artifact. The runner image already has PowerShell 7 and Chrome.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - design-system/**
+      - scripts/preview.ps1
+      - scripts/print_pdfs.py
+      - .github/workflows/print.yml
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Print and check PDFs
+        run: python scripts/print_pdfs.py --out build/print
+
+      # Also on a failed check, so the PDF that failed can be opened.
+      - name: Upload PDFs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: folio-pdfs-${{ github.sha }}
+          path: build/print/*.pdf
+          if-no-files-found: error

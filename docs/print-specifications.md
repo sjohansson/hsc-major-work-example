@@ -30,3 +30,9 @@ Print shop reference used for the A3 poster stock:
 The print proof comes from `scripts/preview.ps1`, not from Canva. Open the built page, Ctrl+P, scale 100 %,
 margins none, background graphics on. The `@page` rule in each preview names the sheet size so the browser does
 not paginate against Letter or A4.
+
+`python scripts/print_pdfs.py` makes the same print without the dialog. It builds the previews, prints each one
+with headless Chrome to `build/print/`, and fails if a PDF has a different page count from its preview or a page
+more than 1 mm off the sheet size. The `Print` workflow (`.github/workflows/print.yml`) runs it on every push to
+`main` that touches the design system and keeps the PDFs as a run artifact. The folio PDF is about 100 MB,
+because the plates are embedded at full resolution.

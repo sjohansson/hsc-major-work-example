@@ -81,7 +81,9 @@ The folio text is written by a fictional Year 12 student, first person, and is m
   replaces what was there. Edit `docs/`, never the wiki. A wiki edit is lost on the next sync.
 - `scripts/` `preview.ps1`, `make_placeholder_plates.py`, and `docs_to_wiki.py`, which turns `docs/` into wiki
   pages: a link to another doc becomes a wiki page link, a link to anything else in the repo becomes a GitHub
-  URL, and a link to a missing file fails the build.
+  URL, and a link to a missing file fails the build. The wiki Home page is `docs/wiki/home.md`, with its images
+  taken from `design-system/assets/`; the script fills its `<!-- wiki-index -->` line with every doc.
+  `print_pdfs.py` prints the previews to PDF with headless Chrome and checks each page count and sheet size.
 - `.agents/agents/` the agent definitions, `canva-sync` and `nesa-assessor`, written for any host. This is the
   agent: the role, the procedure it reads, the tools it may not have, and the boundaries.
 - `.github/agents/`, `.claude/agents/`, and `.codex/agents/` the Copilot, Claude Code, and Codex wrappers for the
@@ -101,6 +103,7 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 
 ```pwsh
 pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoOpen]
+python scripts/print_pdfs.py [--item folio spine tag labels mounts] [--out build/print]
 python .agents/skills/canva-sync/scripts/canva_sync.py doctor [--full]
 python .agents/skills/canva-sync/scripts/canva_sync.py build [--verify] [--pdf]
 python .agents/skills/canva-sync/scripts/canva_sync.py extract
@@ -120,7 +123,8 @@ python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills
 Setup: `python -m venv .venv`, `pip install -r requirements.txt`. Chrome or Edge on `PATH`, or `CHROME_PATH` set,
 for anything under `canva.py`. CI (`.github/workflows/ci.yml`) runs markdownlint, cspell, compileall, the wiki
 build, agent guard tests, and the Canva fixture checks. `.github/workflows/wiki.yml` publishes `docs/` to the
-wiki.
+wiki. `.github/workflows/print.yml` prints the folio and the production items to PDF, checks them, and keeps
+them as a run artifact.
 
 ## Load-bearing constraints
 

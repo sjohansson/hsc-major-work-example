@@ -10,8 +10,11 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 DOCS = REPO / "docs"
+HOME = DOCS / "wiki" / "home.md"
+INDEX_MARK = "<!-- wiki-index -->"
 
 LINK = re.compile(r'(!?)\[([^\]]*)\]\(([^)\s]+)((?:\s+"[^"]*")?)\)')
+ATTR = re.compile(r'\b(src|href)="([^"]+)"')
 CODE_SPAN = re.compile(r"(`+[^`]*`+)")
 FENCE = re.compile(r"^\s*(```|~~~)")
 
@@ -70,8 +73,12 @@ class Rewriter:
             image, label, href, title = match.groups()
             return f"{image}[{label}]({self.target(source, bool(image), href)}{title})"
 
+        def attr(match):
+            name, href = match.groups()
+            return f'{name}="{self.target(source, name == "src", href)}"'
+
         parts = CODE_SPAN.split(text)
-        return "".join(part if i % 2 else LINK.sub(link, part) for i, part in enumerate(parts))
+        return "".join(part if i % 2 else ATTR.sub(attr, LINK.sub(link, part)) for i, part in enumerate(parts))
 
     def page(self, source):
         out, fenced = [], False
@@ -98,14 +105,14 @@ def main():
         sys.exit(f"docs/ uses a name the wiki reserves: {', '.join(sorted(reserved))}")
 
     pages = {source.stem: rewriter.page(source) for source in sources}
+    home = rewriter.page(HOME)
     if rewriter.errors:
         sys.exit("broken links in docs/:\n  " + "\n  ".join(rewriter.errors))
 
     index = "".join(f"- [{title_of(source)}]({source.stem})\n" for source in sources)
-    pages["Home"] = (
-        "Reference documents for the folio, copied from the "
-        f"[docs/]({rewriter.web}/tree/{args.ref}/docs) folder of the repository.\n\n{index}"
-    )
+    if INDEX_MARK not in home:
+        sys.exit(f"{HOME.relative_to(REPO).as_posix()} has no {INDEX_MARK} line for the page index")
+    pages["Home"] = home.replace(INDEX_MARK, index.rstrip("\n"))
     pages["_Sidebar"] = f"[Home](Home)\n\n{index}"
     pages["_Footer"] = (
         f"Generated from [docs/ at {sha[:7]}]({rewriter.web}/commit/{sha}). "

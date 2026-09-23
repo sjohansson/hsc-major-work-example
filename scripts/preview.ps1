@@ -31,7 +31,7 @@
     can take. Print it at 100% with margins None and check its 100 mm bar.
 
 .PARAMETER OutDir
-    Where to write. Defaults to %TEMP%\folio-preview.
+    Where to write. Defaults to folio-preview in the system temp folder.
 
 .PARAMETER Browser
     Path to a browser executable. Defaults to Chrome, then Edge, then
@@ -79,7 +79,7 @@ param(
     [ValidateSet('all', 'folio', 'spine', 'tag', 'labels', 'mounts', 'meta')]
     [string[]] $Item = @('all'),
 
-    [string] $OutDir = (Join-Path $env:TEMP 'folio-preview'),
+    [string] $OutDir = (Join-Path ([System.IO.Path]::GetTempPath()) 'folio-preview'),
     [string] $Browser,
     [switch] $NoOpen,
 
@@ -106,7 +106,11 @@ if (-not (Test-Path $ds)) { throw "design-system not found at $ds" }
 
 # file:/// URI for the design-system folder, used both for the stylesheet
 # links and for repointing the sources' relative ./assets/ references.
-$dsUri = 'file:///' + ($ds -replace '\\', '/') + '/'
+# A Linux path already starts with / and a Windows one does not, so the
+# slash is added only where it is missing: file:///C:/... and file:///home/...
+$dsPath = $ds -replace '\\', '/'
+if (-not $dsPath.StartsWith('/')) { $dsPath = '/' + $dsPath }
+$dsUri = 'file://' + ($dsPath -replace ' ', '%20') + '/'
 
 # ---------------------------------------------------------------------------
 # Production overlays. The deck's own chrome() builds these as React
