@@ -76,8 +76,12 @@ The folio text is written by a fictional Year 12 student, first person, and is m
   ledger of changes, with the full colour system, token derivation, and masthead transitions).
   Built by `preview.ps1 -Item meta`.
 - `docs/` NESA marking facts, folio marking notes, brand kit, print specs, production items, the Canva sync,
-  the agents, and design rationale.
-- `scripts/` `preview.ps1` and `make_placeholder_plates.py`.
+  the agents, and design rationale. `docs/` is the source of the project wiki. The sync is one way: the
+  `Wiki` workflow (`.github/workflows/wiki.yml`) rebuilds the wiki from `docs/` on every push to `main` and
+  replaces what was there. Edit `docs/`, never the wiki. A wiki edit is lost on the next sync.
+- `scripts/` `preview.ps1`, `make_placeholder_plates.py`, and `docs_to_wiki.py`, which turns `docs/` into wiki
+  pages: a link to another doc becomes a wiki page link, a link to anything else in the repo becomes a GitHub
+  URL, and a link to a missing file fails the build.
 - `.agents/agents/` the agent definitions, `canva-sync` and `nesa-assessor`, written for any host. This is the
   agent: the role, the procedure it reads, the tools it may not have, and the boundaries.
 - `.github/agents/`, `.claude/agents/`, and `.codex/agents/` the Copilot, Claude Code, and Codex wrappers for the
@@ -109,12 +113,14 @@ npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
 python .agents/skills/get-nesa-grading-rules/scripts/review_guard.py --path <file>
 python -m unittest discover -s scripts -p "test_agent_guards.py"
+python scripts/docs_to_wiki.py
 python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
 ```
 
 Setup: `python -m venv .venv`, `pip install -r requirements.txt`. Chrome or Edge on `PATH`, or `CHROME_PATH` set,
-for anything under `canva.py`. CI (`.github/workflows/ci.yml`) runs markdownlint, cspell, compileall, agent guard
-tests, and the Canva fixture checks.
+for anything under `canva.py`. CI (`.github/workflows/ci.yml`) runs markdownlint, cspell, compileall, the wiki
+build, agent guard tests, and the Canva fixture checks. `.github/workflows/wiki.yml` publishes `docs/` to the
+wiki.
 
 ## Load-bearing constraints
 

@@ -37,8 +37,8 @@ Public references, for inspiration only. No stills or press photographs are stor
 | --- | --- |
 | `design-system/` | The twelve-page A3 folio deck and the four production items (binder spine, swing tag, product labels, mount scaffold) as `.dc.html` design components, their stylesheets, the two runtime files, and the Canva config. |
 | `design-system/assets/` | Placeholder plates generated from `plates.json`. Swap in real artwork with the same filenames. |
-| `docs/` | NESA marking facts, the folio marking notes, the brand kit, print specifications, the production items, the Canva sync and the agents. |
-| `scripts/` | `preview.ps1` (static preview and true-size print proof), `make_placeholder_plates.py`. |
+| `docs/` | NESA marking facts, the folio marking notes, the brand kit, print specifications, the production items, the Canva sync and the agents. Published to the [project wiki](https://github.com/sjohansson/hsc-major-work-example/wiki) on every push to `main`; edit here, never in the wiki. |
+| `scripts/` | `preview.ps1` (static preview and true-size print proof), `make_placeholder_plates.py`, `docs_to_wiki.py` (builds the wiki from `docs/`). |
 | `.agents/` | Shared agents and skills. `.github/agents/`, `.claude/agents/`, and `.codex/agents/` hold the Copilot, Claude Code, and Codex wrappers. See [docs/agents.md](docs/agents.md). |
 | `.agents/skills/canva-sync/` | The Canva sync, as a self-contained agent skill. One way: the repo is the source of truth. |
 | `build/` | Generated output. Ignored by git. |
