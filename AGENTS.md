@@ -115,7 +115,7 @@ python .agents/skills/canva-sync/scripts/canva_sync.py all
 python .agents/skills/canva-sync/scripts/canva_sync.py selftest
 python scripts/make_placeholder_plates.py
 npx markdownlint-cli2 "**/*.md"
-npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
+npx -p cspell -p @cspell/dict-en-au cspell --config cspell.cli.json --no-progress "**/*.md"
 python .agents/skills/get-nesa-grading-rules/scripts/review_guard.py --path <file>
 python -m unittest discover -s scripts -p "test_agent_guards.py"
 python scripts/docs_to_wiki.py [--render]

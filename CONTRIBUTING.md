@@ -23,7 +23,7 @@ browser.
 
 ```pwsh
 npx markdownlint-cli2 "**/*.md"
-npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
+npx -p cspell -p @cspell/dict-en-au cspell --config cspell.cli.json --no-progress "**/*.md"
 python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
 python -m unittest discover -s scripts -p "test_agent_guards.py"
 python scripts/docs_to_wiki.py

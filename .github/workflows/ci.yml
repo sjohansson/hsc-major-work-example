@@ -35,7 +35,7 @@ jobs:
         run: npx --yes markdownlint-cli2 "**/*.md"
 
       - name: Spelling
-        run: npx --yes -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
+        run: npx --yes -p cspell -p @cspell/dict-en-au cspell --config cspell.cli.json --no-progress "**/*.md"
 
       - name: Python compiles
         run: python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts

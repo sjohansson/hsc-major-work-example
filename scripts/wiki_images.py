@@ -27,23 +27,41 @@ IMAGES = {
 }
 
 # Hides everything but the target, moves the target to the top left corner, and reports its size.
+# The preview centres each sheet in the window, so where the target sits depends on the window width, and on
+# Linux headless Chrome can run this script before --window-size has taken effect. The sheets are pinned to the
+# top left instead, so the target's place no longer depends on the window, and it is placed again on resize.
 ISOLATE = """
 <style>
-  html, body { background: transparent !important; }
+  html, body { background: transparent !important; margin: 0 !important; padding: 0 !important; }
+  .pv-bar, .pv-tag { display: none !important; }
+  .stack { display: block !important; padding: 0 !important; }
   body * { visibility: hidden !important; }
   .wiki-target, .wiki-target * { visibility: visible !important; }
 </style>
 <script>
-  document.fonts.ready.then(() => {
+  const place = () => {
     const el = document.querySelectorAll(%(selector)s)[%(index)d];
     el.classList.add("wiki-target");
+    document.body.style.transform = "";
     const r = el.getBoundingClientRect();
     document.body.style.transformOrigin = "0 0";
     document.body.style.transform = `translate(${-r.left - scrollX}px, ${-r.top - scrollY}px)`;
-    const pre = document.createElement("pre");
-    pre.id = "wiki-size";
+    let pre = document.getElementById("wiki-size");
+    if (!pre) {
+      pre = document.createElement("pre");
+      pre.id = "wiki-size";
+      pre.hidden = true;
+      document.documentElement.appendChild(pre);
+    }
     pre.textContent = JSON.stringify([r.width, r.height]);
-    document.body.appendChild(pre);
+  };
+  Promise.all([
+    document.fonts.load("900 20px Fraunces"),
+    document.fonts.load("20px 'PT Serif'"),
+    new Promise((done) => addEventListener("load", done)),
+  ]).then(() => document.fonts.ready).then(() => {
+    place();
+    addEventListener("resize", place);
   });
 </script>
 """
@@ -65,7 +83,7 @@ def render(chrome, html, selector, index, crop_mm, turn, dest, work):
     page.write_text(html.read_text(encoding="utf-8-sig").replace("</body>", inject + "</body>"), encoding="utf-8")
 
     dom = chrome_run(chrome, "--dump-dom", page.as_uri()).stdout
-    size = re.search(r'<pre id="wiki-size">(\[.*?\])</pre>', dom)
+    size = re.search(r'<pre id="wiki-size"[^>]*>(\[.*?\])</pre>', dom)
     if not size:
         sys.exit(f"{dest.name}: {selector} [{index}] not found in {html.name}")
     width, height = (round(v) for v in json.loads(size.group(1)))
