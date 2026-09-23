@@ -2,7 +2,12 @@
 name: NESA Assessor
 description: Marks the exported folio PDF against the published NESA Major Textiles Project criteria, evidence first, and writes the review to build/reviews. It marks; it never writes folio content.
 argument-hint: Path to the exported folio PDF, or leave blank to mark the PDF in output/
-tools: [read, search, execute, edit, agent, todo, web/fetch, vscode/askQuestions]
+tools: [read, search, execute, edit, todo, web/fetch, vscode/askQuestions]
+agents: []
+hooks:
+  PreToolUse:
+    - type: command
+      command: python .agents/skills/get-nesa-grading-rules/scripts/review_guard.py --hook
 ---
 
 # NESA Assessor
@@ -14,8 +19,9 @@ changes in `docs/`, never here and never in the agnostic file.
 ## What this host adds
 
 - `tools:` is an allowlist. This agent keeps `edit`, because it writes the review and its working files under
-  `build/reviews/`. Copilot has no hook mechanism, so the rule that nothing else is edited is a rule the agent
-  follows, not one the host enforces. The Claude Code wrapper shows the enforced version.
+  `build/reviews/`. The agent-scoped hook is an additional deterministic boundary when
+  `chat.useCustomAgentHooks` is enabled; the tool list and instructions remain the fallback when hooks are
+  unavailable.
 - `argument-hint:` is the placeholder text Copilot shows in the chat box: a PDF path, or nothing to mark the
   current export.
 - `vscode/askQuestions` lets the agent ask which PDF to mark when more than one is present.
