@@ -46,10 +46,13 @@ def title_of(path):
 
 
 class Rewriter:
-    def __init__(self, repo, ref):
+    def __init__(self, repo, ref, sha):
         self.web = f"https://github.com/{repo}"
         self.raw = f"https://raw.githubusercontent.com/{repo}/{ref}"
         self.wiki_raw = f"https://raw.githubusercontent.com/wiki/{repo}"
+        # GitHub's image proxy caches by URL, and a rendered image keeps its name from one publish to the next.
+        # The commit in the query gives each publish a new URL, so the wiki never shows a stale render.
+        self.version = sha[:7]
         self.ref = ref
         self.errors = []
 
@@ -67,7 +70,7 @@ class Rewriter:
         if resolved.parent == RENDERED:
             if resolved.name not in IMAGES:
                 self.errors.append(f"{source.name}: {href} is not an image wiki_images.py renders")
-            return f"{self.wiki_raw}/images/{resolved.name}"
+            return f"{self.wiki_raw}/images/{resolved.name}?v={self.version}"
         if not resolved.exists():
             self.errors.append(f"{source.name}: {href} does not exist")
             return href
@@ -109,7 +112,7 @@ def main():
 
     repo = args.repo or default_repo()
     sha = os.environ.get("GITHUB_SHA") or git("rev-parse", "HEAD")
-    rewriter = Rewriter(repo, args.ref)
+    rewriter = Rewriter(repo, args.ref, sha)
     sources = sorted(DOCS.glob("*.md"))
     reserved = {"home", "_sidebar", "_footer"} & {p.stem.lower() for p in sources}
     if reserved:
