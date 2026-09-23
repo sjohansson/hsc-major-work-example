@@ -44,6 +44,7 @@ matcher = "^(apply_patch|Edit|Write|MultiEdit|NotebookEdit)$"
 
 [[hooks.PreToolUse.hooks]]
 type = "command"
+# cspell:ignore pathlib toplevel
 command = """\
 python -B -c "import pathlib,subprocess,sys; \
 r=pathlib.Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],text=True).strip()); \
