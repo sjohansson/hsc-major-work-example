@@ -13,8 +13,20 @@
 - Never print the folio from an A4 proof. At A4 the 12.5 pt body scales to about 8.8 pt and breaks the type rule
   on every page.
 
-Print shop reference used for the A3 poster stock:
-<https://www.officeworks.com.au/print-copy/p/premium-posters-pcppprpcp#jump-navigation--design-guidelines>
+### Printing the folio
+
+Any printer that takes A3 will do: a school colour laser, a home A3 inkjet, or a print and copy shop.
+
+- Paper: a heavy matte or satin stock, around 150 to 200 gsm, holds the solid fills without curling and stands
+  up to handling in a binder. Plain 80 gsm copy paper shows through and cockles under heavy ink.
+- Send the PDF, not the HTML, and ask for actual size. "Fit to page" or "shrink to fit" scales every page and
+  breaks the type rule.
+- Print one page first. Check a known measurement with a ruler, and check the colour fills and the hairlines,
+  before printing all twelve.
+- Expect colour to shift a little between printers, and between screen and paper. Judge the colour on the
+  printed proof, not on the screen.
+- Laser toner sits on the surface and can crack on a fold, so keep the pages flat. Inkjet needs a few minutes
+  to dry before the pages are stacked.
 
 ## Production items
 

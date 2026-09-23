@@ -8,10 +8,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+from wiki_images import IMAGES, render_all
+
 REPO = Path(__file__).resolve().parents[1]
 DOCS = REPO / "docs"
 HOME = DOCS / "wiki" / "home.md"
 INDEX_MARK = "<!-- wiki-index -->"
+# Images rendered from the design system at publish time. They live in the wiki repo, never in this one, so a
+# link into this folder names an image wiki_images.py makes rather than a file on disk.
+RENDERED = DOCS / "wiki" / "images"
 
 LINK = re.compile(r'(!?)\[([^\]]*)\]\(([^)\s]+)((?:\s+"[^"]*")?)\)')
 ATTR = re.compile(r'\b(src|href)="([^"]+)"')
@@ -44,6 +49,7 @@ class Rewriter:
     def __init__(self, repo, ref):
         self.web = f"https://github.com/{repo}"
         self.raw = f"https://raw.githubusercontent.com/{repo}/{ref}"
+        self.wiki_raw = f"https://raw.githubusercontent.com/wiki/{repo}"
         self.ref = ref
         self.errors = []
 
@@ -58,6 +64,10 @@ class Rewriter:
         except ValueError:
             self.errors.append(f"{source.name}: {href} points outside the repo")
             return href
+        if resolved.parent == RENDERED:
+            if resolved.name not in IMAGES:
+                self.errors.append(f"{source.name}: {href} is not an image wiki_images.py renders")
+            return f"{self.wiki_raw}/images/{resolved.name}"
         if not resolved.exists():
             self.errors.append(f"{source.name}: {href} does not exist")
             return href
@@ -94,6 +104,7 @@ def main():
     parser.add_argument("--out", type=Path, default=REPO / "build" / "wiki", help="output folder, emptied first")
     parser.add_argument("--repo", default=None, help="owner/name for links back to the repo")
     parser.add_argument("--ref", default=os.environ.get("GITHUB_REF_NAME", "main"), help="branch the links use")
+    parser.add_argument("--render", action="store_true", help="also render the images into <out>/images")
     args = parser.parse_args()
 
     repo = args.repo or default_repo()
@@ -125,6 +136,8 @@ def main():
     for name, text in pages.items():
         (args.out / f"{name}.md").write_text(text, encoding="utf-8", newline="\n")
     print(f"wrote {len(pages)} pages to {args.out}")
+    if args.render:
+        render_all(args.out / "images")
 
 
 if __name__ == "__main__":

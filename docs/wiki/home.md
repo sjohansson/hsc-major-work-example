@@ -80,6 +80,26 @@ colourway.
 
 <p align="center"><sub>A gathered tulle trial, the cutting layout, and the bodice front with its modification in wine.</sub></p>
 
+## Production items
+
+The folio lives in a binder, and the dress leaves with a swing tag. Both are drawn by the same stylesheet as the
+pages, so they carry the same masthead, rules, and house mark.
+
+<p align="center">
+  <img src="images/binder-spine.png" alt="Binder spine insert, 436 x 59 mm, laid on its side" width="820">
+</p>
+
+<p align="center"><sub>The binder spine insert, laid on its side. The four bands are the four folio sections.</sub></p>
+
+<p align="center">
+  <img src="images/swing-tag-front.png" alt="Swing tag, front" width="210">
+  <img src="images/swing-tag-back.png" alt="Swing tag, back, with contents and care" width="210">
+</p>
+
+<p align="center"><sub>The swing tag, 70 x 120 mm, front and back.</sub></p>
+
+<p align="center"><sub>These two are rendered from the design system each time the wiki is published.</sub></p>
+
 ## Where to start
 
 - New here? Read the [design rationale](../design-rationale.md) for why the folio looks the way it does.

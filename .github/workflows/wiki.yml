@@ -7,7 +7,11 @@ on:
     branches: [main]
     paths:
       - docs/**
+      - design-system/**
       - scripts/docs_to_wiki.py
+      - scripts/wiki_images.py
+      - scripts/print_pdfs.py
+      - scripts/preview.ps1
       - .github/workflows/wiki.yml
   workflow_dispatch:
 
@@ -30,8 +34,12 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Build wiki pages
-        run: python scripts/docs_to_wiki.py --out build/wiki
+      # Pillow for the rendered images. The runner image already has PowerShell 7 and Chrome.
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Build wiki pages and images
+        run: python scripts/docs_to_wiki.py --out build/wiki --render
 
       - name: Clone wiki
         env:
