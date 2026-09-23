@@ -11,3 +11,6 @@ for any grading activity.
 
 The facts file was checked against the NESA pages it lists on 22 September 2026. If a rerun is more than a term
 later, open those pages again and note any change before marking.
+
+`scripts/review_guard.py` is a pre-tool hook for any host that has one. It denies a write aimed outside
+`build/reviews/`, so an assessor can write its review and nothing else. `--path FILE` checks one path by hand.

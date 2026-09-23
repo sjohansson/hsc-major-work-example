@@ -1,0 +1,54 @@
+name = "nesa-assessor"
+description = "Mark the exported folio PDF, grade it against NESA criteria, or rerun the review in build/reviews."
+developer_instructions = """
+This is the Codex wrapper. The agent itself is .agents/agents/nesa-assessor.md.
+Resolve repository paths from the Git root, read that file in full, and follow it exactly.
+Then read .agents/skills/get-nesa-grading-rules/SKILL.md and both marking documents it names in full.
+Nothing here changes the procedure. A marking rule changes in docs/, never in this wrapper.
+
+Use the repository root as the working directory for this agent. Confirm that the nesa-assessor permission
+profile and its PreToolUse hook are active before writing the review or working files. If the host overrides
+or skips either, report the missing protection to the parent. Do not work around it with another tool or an
+elevated command. Use local tools for review files; do not use filesystem connector tools to write them.
+"""
+default_permissions = "nesa-assessor"
+
+# What this host adds
+# name and description identify a specialist that the parent explicitly delegates work to.
+# developer_instructions loads the shared agent, skill, and marking documents without copying the procedure.
+# Omitted model and model_reasoning_effort inherit the parent or configured subagent defaults.
+# This profile permits review artefacts under build/reviews and temporary scratch files only.
+# The profile leaves command networking disabled; use the host's normal approval path when needed.
+# The hook checks every patch target, including both sides of a move, before an edit can run.
+# It uses the same review guard as Claude Code and is scoped to this agent.
+# The Python launcher finds the Git root even when Codex starts in a subdirectory, on Windows or Unix.
+# Codex requires project trust and separate hook trust. See docs/agents.md for setup and limitations.
+
+[permissions.nesa-assessor]
+description = "Read the repository and exported PDF; write review artefacts under build/reviews."
+extends = ":read-only"
+
+[permissions.nesa-assessor.filesystem]
+":tmpdir" = "write"
+":slash_tmp" = "write"
+
+[permissions.nesa-assessor.filesystem.":workspace_roots"]
+"." = "read"
+"build/reviews" = "write"
+
+[features]
+hooks = true
+
+[[hooks.PreToolUse]]
+matcher = "^(apply_patch|Edit|Write|MultiEdit|NotebookEdit)$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = """\
+python -B -c "import pathlib,subprocess,sys; \
+r=pathlib.Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],text=True).strip()); \
+sys.exit(subprocess.call([sys.executable,'-B',\
+str(r/'.agents/skills/get-nesa-grading-rules/scripts/review_guard.py'),'--hook']))"\
+"""
+timeout = 10
+statusMessage = "Checking the assessor write boundary"

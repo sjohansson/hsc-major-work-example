@@ -333,8 +333,23 @@ def guard_main(argv, explicit=None) -> int:
         description="Refuse an edit aimed outside the Canva sync's output folder.")
     ap.add_argument("--hook", action="store_true",
                     help="read a Claude Code PreToolUse event on stdin")
+    ap.add_argument("--no-edits", action="store_true",
+                    help="deny direct file edits, including Codex apply_patch calls")
     ap.add_argument("--path", help="check one path instead of reading a hook event")
     args = ap.parse_args(argv)
+
+    if args.no_edits:
+        if not args.hook or args.path:
+            ap.error("--no-edits requires --hook and cannot be combined with --path")
+        try:
+            event = json.loads(sys.stdin.read())
+            if not isinstance(event, dict):
+                raise ValueError("expected a hook event object")
+        except (ValueError, TypeError):
+            return _deny("The Canva sync guard could not read the hook event.")
+        if str(event.get("tool_name", "")).lower() in EDIT_TOOLS | {"apply_patch"}:
+            return _deny("The Canva sync has no direct file-editing tools. Use the guarded sync scripts.")
+        return 0
 
     try:
         settings = load(explicit)

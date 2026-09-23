@@ -14,32 +14,23 @@ hooks:
 
 # Canva sync
 
-## Read the rules first
+This is the Claude Code wrapper. The agent itself is `.agents/agents/canva-sync.md`. Read that file in full and
+follow it exactly; then read `.agents/skills/canva-sync/SKILL.md` by path, because Claude Code loads project skills
+from `.claude/skills/` and this one lives in `.agents/skills/` so that every host shares one copy. Nothing below
+changes the procedure. A rule changes in the skill, never here and never in the agnostic file.
 
-Read `.agents/skills/canva-sync/SKILL.md` in full before doing anything else, then the file under
-`.agents/skills/canva-sync/references/` for the stage you are on. Read it by path: Claude Code discovers skills
-in `.claude/skills/`, and this bundle lives under `.agents/skills/` so that GitHub Copilot and Claude Code share
-one copy of it. Nothing will load it for you.
+## What this host adds
 
-The skill holds the commands, the gates and the report order. Follow them as written rather than from memory,
-and do not improvise a shorter route.
-
-## Your tools
-
-Edit, Write, MultiEdit and NotebookEdit are disallowed, and a PreToolUse hook denies any write aimed outside the
-config's `output_dir` even if one were available. That is the one-way rule made mechanical, not a suggestion. The
-scripts write their own output; you run them.
-
-The push needs a Canva MCP connector. The tool pattern above assumes the server is named `canva` in your MCP
-configuration; rename it to match yours. With no connector attached, run every gate up to the push and report
-that the push needs one. Do not pretend to have pushed.
-
-## Boundaries
-
-- One way, repository to Canva. A difference found in Canva is reported for a person to decide about. Never edit
-  the deck so that it agrees with Canva.
-- Never push past a failed gate. Do not raise the verify tolerance, add a known residual, or skip the probe to
-  get a page through.
-- Never write folio content: not prose, not plates, not results, not a student's details.
-- Never invent a Canva design id, page id or asset id. An unmapped asset is a placeholder or a stop.
-- Report what actually happened, including the gate that stopped you and the number that stopped it.
+- `tools:` names the tools this subagent may use. `mcp__canva__*` is every tool from an MCP server called
+  `canva`; rename it if your connector is registered under another name. With no connector, every gate up to the
+  push still runs.
+- `disallowedTools:` removes the four editing tools outright, so the agent cannot change a file in the
+  repository.
+- `hooks:` runs `canva_sync.py guard --hook` before any of those tools would fire. The guard reads the tool call,
+  checks the target path against the config's `output_dir`, and denies the call with a reason if it is aimed
+  anywhere else. That is the one-way rule made mechanical: even if the tool list were widened, the hook still
+  stands. Whether a subagent's own hooks are honoured depends on the installed version; the disallowed tools and
+  the refusal inside the scripts hold either way.
+- `model: inherit` runs the subagent on whatever model the session is using.
+- Claude Code discovers this file because it sits in `.claude/agents/`. The agnostic file in `.agents/agents/`
+  is not picked up on its own.

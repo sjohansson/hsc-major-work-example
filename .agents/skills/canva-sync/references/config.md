@@ -61,8 +61,10 @@ committed. `check --refresh-ids` writes it; nothing else does. Without it, opera
 
 1. Copy the whole `canva-sync` folder into that repository's `.agents/skills/`. Nothing in it refers to this
    repository.
-2. Copy `.github/agents/canva-sync.agent.md` and `.claude/agents/canva-sync.md` across, for whichever hosts
-   are used. Both name the bundle path; change it if the bundle sits somewhere else.
+2. Copy `.agents/agents/canva-sync.md` across, and the wrapper for each host in use:
+   `.github/agents/canva-sync.agent.md` for Copilot, `.claude/agents/canva-sync.md` for Claude Code. All three
+   name the bundle path; change it if the bundle sits somewhere else. For another host, write a wrapper by hand:
+   no edit or write tool, and the guard hook where the host has one.
 3. Copy `assets/canva.config.template.json` to the repository root as `canva.config.json` and fill in the
    paths, the page size and the props.
 4. Add the output folder and `canva.local.json` to `.gitignore`.
@@ -73,16 +75,15 @@ committed. `check --refresh-ids` writes it; nothing else does. Without it, opera
 
 ## Host differences worth knowing
 
-- GitHub Copilot and VS Code discover skills in `.github/skills/`, `.claude/skills/` and `.agents/skills/`.
-  Claude Code discovers project skills in `.claude/skills/` only. The bundle lives in `.agents/skills/` so both
-  hosts share one copy, which means the Claude Code agent reads `SKILL.md` by path and cannot use the `skills:`
-  preload field. Its agent file says so. If Claude Code adds the directory later, nothing here needs changing.
-- The Claude Code agent carries its PreToolUse guard hook in its own frontmatter, so the deny applies to that
-  agent and not to ordinary work in the repository. Whether subagent frontmatter hooks are honoured depends on
-  the installed version; `disallowedTools` and the refusal inside `Settings.write_text` hold either way. A
-  repository that wants the guard everywhere can put the same hook in `.claude/settings.json`, but it will then
-  deny every write outside the output folder, for every session.
-- Copilot has no hook mechanism here. Its agent simply has no `edit` tool.
+- Hosts differ in which folders they scan for skills and agents, and in whether they scan `.agents/` at all.
+  The bundle and the agent live there so that there is one copy, which means the agent reads `SKILL.md` by path
+  rather than relying on a preload field. Its agent file says so. A host that does scan `.agents/` needs nothing
+  more; one that does not gets a copy or a symlink in its own folder.
+- A host with a pre-tool hook can run `canva_sync.py guard --hook` before every file write, so a write outside
+  the output folder is denied before it happens. Scope the hook to the agent where the host allows it; a
+  repository-wide hook denies every write outside the output folder, for every session.
+- A host with no hook mechanism relies on the agent having no edit tool and on the refusal inside
+  `Settings.write_text`. Both hold on their own.
 
 ## Checking a change to the bundle
 

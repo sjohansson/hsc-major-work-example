@@ -45,19 +45,22 @@ command takes `--config PATH`.
 The push itself needs a Canva connector, which is a conversation-side tool rather than something a script can
 call. That is what the agent is for.
 
+The agent is [.agents/agents/canva-sync.md](../.agents/agents/canva-sync.md). It is written for any host and
+holds the whole procedure: what the agent reads, what it may not have, and what the arguments mean. Two thin
+wrappers wire it into the hosts this repo uses, and [agents.md](agents.md) compares all three:
+
 - **GitHub Copilot / VS Code**: pick the **Canva Sync** agent
   ([.github/agents/canva-sync.agent.md](../.github/agents/canva-sync.agent.md)) and give it page labels, `all`,
-  or `check`.
+  or `check`. It has no edit tool.
 - **Claude Code**: ask for the **canva-sync** subagent
   ([.claude/agents/canva-sync.md](../.claude/agents/canva-sync.md)), for example "sync the deck to Canva" or
-  "check Canva against the repo".
+  "check Canva against the repo". It disallows the edit tools and runs a hook that denies a write outside the
+  output folder.
 
-Both read
-[.agents/skills/canva-sync/SKILL.md](../.agents/skills/canva-sync/SKILL.md) and follow the gates in it: doctor,
-then build with verify, then extract, then an answered assets summary, then a connector probe, then the push
-page by page, then the read-back. Neither can edit a file in this repository: the Copilot agent has no edit
-tool, the Claude Code agent disallows the edit tools and carries a hook that denies a write outside the output
-folder, and the scripts refuse to write into the deck folder at all.
+The agent reads [.agents/skills/canva-sync/SKILL.md](../.agents/skills/canva-sync/SKILL.md) and follows the
+gates in it: doctor, then build with verify, then extract, then an answered assets summary, then a connector
+probe, then the push page by page, then the read-back. It cannot edit a file in this repository, and the scripts
+refuse to write into the deck folder at all.
 
 ## What crosses and what does not
 

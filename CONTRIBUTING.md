@@ -24,7 +24,7 @@ browser.
 ```pwsh
 npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
-python -m compileall -q scripts .agents/skills/canva-sync/scripts
+python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
 python .agents/skills/canva-sync/scripts/canva_sync.py selftest
 pwsh scripts/preview.ps1 -Item all -NoOpen
 python .agents/skills/canva-sync/scripts/canva_sync.py build --verify

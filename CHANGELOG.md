@@ -32,8 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `canva-sync` agent skill with `SKILL.md`, four reference documents, a JSON schema for the config, connector
   dialect files and a one-page fixture deck.
-- Agents for both hosts: `.github/agents/canva-sync.agent.md` for GitHub Copilot and
-  `.claude/agents/canva-sync.md` for Claude Code. Neither can edit a file in this repository.
+- Each agent now exists in three tiers. The agnostic file in `.agents/agents/` is the agent and holds the whole
+  procedure. `.github/agents/` and `.claude/agents/` hold thin Copilot and Claude Code wrappers: the host's
+  frontmatter, a pointer to the agnostic file, and a section explaining what the host adds. `docs/agents.md`
+  compares them. The `nesa-assessor` agent, which had only a Copilot file, now has all three.
+- Skills live once, in `.agents/skills/`, for every host. `get-nesa-grading-rules` moved there from
+  `.github/skills/` and gained `review_guard.py`, a pre-tool hook that denies a write outside `build/reviews/`.
+  The Claude Code wrapper for `nesa-assessor` runs it.
 - `doctor`, which checks everything the pipeline needs and names what is missing; `selftest`, which runs the
   whole pipeline over the fixture deck and proves nothing outside the output folder was written; `guard`, a
   PreToolUse hook that denies a write aimed outside the output folder.

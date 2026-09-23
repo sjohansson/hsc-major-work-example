@@ -1,0 +1,56 @@
+name = "canva-sync"
+description = "Push the deck to Canva, sync selected pages or all pages, or check Canva against the repository."
+developer_instructions = """
+This is the Codex wrapper. The agent itself is .agents/agents/canva-sync.md.
+Resolve repository paths from the Git root, read that file in full, and follow it exactly.
+Then read .agents/skills/canva-sync/SKILL.md and the reference for the current stage by path.
+Nothing here changes the procedure. A rule changes in the skill, never in this wrapper.
+
+Use the repository root as the working directory for this agent. Confirm that the canva-sync permission profile
+and its PreToolUse hook are active before running the pipeline. If the host overrides or skips either, report
+the missing protection to the parent. Do not work around it with another tool or an elevated command.
+Use the sync scripts for local writes. Do not call file-editing tools, including filesystem connector tools.
+An available Canva connector is inherited from the parent; follow the skill's probe before using it.
+"""
+default_permissions = "canva-sync"
+
+# What this host adds
+# name and description identify a specialist that the parent explicitly delegates work to.
+# developer_instructions loads the shared agent and skill; it does not copy the pipeline.
+# Omitted model and model_reasoning_effort inherit the parent or configured subagent defaults.
+# This profile allows generated output and the script's existing local-id refresh exception.
+# Temporary directories support browser profiles and script scratch files. Source files remain read-only.
+# The profile leaves command networking disabled; use the host's normal approval path when needed.
+# The hook denies direct file edits. It is scoped to this agent, not every repository conversation.
+# The Python launcher finds the Git root even when Codex starts in a subdirectory, on Windows or Unix.
+# Codex requires project trust and separate hook trust. See docs/agents.md for setup and limitations.
+
+[permissions.canva-sync]
+description = "Read the repository; scripts may write Canva output and refresh local Canva identifiers."
+extends = ":read-only"
+
+[permissions.canva-sync.filesystem]
+":tmpdir" = "write"
+":slash_tmp" = "write"
+
+[permissions.canva-sync.filesystem.":workspace_roots"]
+"." = "read"
+"build/canva" = "write"
+"canva.local.json" = "write"
+
+[features]
+hooks = true
+
+[[hooks.PreToolUse]]
+matcher = "^(apply_patch|Edit|Write|MultiEdit|NotebookEdit)$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = """\
+python -B -c "import pathlib,subprocess,sys; \
+r=pathlib.Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],text=True).strip()); \
+sys.exit(subprocess.call([sys.executable,'-B',str(r/'.agents/skills/canva-sync/scripts/canva_sync.py'),\
+'guard','--hook','--no-edits']))"\
+"""
+timeout = 10
+statusMessage = "Checking the Canva sync write boundary"

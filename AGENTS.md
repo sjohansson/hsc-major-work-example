@@ -16,9 +16,10 @@ evidence issue:
 - [docs/folio-marking-notes.md](docs/folio-marking-notes.md): the premise this folio is marked under, the local
   standards, how a mark is placed, the evidence rules, and the rerun procedure.
 
-The Copilot agent in `.github/agents/nesa-assessor.agent.md` runs the marking procedure and the
-`get-nesa-grading-rules` skill in `.github/skills/` loads the two documents. Both defer to the documents; a rule
-changes in the documents, never in the agent.
+The `nesa-assessor` agent in `.agents/agents/` runs the marking procedure and the `get-nesa-grading-rules` skill
+in `.agents/skills/` loads the two documents. Both defer to the documents; a rule changes in the documents, never
+in the agent. The Copilot and Claude Code wrappers for the agent are thin and carry no procedure; see
+[docs/agents.md](docs/agents.md).
 
 In short: the folio is marked as the finished submission a marker holds. A generated plate is marked on what it
 shows and what its caption says, and is never penalised for being digital. The physical samples and the garment
@@ -75,10 +76,17 @@ The folio text is written by a fictional Year 12 student, first person, and is m
   ledger of changes, with the full colour system, token derivation, and masthead transitions).
   Built by `preview.ps1 -Item meta`.
 - `docs/` NESA marking facts, folio marking notes, brand kit, print specs, production items, the Canva sync,
-  and design rationale.
+  the agents, and design rationale.
 - `scripts/` `preview.ps1` and `make_placeholder_plates.py`.
-- `.agents/skills/canva-sync/` the self-contained Canva sync skill: its scripts, references and assets. The
-  sync is one way, repo to Canva; a Canva edit is reported, never written back into the deck.
+- `.agents/agents/` the agent definitions, `canva-sync` and `nesa-assessor`, written for any host. This is the
+  agent: the role, the procedure it reads, the tools it may not have, and the boundaries.
+- `.github/agents/` and `.claude/agents/` the Copilot and Claude Code wrappers for the same two agents. Each is
+  that host's frontmatter, a line that says "read the agnostic file", and a section explaining what the host
+  adds. No procedure lives in a wrapper. `docs/agents.md` compares the three tiers.
+- `.agents/skills/` the skills, once, for every host. `canva-sync/` is the self-contained Canva sync: its
+  scripts, references, assets and its guard hook. The sync is one way, repo to Canva; a Canva edit is reported,
+  never written back into the deck. `get-nesa-grading-rules/` loads the two marking documents before any grading
+  task and carries the review guard hook.
 - `build/` generated output, ignored by git. Nothing generated is ever committed.
 - `canva.config.json` at the repo root tells the sync where the deck, its stylesheet and its assets are.
 - `canva.local.json` holds Canva design, page and asset ids. Ignored by git. The committed template is
@@ -98,7 +106,8 @@ python .agents/skills/canva-sync/scripts/canva_sync.py selftest
 python scripts/make_placeholder_plates.py
 npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
-python -m compileall -q scripts .agents/skills/canva-sync/scripts
+python .agents/skills/get-nesa-grading-rules/scripts/review_guard.py --path <file>
+python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
 ```
 
 Setup: `python -m venv .venv`, `pip install -r requirements.txt`. Chrome or Edge on `PATH`, or `CHROME_PATH` set,

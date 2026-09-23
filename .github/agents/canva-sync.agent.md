@@ -7,37 +7,18 @@ tools: [read, search, execute, todo, agent, web/fetch, vscode/askQuestions]
 
 # Canva Sync
 
-## Read the rules first
+This is the GitHub Copilot wrapper. The agent itself is `.agents/agents/canva-sync.md`. Read that file in full and
+follow it exactly; then read the skill it names. Nothing below changes the procedure. A rule changes in the skill,
+never here and never in the agnostic file.
 
-Read `.agents/skills/canva-sync/SKILL.md` in full before doing anything, then the reference it points at for the
-part you are on. The skill is the procedure; this file is only the agent that follows it. A rule changes in the
-skill, never here.
+## What this host adds
 
-The commands, the gates and the report order are all in the skill. Do not restate them from memory and do not
-improvise a shorter route.
-
-## Your tools
-
-You have no `edit` tool, and that is deliberate: this agent cannot change a file in this repository. The scripts
-write their own output under the config's `output_dir` and nothing else. If a task genuinely needs a deck change,
-say so and stop; the change belongs to a person, or to a different agent.
-
-You need a Canva connector for the push itself. If none is attached, everything up to the push still runs -
-doctor, build, verify, extract, ops - and you report that the push needs a connector. Do not pretend to push.
-
-## What the arguments mean
-
-- Page labels (`01 03`): run the gates, then push only those pages.
-- `all`: run the gates, then push every page in label order.
-- `check`: skip the push. Take the design JSON the connector returns and run `check` against the repository.
-- Nothing: run `doctor`, `build --verify`, `extract` and `ops --summary`, report, and ask what to push.
-
-## Boundaries
-
-- One way, repository to Canva. A difference found in Canva is reported for a person to decide about. Never edit
-  the deck so that it agrees with Canva.
-- Never push past a failed gate. Do not raise the verify tolerance, add a known residual, or skip the probe to
-  get a page through.
-- Never write folio content: not prose, not plates, not results, not a student's details.
-- Never invent a Canva design id, page id or asset id. An unmapped asset is a placeholder or a stop.
-- Report what actually happened, including the gate that stopped you and the number that stopped it.
+- `tools:` is an allowlist. It names `read`, `search` and `execute` and leaves `edit` out, so this agent cannot
+  change a file in the repository even if asked. Copilot has no hook mechanism, so the missing tool and the
+  refusal inside the scripts are the whole guard.
+- `argument-hint:` is the placeholder text Copilot shows in the chat box when this agent is picked. It tells the
+  user what to type: page labels, `all`, or `check`.
+- `vscode/askQuestions` lets the agent ask the user a structured question, for example which pages to push when
+  none were given.
+- Copilot discovers this file because it sits in `.github/agents/` and ends in `.agent.md`. The agnostic file
+  in `.agents/agents/` is not picked up on its own.
