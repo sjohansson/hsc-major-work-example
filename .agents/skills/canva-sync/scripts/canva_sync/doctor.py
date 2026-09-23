@@ -13,10 +13,12 @@ selftest  Build, verify, extract and generate ops for the one-page fixture in
           byte-identical afterwards, and the package source contains no write
           call outside Settings.write_text and Settings.save_local.
 
-guard     A PreToolUse hook for Claude Code. It reads the tool call on stdin
+guard     A PreToolUse hook for agent hosts. It reads the tool call on stdin
           and denies an edit or write aimed anywhere but the output folder and
           the local id file. With no config discoverable it allows everything,
           so dropping the bundle into another repository cannot lock it up.
+          With --no-edits, it denies direct editing tools, including Codex
+          apply_patch, without loading a config.
 """
 
 from __future__ import annotations
@@ -34,7 +36,10 @@ from . import COMMAND, VERSION
 from .config import ConfigError, Settings, activate, cfg, find_chrome, load
 
 BUNDLE = Path(__file__).resolve().parent.parent.parent
-EDIT_TOOLS = {"edit", "multiedit", "write", "notebookedit"}
+EDIT_TOOLS = {
+    "edit", "multiedit", "write", "notebookedit", "apply_patch",
+    "create_file", "replace_string_in_file", "edit_notebook_file",
+}
 
 
 # -- doctor ------------------------------------------------------------------
@@ -261,16 +266,20 @@ def run_selftest() -> dict:
                                  capture_output=True, text=True, env=env, timeout=600)
             return res, res.returncode == expect
 
+        def tail(res):
+            # verify reports its diffs on stdout; build its warnings on stderr.
+            return "\n".join(s for s in (res.stdout.strip(), res.stderr.strip()) if s)[-500:]
+
         res, ok = run(["build"])
         steps["build"] = "ok" if ok else f"FAIL rc={res.returncode}"
         if not ok:
-            notes.append(res.stderr.strip()[-500:])
+            notes.append(tail(res))
 
         if find_chrome():
             res, ok = run(["verify"])
             steps["verify"] = "ok" if ok else f"FAIL rc={res.returncode}"
             if not ok:
-                notes.append(res.stderr.strip()[-500:])
+                notes.append(tail(res))
             res, ok = run(["extract"])
             steps["extract"] = "ok" if ok else f"FAIL rc={res.returncode}"
             if ok:
@@ -332,7 +341,7 @@ def guard_main(argv, explicit=None) -> int:
         prog=f"{COMMAND} guard",
         description="Refuse an edit aimed outside the Canva sync's output folder.")
     ap.add_argument("--hook", action="store_true",
-                    help="read a Claude Code PreToolUse event on stdin")
+                    help="read a PreToolUse event on stdin")
     ap.add_argument("--no-edits", action="store_true",
                     help="deny direct file edits, including Codex apply_patch calls")
     ap.add_argument("--path", help="check one path instead of reading a hook event")
@@ -373,8 +382,9 @@ def guard_main(argv, explicit=None) -> int:
     tool = str(event.get("tool_name", "")).lower()
     if tool not in EDIT_TOOLS:
         return 0
-    target = (event.get("tool_input") or {}).get("file_path") \
-        or (event.get("tool_input") or {}).get("notebook_path")
+    tool_input = event.get("tool_input") or {}
+    target = (tool_input.get("file_path") or tool_input.get("filePath")
+              or tool_input.get("notebook_path") or tool_input.get("notebookPath"))
     if not target:
         return 0
     if settings.writable(Path(target)):

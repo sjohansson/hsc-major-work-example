@@ -20,9 +20,10 @@ improvise a shorter route.
 This agent reads files, searches, and runs commands. It has no file-editing tool, and that is deliberate: it
 cannot change a file in this repository. Whoever wires this agent into a host gives it no edit or write tool, and
 where the host supports a pre-tool hook, adds `canva_sync.py guard --hook` so that a write aimed outside the
-config's `output_dir` is denied mechanically. The scripts write their own output under `output_dir` and nothing
-else. If a task genuinely needs a deck change, say so and stop; the change belongs to a person, or to a different
-agent.
+config's `output_dir` is denied mechanically. The scripts write generated output under `output_dir`.
+The existing `check --refresh-ids` command may also update the configured local id file, as documented in the
+skill's config reference. If a task needs a deck change, say so and stop; the change belongs to a person, or to
+a different agent. A host that cannot remove its editing tool must deny those calls with a pre-tool hook.
 
 You need a Canva connector for the push itself, which is a conversation-side tool rather than something a script
 can call. If none is attached, everything up to the push still runs - doctor, build, verify, extract, ops - and

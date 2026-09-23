@@ -62,9 +62,10 @@ committed. `check --refresh-ids` writes it; nothing else does. Without it, opera
 1. Copy the whole `canva-sync` folder into that repository's `.agents/skills/`. Nothing in it refers to this
    repository.
 2. Copy `.agents/agents/canva-sync.md` across, and the wrapper for each host in use:
-   `.github/agents/canva-sync.agent.md` for Copilot, `.claude/agents/canva-sync.md` for Claude Code. All three
-   name the bundle path; change it if the bundle sits somewhere else. For another host, write a wrapper by hand:
-   no edit or write tool, and the guard hook where the host has one.
+   `.github/agents/canva-sync.agent.md` for Copilot, `.claude/agents/canva-sync.md` for Claude Code, or
+   `.codex/agents/canva-sync.toml` for Codex. All wrappers name the bundle path; change it if the bundle sits
+   somewhere else. Match the Codex permission profile to `output_dir` and `local_ids`, and trust its hook in
+   the host. For another host, block direct file editing and register the guard in its actual tool protocol.
 3. Copy `assets/canva.config.template.json` to the repository root as `canva.config.json` and fill in the
    paths, the page size and the props.
 4. Add the output folder and `canva.local.json` to `.gitignore`.

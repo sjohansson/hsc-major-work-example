@@ -17,7 +17,10 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[4]
 ALLOWED = REPO / "build" / "reviews"
-EDIT_TOOLS = {"edit", "multiedit", "write", "notebookedit"}
+EDIT_TOOLS = {
+    "edit", "multiedit", "write", "notebookedit", "apply_patch",
+    "create_file", "replace_string_in_file", "edit_notebook_file",
+}
 
 
 def writable(path: Path) -> bool:
@@ -76,12 +79,17 @@ def main(argv=None) -> int:
         return deny("The review guard requires file-edit arguments.")
     try:
         if tool == "apply_patch":
-            command = tool_input.get("command")
+            command = tool_input.get("command") or tool_input.get("input")
             if not isinstance(command, str):
                 raise ValueError("The review guard requires the patch in tool_input.command.")
             targets = patch_targets(command)
         else:
-            target = tool_input.get("file_path") or tool_input.get("notebook_path")
+            target = (
+                tool_input.get("file_path")
+                or tool_input.get("filePath")
+                or tool_input.get("notebook_path")
+                or tool_input.get("notebookPath")
+            )
             if not isinstance(target, str) or not target:
                 raise ValueError("The review guard requires a target file path.")
             targets = [target]

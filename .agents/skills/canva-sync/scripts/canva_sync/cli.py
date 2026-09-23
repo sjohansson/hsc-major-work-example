@@ -9,7 +9,7 @@
     canva_sync.py probe   --tools tools.json
     canva_sync.py doctor  [--full] [--json]
     canva_sync.py selftest
-    canva_sync.py guard   --hook
+    canva_sync.py guard   --hook [--no-edits]
     canva_sync.py all
 
 Every command takes `--config PATH`; without it the config is discovered by
@@ -105,8 +105,7 @@ def main(argv=None) -> int:
     cmd, rest = argv[0], argv[1:]
     rest, explicit = _split_config(rest)
 
-    # The guard runs inside an agent host's hook and must never fail loudly:
-    # with no config it simply allows everything.
+    # The path guard needs a config; --no-edits blocks direct editing without one.
     if cmd == "guard":
         from . import doctor
         return doctor.guard_main(rest, explicit)

@@ -1217,19 +1217,30 @@ Promise.all([
   // borders and the other columns; the same percentage as a grid track is
   // the whole track. Reusing the authored percentages put every column of
   // the page 3 analysis table a few pixels out. Take the used widths.
+  // A spanned cell is the width of several tracks, so the row to read is
+  // the one with the most cells, none of them spanned. The fixture's header
+  // row is one colspan=2 cell; reading it split the table down the middle
+  // where the browser had not, and only Georgia's metrics hid that.
   document.querySelectorAll('[data-measure-table]').forEach(function (t) {
     var key = t.getAttribute('data-measure-table');
-    var tr = t.querySelector('tr');
-    if (!tr) return;
-    var cells = Array.prototype.filter.call(tr.children, function (c) {
-      return c.tagName === 'TD' || c.tagName === 'TH';
+    function colspan(c) { return parseInt(c.getAttribute('colspan') || '1', 10) || 1; }
+    function spanned(cells) { return cells.some(function (c) { return colspan(c) > 1; }); }
+    var rows = Array.prototype.map.call(t.querySelectorAll('tr'), function (tr) {
+      if (tr.closest('table') !== t) return [];
+      return Array.prototype.filter.call(tr.children, function (c) {
+        return c.tagName === 'TD' || c.tagName === 'TH';
+      });
+    }).filter(function (cells) { return cells.length; });
+    if (!rows.length) return;
+    var cells = rows[0];
+    rows.forEach(function (r) {
+      if (r.length > cells.length || (r.length === cells.length && spanned(cells) && !spanned(r))) cells = r;
     });
     out.tables[key] = {
       w: t.getBoundingClientRect().width * PX,
       cols: cells.map(function (c) {
         var r = c.getBoundingClientRect();
-        var span = parseInt(c.getAttribute('colspan') || '1', 10) || 1;
-        return {w: r.width * PX, span: span};
+        return {w: r.width * PX, span: colspan(c)};
       })
     };
   });
