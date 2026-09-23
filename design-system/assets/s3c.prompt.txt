@@ -1,0 +1,15 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Sketch 3C, detail study of Design Three, the sleeve and wrist at a larger scale, no figure. Draw one forearm and hand
+from just below the elbow to the fingertips: the sheer black tulle sleeve rendered as a fine hexagonal net wash through
+which the arm reads as a grey shape, the sleeve seam along the underarm, and the raw-cut sleeve end at the wrist with a
+few loose net edges beginning to fray and curl. The point of the drawing is that the raw end looks unfinished up close.
+Style: a Year 12 student's own fashion design development sketch. Fine black ink line over light pencil on warm
+off-white cartridge paper, a faceless stylised croquis figure with simplified hands and hair pinned up, garment drawn
+with clear construction lines, seams and gathers indicated with short ticks, light grey pencil-wash shading only, black
+garment rendered as hatched and washed greys so seams stay legible, white pieces left as paper. Monochrome, no colour.
+Hand-drawn character: slight line weight variation, one or two faint construction guidelines left visible. Leave clean
+margins so numbered callouts can be added over the image in the layout. No text, numbers, arrows, labels, borders,
+watermark or photographic rendering. Format: portrait, approximately 7:10. The printed slot is 78.2 x 111.4 mm and shows
+the whole image with object-fit contain; keep the subject centred with a small margin all round.

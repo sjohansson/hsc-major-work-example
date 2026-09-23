@@ -16,4 +16,7 @@ __pycache__/
 /build/
 
 # Canva account identifiers (design id, page ids, asset ids)
-design-system/canva.local.json
+/canva.local.json
+
+# The fixture deck builds into its own folder when run in place.
+/.agents/skills/canva-sync/assets/fixtures/mini-deck/build/

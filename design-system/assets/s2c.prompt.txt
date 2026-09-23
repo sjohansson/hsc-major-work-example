@@ -1,0 +1,22 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Sketch 2C, detail study of Design Two, the jet beading at a larger scale, no figure. Draw a section of the bodice front
+about the size of a hand: a princess seam running through it, and over the matte crepe satin a pattern of hand-sewn
+faceted jet beads and small bead drops following scrolling leaf and vine motifs, each bead drawn as a tiny facetted oval
+with a highlight so the black-on-black texture reads, the stitches between beads indicated with fine dashes. One corner
+left unbeaded to show the plain cloth for comparison. Style: a Year 12 student's own fashion design development sketch.
+Fine black ink line over light pencil on warm off-white cartridge paper, a faceless stylised croquis figure with
+simplified hands and hair pinned up, garment drawn with clear construction lines, seams and gathers indicated with short
+ticks, light grey pencil-wash shading only, black garment rendered as hatched and washed greys so seams stay legible,
+white pieces left as paper. Monochrome, no colour. Hand-drawn character: slight line weight variation, one or two faint
+construction guidelines left visible. Leave clean margins so numbered callouts can be added over the image in the
+layout. No text, numbers, arrows, labels, borders, watermark or photographic rendering. Format: tall portrait,
+approximately 9:16. The printed slot is 34.7 x 66.4 mm and shows the whole image with object-fit contain, so keep the
+full figure inside the frame with a small margin all round; the figure fills about 90% of the height and is centred
+horizontally.
+
+Clarification: the primary request 'detail study ... no figure' takes precedence over the generic croquis and full
+figure template wording. Show ONLY the enlarged section of beaded bodice fabric and princess seam, with one unbeaded
+corner. No figure, no body, no garment overview, no inset panel or border. Keep the original ink and pencil style and
+tall portrait format.

@@ -17,13 +17,13 @@
 
    1. The band is 47 mm, not 26 mm (44 mm after trim, plus 3 mm of bleed).
       The 60° slant is derived from --band-h, so it re-derives to 27.1 mm and
-      the angle holds — the whole point of deriving it. The wordmark is left
-      at 38 pt: it measures 143.3 mm against 326 mm of cream run here, so
+      the angle holds - the whole point of deriving it. The wordmark is left
+      at 38 pt: it measures 129.17 mm against 326 mm of cream run here, so
       none of the A4 amendment's width bounds bite.
 
    2. The area block carries all four area fields in chapter order rather
       than one. A page belongs to one chapter; the spine is the whole book,
-      and this is its index — rose, sage, Wedgwood blue, marigold, reading
+      and this is its index - rose, sage, Wedgwood blue, marigold, reading
       down the spine in the order the chapters run. Each band is the
       masthead's 60° joint repeated, all four the same length, and the run
       closes in cream, so the strip begins and ends in the masthead's own
@@ -33,7 +33,7 @@
 
    ROTATION. The art is authored horizontally, then rotated 90° clockwise
    inside .spine-piece, which puts the wordmark at the head reading
-   top-to-bottom — the English spine convention, so the title is upright
+   top-to-bottom - the English spine convention, so the title is upright
    when the binder lies face up. Rotation happens after layout, so every
    measurement below is in the horizontal frame: "band height" is the 47 mm
    that becomes the strip's width once turned.
@@ -47,7 +47,7 @@
 /* The strip is 436 mm long, which is 16 mm past the 420 mm of an A3 sheet,
    so this piece cannot print on the folio's own stock. A2 portrait is the
    next size up that takes it whole, and it takes two copies side by side
-   with room for the spec panel — a spare costs nothing on a sheet already
+   with room for the spec panel - a spare costs nothing on a sheet already
    paid for, and a mis-cut on a 436 mm strip is otherwise a reprint. */
 .sheet {
   position: relative; box-sizing: border-box;
@@ -92,7 +92,7 @@
    translate, so the rotation is the only transform in play. */
 /* --seg-step is how far each chapter band advances along the strip, and it
    is the same at every height because the bands are congruent
-   parallelograms — "equal length" is unambiguous however the slant
+   parallelograms - "equal length" is unambiguous however the slant
    re-derives. --seg-tail is the cream close, measured on its short side;
    the slant makes it that much wider on the other. */
 .spine-piece { position: relative; width: 65mm; height: 442mm; overflow: hidden; --seg-step: 28mm; --seg-tail: 15mm; }
@@ -130,7 +130,7 @@
 /* Four chapter bands, then cream. Each band is the masthead's own joint
    repeated: a parallelogram clipped at 60° on both edges and pulled left
    by exactly the slant, so its leading edge lands on its neighbour's
-   trailing one. That is how .m2-area meets .m2-cream, three more times —
+   trailing one. That is how .m2-area meets .m2-cream, three more times -
    fills butting directly, no paper between, no rule.
    The block's own cream ground shows only if a sub-pixel rounding gap
    ever opens between two bands, which is the right direction to fail:
@@ -150,7 +150,7 @@
 .spine-art .seg-3 { background: var(--making-field); }
 .spine-art .seg-4 { background: var(--trials-field); }
 /* The close. Leading edge on the fourth band's, trailing edge square on
-   the bleed — a trapezoid, not a parallelogram, because the strip ends
+   the bleed - a trapezoid, not a parallelogram, because the strip ends
    there and paper does not slant. */
 .spine-art .seg-end {
   width: calc(var(--seg-tail) + var(--m2-slant));
@@ -158,17 +158,18 @@
   clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
-/* Double rule and running foot on the page's own margins, plus 3 mm of
-   bleed at each end: 25 + 3 left, 15 + 3 right.
+/* Heavy edge over a stitch row (see --stitch in deck.css) and the running
+   foot on the page's own margins, plus 3 mm of bleed at each end: 25 + 3
+   left, 15 + 3 right.
 
-   The heavy weight is 0.53mm, matching .rule-heavy in deck.css — see the
+   The heavy weight is 0.53mm, matching .rule-heavy in deck.css - see the
    comment there for why the pair cannot be authored at 0.4mm. Short
    version: 0.4mm is 1.51px at 1x and snaps to either 1 or 2 device rows
    depending on where the sheet falls on the pixel grid, while the 0.12mm
    hairline always snaps up to 1, so at some offsets the two lines rendered
    identically. 0.53mm is the smallest weight that is >= 2px. */
-.spine-rule-heavy { flex: none; margin: 2.5mm 18mm 0 28mm; height: 0.53mm; background: #1A1A1A; }
-.spine-rule-fine { flex: none; margin: 0.9mm 18mm 0 28mm; height: 0.12mm; background: #1A1A1A; }
+.spine-rule-heavy { flex: none; margin: 2.5mm 18mm 0 28mm; height: 0.53mm; background: var(--school-purple, #5B2A86); }
+.spine-rule-fine { flex: none; margin: 1.4mm 18mm 0 28mm; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .spine-foot {
   flex: 1; min-height: 0; margin: 0 18mm 3mm 28mm;
   display: flex; align-items: center; justify-content: space-between;

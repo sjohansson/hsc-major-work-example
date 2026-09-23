@@ -8,7 +8,7 @@
     boot, which is why they only preview inside VS Code. This script does
     the small part of that job the artwork actually depends on: it lifts
     each <section> out of the source, substitutes the values renderVals()
-    would have produced, repoints the relative asset paths, and wraps the
+    would have produced, re-points the relative asset paths, and wraps the
     result in a page that links the real stylesheets from design-system/.
 
     Nothing is copied. The previews link deck.css and the item stylesheets
@@ -22,8 +22,11 @@
     print-at-100% proof — behaves exactly as it does in the host.
 
 .PARAMETER Item
-    Which to build: folio, spine, tag, labels, mounts, or all (default).
-    mounts is the A4 cutting scaffold for the experiment mounts on folio
+    Which to build: folio, spine, tag, labels, mounts, meta, or
+    all (default). meta is the design notes page: the design process and
+    the graphic elements, drawn by the live deck.css. It includes the full
+    colour system, token derivation, and masthead transitions. mounts is
+    the A4 cutting scaffold for the experiment mounts on folio
     pages 9-11: the same slots at the same size, on paper an A4 printer
     can take. Print it at 100% with margins None and check its 100 mm bar.
 
@@ -45,10 +48,6 @@
     Folio: corner crop marks and the 3 mm bleed box. Equivalent to the
     showBleed prop.
 
-.PARAMETER NoMirror
-    Labels: render the transfer sheet unmirrored, as for printable fabric
-    sheets. The sheet's own banner follows this, exactly as the prop does.
-
 .PARAMETER DashedSlots
     Mounts: draw the mount outlines as dashed cut guides rather than the
     hairline the A3 page prints. The slots are border-box, so this changes
@@ -64,10 +63,6 @@
     The twelve pages with the production overlays on.
 
 .EXAMPLE
-    .\scripts\preview.ps1 -Item labels -NoMirror
-    Check the transfer sheet the way printable fabric sheets need it.
-
-.EXAMPLE
     .\scripts\preview.ps1 -Item mounts
     The three A4 mount scaffolds, ready to print and cut against.
 
@@ -81,7 +76,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('all', 'folio', 'spine', 'tag', 'labels', 'mounts')]
+    [ValidateSet('all', 'folio', 'spine', 'tag', 'labels', 'mounts', 'meta')]
     [string[]] $Item = @('all'),
 
     [string] $OutDir = (Join-Path $env:TEMP 'folio-preview'),
@@ -90,7 +85,6 @@ param(
 
     [switch] $Guides,
     [switch] $Bleed,
-    [switch] $NoMirror,
     [switch] $DashedSlots,
 
     [string] $Slate = '#4A4E69',
@@ -150,8 +144,6 @@ function New-Chrome {
 # are the design size, needed because a .page sets only its height and takes
 # its width from the deck-stage canvas.
 # ---------------------------------------------------------------------------
-$mirror = -not $NoMirror
-
 $docs = [ordered]@{
     folio  = @{
         Out = 'folio.html'; Source = 'Folio Deck.dc.html'; Css = $null
@@ -181,19 +173,11 @@ $docs = [ordered]@{
     }
     labels = @{
         Out = 'product-labels.html'; Source = 'Product Labels.dc.html'; Css = 'product-labels.css'
-        Name = 'Product labels'; Sub = 'A4 x 3, trim 58 x 39 mm, dress and collar'
+        # Sheets 1 and 2 are the same run as it reads and mirrored; the
+        # orientation is fixed in each section, not a value.
+        Name = 'Product labels'; Sub = 'A4 x 4, patch 71 x 48 mm, dress, overskirt and collar, as it reads and mirrored'
         W = '210mm'; H = '297mm'
-        Vals = @{
-            gownSize = $GownSize; studentNo = $StudentNo
-            mirror = $(if ($mirror) { 'scaleX(-1)' } else { 'none' })
-            mirrorState = $(if ($mirror) { 'MIRRORED' } else { 'NOT MIRRORED' })
-            mirrorNote = $(if ($mirror) {
-                    'Correct for standard iron-on transfer paper for light fabrics, which prints face down. The artwork below reads backwards; it will read correctly once transferred. Do not also mirror in the printer driver.'
-                }
-                else {
-                    'Correct for printable fabric sheets, which are stitched in directly. WRONG for iron-on transfer paper - set the mirror prop before printing.'
-                })
-        }
+        Vals = @{ gownSize = $GownSize; studentNo = $StudentNo }
     }
     # The A4 cutting scaffold for folio pages 9-11. Its .ms-sheet is sized
     # 100% x 100% rather than 210 x 297mm - the deck host takes the sheet
@@ -210,6 +194,14 @@ $docs = [ordered]@{
             slotRule = $(if ($DashedSlots) { '0.25mm dashed #1A1A1A' } else { '0.12mm solid #1A1A1A' })
             calDisplay = 'flex'
         }
+    }
+    # The design notes: a static page, no sections and no tokens, that
+    # links deck.css and draws the type, the house mark, the rules, the
+    # plates and the colourways with the folio's own classes. It explains
+    # the design process and keeps a ledger of changes at its foot.
+    meta   = @{
+        Out = 'design-notes.html'; Static = 'meta/design-process.html'
+        Name = 'Design notes'; Sub = 'The design process and the graphic elements, drawn by the live stylesheet'
     }
 }
 
@@ -396,7 +388,6 @@ if (-not $built) { throw 'nothing was built' }
 $flags = @()
 if ($Guides) { $flags += 'guides' }
 if ($Bleed) { $flags += 'bleed' }
-if (-not $mirror) { $flags += 'labels not mirrored' }
 if ($DashedSlots) { $flags += 'mount slots dashed' }
 if ($Slate -ne '#4A4E69') { $flags += "slate $Slate" }
 if ($Wine -ne '#8C3B4A') { $flags += "wine $Wine" }
@@ -433,7 +424,7 @@ $head
 <div class="lede">Static previews rendered from the .dc.html sources against the live stylesheets in <code>design-system/</code>. Sheets are sized in real millimetres: Ctrl&nbsp;+&nbsp;scroll to zoom freely, Ctrl+P to print a true-size proof.$flagLine</div>
 $($cards -join "`n")
 <div class="foot">Rebuild after editing: <code>pwsh .\scripts\preview.ps1</code>, then reload.<br>
-Options: <code>-Item folio|spine|tag|labels|mounts</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-NoMirror</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
+Options: <code>-Item folio|spine|tag|labels|mounts|meta</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
 </body></html>
 "@
 

@@ -1,0 +1,15 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Sketch 3B, back view of Design Three, the same dress as sketch 3A from behind on the croquis. Show the white collar from
+behind, a lapped centre back zip drawn as a narrow overlapping placket with a stitching line from the neckline down
+under the belt, the wide buckled belt continuing round the back and covering the zip at the waist, the sheer tulle
+sleeves, and the three equal tulle tiers from behind. Same figure proportions and line style as 3A. Style: a Year 12
+student's own fashion design development sketch. Fine black ink line over light pencil on warm off-white cartridge
+paper, a faceless stylised croquis figure with simplified hands and hair pinned up, garment drawn with clear
+construction lines, seams and gathers indicated with short ticks, light grey pencil-wash shading only, black garment
+rendered as hatched and washed greys so seams stay legible, white pieces left as paper. Monochrome, no colour.
+Hand-drawn character: slight line weight variation, one or two faint construction guidelines left visible. Leave clean
+margins so numbered callouts can be added over the image in the layout. No text, numbers, arrows, labels, borders,
+watermark or photographic rendering. Format: portrait, approximately 7:10. The printed slot is 78.2 x 111.4 mm and shows
+the whole image with object-fit contain; keep the subject centred with a small margin all round.

@@ -1,0 +1,8 @@
+Use case: precise-object-edit
+Asset type: cutting-layout diagram for a Year 12 textiles folio
+Input image: edit target
+Primary request: preserve the three stacked fabric strips and every pattern piece, but make the fabric coding obvious when printed at about 78 mm square.
+Style: crisp black technical linework on pure white.
+Fabric coding: top satin strip uses bold, evenly spaced single diagonal hatching at 45 degrees; middle tulle strip uses bold, evenly spaced cross-hatching; bottom cotton pique strip uses a sparse regular dot pattern. Keep every pattern piece interior pure white so the fabric hatching remains behind and around pieces only.
+Composition: keep all three complete strips inside generous margins. Increase the vertical separation between strips slightly.
+Constraints: preserve the existing relative cutting layout and grainline arrows; no labels, letters, numbers, dimensions, colour, grey fill, shadows, texture, border around the full image, or watermark. The HTML page will provide the matching fabric key.

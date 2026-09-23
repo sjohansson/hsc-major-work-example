@@ -1,0 +1,43 @@
+{
+  "deck_dir": "design-system",
+  "deck": "Folio Deck.dc.html",
+  "deck_css": "deck.css",
+  "assets_dir": "assets",
+  "output_dir": "build/canva",
+  "local_ids": "canva.local.json",
+  "dialect": "claude-canva-connector",
+  "title": "The Raven's Ledger",
+  "page_mm": [
+    297.0,
+    420.0
+  ],
+  "canva_px": [
+    1123,
+    1588
+  ],
+  "background": "#FEFBFC",
+  "pattern_fill": "#F5EFE2",
+  "props": {
+    "slate": "#4A4E69",
+    "wine": "#8C3B4A",
+    "bandHmm": "26mm",
+    "studentNo": "12345678",
+    "gownSize": "10",
+    "chrome": ""
+  },
+  "google_fonts": [
+    "Fraunces:opsz,wght@9..144,900",
+    "PT+Serif:ital,wght@0,400;0,700;1,400"
+  ],
+  "thumbnail": {
+    "text": "RL",
+    "fill": "#4A4E69"
+  },
+  "placeholder": {
+    "fill": "#EEEDEA",
+    "stroke": "#5A5C70"
+  },
+  "known_residuals": {
+    "12": 0.5
+  }
+}

@@ -1,0 +1,17 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Sketch 1C, detail study of Design One, the yoke and shirt collar alone at a larger scale, no figure. Draw the neckline
+area from shoulder to shoulder and down to the top of the bodice: the black shirt collar with its stand and points, the
+short placket with three small buttons, the sheer organza yoke over it drawn as a lighter translucent layer so the
+collar and placket show through, the gathered ruffle running around the neckline edge, and the start of the ruffled cap
+sleeves at each shoulder. Enough detail to read how the ruffle and the collar compete for the same spot. Style: a Year
+12 student's own fashion design development sketch. Fine black ink line over light pencil on warm off-white cartridge
+paper, a faceless stylised croquis figure with simplified hands and hair pinned up, garment drawn with clear
+construction lines, seams and gathers indicated with short ticks, light grey pencil-wash shading only, black garment
+rendered as hatched and washed greys so seams stay legible, white pieces left as paper. Monochrome, no colour.
+Hand-drawn character: slight line weight variation, one or two faint construction guidelines left visible. Leave clean
+margins so numbered callouts can be added over the image in the layout. No text, numbers, arrows, labels, borders,
+watermark or photographic rendering. Format: tall portrait, approximately 9:16. The printed slot is 34.7 x 66.4 mm and
+shows the whole image with object-fit contain, so keep the full figure inside the frame with a small margin all round;
+the figure fills about 90% of the height and is centred horizontally.

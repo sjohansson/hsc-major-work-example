@@ -1,0 +1,77 @@
+{
+  "name": "claude-canva-connector",
+  "status": "unverified",
+  "description": "The operation vocabulary this pipeline has always emitted for a Canva connector exposed as read-design and edit-design. It is not in Canva's public MCP documentation, so treat it as unconfirmed until a probe and a one-page push agree.",
+  "required_tools": ["read-design", "edit-design"],
+  "apply_tool": "edit-design",
+  "capabilities": {
+    "create_elements": true,
+    "speaker_notes": true,
+    "format_text": true,
+    "transactions": true
+  },
+  "ops": {
+    "notes": {
+      "type": "replace_speaker_notes",
+      "emit": [
+        ["from", "page_id", "page"],
+        ["from", "notes", "notes"]
+      ]
+    },
+    "shape": {
+      "type": "insert_shape",
+      "emit": [
+        ["from", "page_id", "page"],
+        ["from", "top", "top"],
+        ["from", "left", "left"],
+        ["from", "width", "width"],
+        ["from", "height", "height"],
+        ["from", "path", "path"],
+        ["from", "view_box_width", "view_box_width"],
+        ["from", "view_box_height", "view_box_height"],
+        ["from", "color", "fill"],
+        ["from", "stroke_color", "stroke"],
+        ["from", "stroke_weight", "stroke_weight"],
+        ["from", "rotation", "rotation"]
+      ]
+    },
+    "image": {
+      "type": "insert_fill",
+      "emit": [
+        ["from", "page_id", "page"],
+        ["const", "asset_type", "image"],
+        ["from", "asset_id", "asset_id"],
+        ["from", "alt_text", "alt_text"],
+        ["from", "top", "top"],
+        ["from", "left", "left"],
+        ["from", "width", "width"],
+        ["from", "height", "height"]
+      ]
+    },
+    "text": {
+      "type": "add_text",
+      "emit": [
+        ["from", "page_id", "page"],
+        ["from", "text", "text"],
+        ["from", "top", "top"],
+        ["from", "left", "left"],
+        ["from", "width", "width"],
+        ["from", "rotation", "rotation"]
+      ]
+    },
+    "format": {
+      "type": "format_text",
+      "emit": [
+        ["from", "element_id", "element_id"],
+        ["nest", "formatting", [
+          ["from", "font_size", "font_size"],
+          ["from", "color", "color"],
+          ["from", "text_align", "text_align"],
+          ["from", "line_height", "line_height"],
+          ["from", "font_weight", "font_weight"],
+          ["from", "font_style", "font_style"]
+        ]]
+      ]
+    }
+  }
+}

@@ -3,18 +3,18 @@
    (--slate, --wine, --band-h), bound to the deck's props in the .dc.html.
    Area colour tokens below are fixed theme values, not deck props. */
 
-/* ---- Area colour theming: each folio chapter (area) has five tokens —
+/* ---- Area colour theming: each folio chapter (area) has five tokens -
    field  (pale panel behind dateline / chapter transitions)
    border (full-strength token for rules, borders and accents)
    accent (deeper tone for plate dots and fine detail)
    tint   (near-white wash for table cells and large backgrounds)
-   emph   (the accent taken down to text contrast — coloured type only)
+   emph   (the accent taken down to text contrast - coloured type only)
 
    emph is the only token that may be set as a font colour; the closing
    statement's final clause on page 12 is its only use so far. It is each
    area's accent mixed 80% toward the body ink #1A1A1A, so an emphasised
-   phrase reads in its own chapter's colour — the same family as the rule
-   stub, table heading and plate dots around it — instead of introducing a
+   phrase reads in its own chapter's colour - the same family as the rule
+   stub, table heading and plate dots around it - instead of introducing a
    hue the folio uses nowhere else.
 
    The accents themselves are graphic tones and measure under 4.5:1 on the
@@ -30,6 +30,35 @@
    accent is ever re-sampled, re-derive its emph with
    color-mix(in srgb, <accent> 80%, #1A1A1A) and re-measure. ---- */
 :root {
+  /* Wednesday school purple: the house mark and the divider lines it sits in */
+  --school-purple: #5B2A86;
+  /* ---- Stitch row. The fine rule under the masthead, the running foot's
+     rule and the lines either side of the house mark are drawn as a row of
+     topstitching rather than a plain line: the cream band is a panel of
+     cloth and the heavy rule is its folded edge, so the line beneath it is
+     the stitch that holds the hem. One SVG tile, authored in millimetres so
+     it prints at 1:1: a 2.5mm stitch, a 1mm gap, 0.35mm thread with round
+     ends, in school purple. The colour is written into the tile because a
+     data: URI cannot read a custom property; change both together.
+
+     background-repeat: round no-repeat is load-bearing, both halves of it.
+     round stretches the tile by a hair so every row starts and ends on a
+     whole stitch instead of the chopped fragment repeat-x leaves at
+     whichever end the width falls on; no-repeat on the second axis keeps
+     the row to one line where the stitch is painted onto a box taller than
+     itself, as it is on the running foot. round alone tiles both ways and
+     fills the foot with stripes.
+
+     The thread is 0.35mm, not the 0.53mm the heavy rule needs. That figure
+     exists because a solid line's weight is all it has, and 1.3px snapping
+     to one row or two changed what the masthead said. A stitch reads by its
+     length and rhythm; 2.5mm is 9.4px at 1x, so a row that snaps thin still
+     reads as stitching, and on paper 0.35mm is four dots at 300dpi, a real
+     topstitch. The tile box is 0.5mm so the round thread ends are not
+     clipped. ---- */
+  --stitch-h: 0.5mm;
+  --stitch-tile: 3.5mm 0.5mm;
+  --stitch: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='3.5mm' height='0.5mm' viewBox='0 0 3.5 0.5'><line x1='0.18' y1='0.25' x2='2.68' y2='0.25' stroke='%235B2A86' stroke-width='0.35' stroke-linecap='round'/></svg>");
   /* Area I - The Sources, Gathered (slate) */
   --sources-field: #C8C9D6; --sources-border: #7C7F9E; --sources-accent: #6A6D86; --sources-tint: #EFF0F3; --sources-emph: #5A5C70; /* 6.38:1 */
   /* Area II - The Designs, Weighed (bone) */
@@ -56,13 +85,13 @@ a:hover { color: #8A5866; }
 /* Coloured type comes from --area-emph (see the area table above), which every
    .page resolves through its area-* class. A page without an area class leaves
    it unset, the colour declaration is then invalid at computed-value time and
-   the text inherits the body ink — the safe direction to fail. */
+   the text inherits the body ink - the safe direction to fail. */
 .page { position: relative; height: 420mm; box-sizing: border-box; display: flex; flex-direction: column; background: #FEFBFC; }
 .masthead { flex: none; background: #F5EFE2; min-height: var(--band-h); padding: 5mm 15mm 4mm 25mm; display: flex; align-items: flex-end; justify-content: space-between; gap: 10mm; box-sizing: border-box; }
 .wordmark { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 38pt; line-height: 0.92; color: #1A1A1A; }
 .masthead-rule { width: 30mm; height: 1.1mm; background: var(--slate); margin-top: 3mm; }
 /* ---- Dateline: two registers, area name over period title. The NESA area
-   name leads — uppercase, letterspaced, bold — because it is what a marker
+   name leads - uppercase, letterspaced, bold - because it is what a marker
    hunts for; the folio's own period title sits under it in italic upper-and-
    lower, so the two read as head and subtitle rather than as two competing
    caps lines. Both are right-aligned.
@@ -71,18 +100,18 @@ a:hover { color: #8A5866; }
    name starts at the same height on all twelve pages and a two-line name
    grows downward into the field instead of pushing its own first line up.
    The 5mm top padding is not arbitrary: it lands the area name's cap top at
-   5.82mm, against the wordmark's at 5.84mm across the 60° seam — 0.02mm
+   5.82mm, against the wordmark's at 5.84mm across the 60° seam - 0.02mm
    apart, so the two heads read as one line of type interrupted by the
    transition. That pairing assumes the cream side keeps its 38pt wordmark
    bottom-aligned in a 26mm band; re-tune either and re-measure both.
 
    Sizes are set by the worst case, measured in PT Serif at 122mm block width
-   (measured at 11.5pt, scaled ×12/11.5 — line-height and letter-spacing are
+   (measured at 11.5pt, scaled ×12/11.5 - line-height and letter-spacing are
    em-relative, so widths and heights scale linearly with font size):
    the longest area name breaks to two lines at 91.0mm on the first, against
    94.6mm of width at that line's height (same break point as at 11.5pt);
    the longest period title is 59.8mm against 101mm. The whole block is
-   16.0mm at two lines, inside the 17mm the 26mm band leaves after padding —
+   16.0mm at two lines, inside the 17mm the 26mm band leaves after padding -
    so the band never grows and the 60° angle (which is derived from the band
    prop, not measured) stays true. ---- */
 .kicker { font-family: 'PT Serif', Times, serif; text-align: right; color: #1A1A1A; }
@@ -98,9 +127,9 @@ a:hover { color: #8A5866; }
    joint renders as a single blended pixel, with no paper showing through.
 
    Area block width is constrained at both ends. The upper bound holds: it
-   must stay <= page - 25mm cream padding - wordmark (143.3mm at 38pt)
-   = 128.8mm. The lower bound is now set by the widest dateline line — the
-   first line of the longest area name, 87.2mm — which must clear the 60°
+   must stay <= page - 25mm cream padding - wordmark (129.17mm at 38pt)
+   = 128.8mm. The lower bound is now set by the widest dateline line - the
+   first line of the longest area name, 87.2mm - which must clear the 60°
    edge where that line sits (12.4mm in, the same height on every page now
    the block is top-aligned) as well as its own 15mm right padding: 114.6mm.
    122mm sits inside both, with 7.4mm of dateline slack.
@@ -111,51 +140,63 @@ a:hover { color: #8A5866; }
 .masthead2 { --m2-slant: calc(var(--band-h, 26mm) * 0.57735); --m2-area-w: 122mm; flex: none; display: flex; min-height: var(--band-h); }
 .m2-cream { flex: 1; background: #F5EFE2; display: flex; align-items: flex-end; padding: 5mm 0 4mm 25mm; box-sizing: border-box; clip-path: polygon(0 0, 100% 0, calc(100% - var(--m2-slant)) 100%, 0 100%); }
 .m2-area { flex: none; width: var(--m2-area-w); margin-left: calc(-1 * var(--m2-slant)); background: var(--area-field, #F5EFE2); display: flex; align-items: flex-start; justify-content: flex-end; padding: 5mm 15mm 4mm 6mm; box-sizing: border-box; clip-path: polygon(var(--m2-slant) 0, 100% 0, 100% 100%, 0 100%); }
-/* The double rule that closes the masthead: a heavy line over a hairline.
-   0.53mm, not the 0.4mm this used to be, because of how the pair rasterises
-   on a 1x screen. A browser paints a background box on whole device pixels —
-   round(bottom) - round(top) — so the rendered weight depends on where the
+/* The double rule that closes the masthead: a heavy line over a stitch row.
+   Read as cloth, the cream band is a panel, the heavy rule its folded edge
+   and the row beneath it the topstitch that holds the hem (see --stitch on
+   :root). The stitch sits 1.4mm under the edge, not the 0.9mm the old
+   hairline did, because a stitch row has a height of its own and at 0.9mm
+   the thread touched the fold.
+
+   The heavy rule is 0.53mm, not the 0.4mm it used to be, because of how a
+   thick-over-thin pair rasterises
+   on a 1x screen. A browser paints a background box on whole device pixels -
+   round(bottom) - round(top) - so the rendered weight depends on where the
    box happens to fall on the pixel grid. 0.4mm is 1.51px, which snaps to
    either 1 or 2 rows; 0.12mm is 0.45px, which always snaps up to exactly 1.
    On the pages where the heavy rule landed on a 1-row offset the two lines
    came out identical and the masthead closed on a doubled hairline instead
    of the intended thick-over-thin. A page is 420mm = 1587.4px tall, so every
    page in a stacked preview sits on a different fraction and the pair broke
-   on a different subset each time — pages 1, 2, 4, 7, 9 and 12 at 1x.
+   on a different subset each time - pages 1, 2, 4, 7, 9 and 12 at 1x.
 
    0.53mm is the smallest weight that is >= 2px (2.003px), so its floor is 2
    rows at every offset and it can never collapse onto the hairline's single
    row. Measured across offsets at 1x, 1.25x, 1.5x and 2x: thick-over-thin
    on all of them, and uniformly 2:1, 3:1 and 4:1 at 1x, 1.5x and 2x.
 
-   On paper none of this applies — 0.53mm is 6 dots at 300dpi against the
-   hairline's 1.4 — but the printed weight now matches the proof on screen,
+   On paper none of this applies - 0.53mm is 6 dots at 300dpi against the
+   hairline's 1.4 - but the printed weight now matches the proof on screen,
    which the 0.4mm value only did on half the pages. The spine insert and
    both swing tags carry the same device and were moved with it, so the
-   folio, .spine-rule-heavy and .tag-rule-heavy all state one weight. */
-.rule-heavy { flex: none; margin: 2.5mm 15mm 0 25mm; height: 0.53mm; background: #1A1A1A; }
-.rule-fine { flex: none; margin: 0.9mm 15mm 0 25mm; height: 0.12mm; background: #1A1A1A; }
+   folio, .spine-rule-heavy and .tag-rule-heavy all state one weight. The
+   stitch row that replaced the hairline is not subject to any of this: it
+   reads by stitch length, not weight, so it cannot collapse into the edge. */
+.rule-heavy { flex: none; margin: 2.5mm 15mm 0 25mm; height: 0.53mm; background: var(--school-purple); }
+.rule-fine { flex: none; margin: 1.4mm 15mm 0 25mm; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 11mm 15mm 0 25mm; }
 /* Area-coloured stub rule under a page's opening display line. flex: none is
    load-bearing, not decorative: .content is a column flex box, so a bare
    1.1mm child is the first thing the shrink algorithm eats when a page runs
    long, and the rule fades out instead of the page visibly overflowing. */
 .rule-stub { flex: none; width: 60mm; height: 1.1mm; background: var(--area-border); margin-top: 4mm; }
-/* Running foot. The top margin is 3mm on all twelve pages — pages 5 and 12
-   used to override it to 9mm inline and no longer do, so the hairline sits at
-   one height off the content on every page. It matches the foot's own 3mm
-   padding-top, so the rule is centred in a 3mm-either-side band.
+/* Running foot. The rule over it is a stitch row (see --stitch on :root),
+   painted as the foot's own background along its top edge; padding-top is
+   3.5mm so the 3mm of air under the old hairline is kept below the 0.5mm
+   stitch box. The top margin is 3mm on all twelve pages - pages 5 and 12
+   used to override it to 9mm inline and no longer do, so the stitch sits at
+   one height off the content on every page and is centred in a 3mm-either-
+   side band.
 
    .content is flex: 1, so the 5mm this releases (6mm on the two pages that
    overrode it) goes to the content box, not to the foot: the hairline moves
-   down the page by that much. On a page whose content stretches to fill —
-   3, 4, 6 and 7 — the white above the rule is now the 3mm margin and nothing
+   down the page by that much. On a page whose content stretches to fill -
+   3, 4, 6 and 7 - the white above the rule is now the 3mm margin and nothing
    else, where it was 8mm. The bottom margin stays 8mm; that one is the
    trim-side figure and is not the same number by coincidence. */
-.folio-footer { flex: none; margin: 3mm 15mm 8mm 25mm; padding-top: 3mm; border-top: 0.12mm solid #1A1A1A; display: flex; justify-content: space-between; font-family: 'PT Serif', Times, serif; font-size: 12pt; color: #1A1A1A; }
+.folio-footer { flex: none; margin: 3mm 15mm 8mm 25mm; padding-top: 3.5mm; background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); background-position: 0 0; display: flex; justify-content: space-between; font-family: 'PT Serif', Times, serif; font-size: 12pt; color: #1A1A1A; }
 /* Running foot: the house ornament set between two runs of type. Both tokens
    below belong to .mark-band and are documented there; what is set here is
-   what a text run — as opposed to a hairline rule — needs of them.
+   what a text run - as opposed to a hairline rule - needs of them.
 
    --mark-space replaces the 1.6mm flex gap this row used to carry, so the
    spacing is the mark's own margin and one number sets both sides. 2.5mm is
@@ -172,103 +213,42 @@ a:hover { color: #8A5866; }
    for the measurement; 0.0625em is 1px at the footer's 12pt and 0.265mm on
    paper. Set in em, so it holds if the running foot is ever re-sized. */
 .footer-mark { display: flex; align-items: center; --mark-space: 2.5mm; --mark-drop: 0.0625em; }
-
-/* ---- House ornament. A jet bead between two bars, one colour, drawn in
-   assets/house-mark.svg. One mark for the whole set: the twelve folio
-   footers, the page-12 closing divider, the binder spine and the swing tag.
-
-   SIZED BY THE INK, NOT BY THE FILE. The SVG viewBox is 1376 x 768 with the
-   drawn band 1216 x 584 inside a symmetrical transparent margin, so --mark-h is
-   the height of the band as it prints and the box is scaled up by 768/584
-   to deliver it. Width follows from the aspect ratio: --mark-h × 1216/584.
-   The default 3mm lands 6.25mm of ink in the footer, within a hair of the
-   6.2mm the old leaf-and-rosette pair occupied, so no footer reflows.
-
-   The negative margin cancels the file's transparent side margin (80 px of
-   1376, which is 80/584 of --mark-h), so the authored gap either side is
-   the gap that shows. Without it the mark floats 0.4mm further from its
-   neighbour than the rule says at footer size, and the error grows with
-   --mark-h.
-
-   --mark-space is added to that margin: the white either side of the drawn
-   band when the mark's neighbours are set with no gap of their own. It is
-   how the running foot spaces the mark (2.5mm — see .footer-mark) and it
-   defaults to 0 for .mark-rule and the tag, which author their gap on the
-   flex row instead. Do not set both in one place; they add.
-
-   --mark-drop is a vertical optical correction, and 0 everywhere but a text
-   run. align-items: center puts the mark's ink centre on the middle of the
-   flex line, which against type is the middle of the LINE BOX, not of the
-   letters: measured in the footer's 12pt PT Serif (font box ascent 1.0625em,
-   descent 0.3125em) that is 0.375em above the baseline, while the type's own
-   mass sits lower — cap centre 0.344em, x-height centre 0.25em — so the mark
-   reads high between the words. 0.0625em drops it to 0.3125em, which lands
-   the band's ink just inside the cap line at the top (10.67px against the
-   caps' 11px) and 0.18mm under the baseline at the foot — in the line rather
-   than over it. 0.13mm, the cap centre exactly, is not enough to see; 0.40mm,
-   the centre of the glyph ink with the descenders counted, hangs the band
-   0.31mm below the baseline and reads low. Chosen by rendering the four at
-   7x, not by the arithmetic alone.
-
-   It stays 0 on .mark-rule and .tag-mark deliberately: those centre the mark
-   between two hairlines, where geometric centring is what the eye wants and
-   a nudge would visibly break the line. Set it only where the neighbours are
-   words. position: relative keeps the correction out of layout, so nothing
-   reflows and the page-12 margin measured below is unaffected.
-
-   PAGE 12 IS THE BINDING CONSTRAINT ON THE DIVIDER SIZE, not taste. Its
-   closing block hangs off margin-top:auto under the densest content in the
-   folio, and the auto margin is all the slack there is: 8.09mm with the old
-   2.8mm rosette. --mark-h:5mm spends 3.8mm of that and leaves 4.3mm, which
-   is about one line of the 12.5pt two-column text above — enough that a
-   font-metric difference between the design host and a browser cannot push
-   the page into overflow. 8mm looked right and left 0.39mm. Re-measure that
-   gap before raising it.
-
-   Colour is fixed in the artwork: ink only. This mark does not follow the
-   --slate and --wine props, so re-sampling the garment colour moves the
-   rules and the plate dots but not this. ---- */
-.mark-band {
-  flex: none; display: block;
-  height: calc(var(--mark-h, 3mm) * 768 / 584); width: auto;
-  margin: 0 calc(var(--mark-space, 0mm) - var(--mark-h, 3mm) * 80 / 584);
-  position: relative; top: var(--mark-drop, 0em);
+/* Centre the stamen ring on the text, then apply the type's optical drop. */
+.footer-mark .mark-band {
+  top: calc(var(--mark-drop, 0em) - var(--mark-h, 6mm) * 37.25 / 457);
 }
 
-/* ---- Ornamented rule: the hairline broken in the middle by the house mark.
-   It closes both of the folio's statement blocks and nothing else — the
-   standfirst on page 1 and the closing statement on page 12 — so the promise
-   and the redemption of that promise are set off by the same device at the
-   same size. Anywhere else a plain .rule-fine or a bare hairline is correct;
-   the mark loses its weight if it becomes general punctuation.
-
-   The two segments are ::before / ::after, so the markup carries the mark and
-   nothing else, and both halves flex to whatever measure the block runs at.
-
-   --mark-h is set here rather than inline so the two ends stay matched from
-   one place. 5mm is the page-12 figure and page 12 is the binding constraint
-   on it, for the reason set out under .mark-band above - do not raise it here
-   without re-measuring that page's auto margin. Page 1 pays 6.6mm of box
-   height for the same mark against roughly 38mm of slack in its two text
-   columns, so it is never the side that runs out.
-
-   The authored gap is 2.5mm; the file's transparent side margin is cancelled
-   by .mark-band, so 2.5mm is what prints either side of the drawn band. ---- */
-.mark-rule { --mark-h: 5mm; display: flex; align-items: center; gap: 2.5mm; }
-.mark-rule::before, .mark-rule::after { content: ""; flex: 1; height: 0.12mm; background: #1A1A1A; }
+/* The house mark: the nightshade flower as linework in school purple, with
+   no bars of its own; the lines either side of it are always CSS stitch
+   rows, so they can never fall off the page's own rules. The viewBox is cropped
+   to the drawing, 480 x 457 units, and --mark-h sets the printed ink
+   height: 6mm in the footer, 10mm in the opening and closing rules. */
+.mark-band {
+  flex: none; display: block;
+  height: var(--mark-h, 6mm); width: auto;
+  margin: 0 var(--mark-space, 0mm);
+  position: relative; top: var(--mark-drop, 0em);
+}
+/* Opening and closing rules share a 10mm ornament. The stamen ring sits at
+   y=480.25 within the SVG's y=214.5..671.5 crop, 37.25 units below its
+   centre. Lift the image by that offset so the ring sits on the axis of
+   the stitch rows either side. */
+.mark-rule { --mark-h: 10mm; display: flex; align-items: center; gap: 2.5mm; }
+.mark-rule .mark-band, .tag-mark .mark-band { top: calc(var(--mark-h) * -37.25 / 457); }
+.mark-rule::before, .mark-rule::after { content: ""; flex: 1; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 
 /* ---- Standfirst: the folio's opening statement, page 1 only. It sits above
    the first plate row so a marker has the item, its end-use and the claim the
-   record is kept to make before meeting any imagery — the promise the closing
+   record is kept to make before meeting any imagery - the promise the closing
    statement on page 12 redeems.
 
    It runs the full 257mm measure, like every other element on all twelve
-   pages — an inset text block was the only exception anywhere in the deck and
+   pages - an inset text block was the only exception anywhere in the deck and
    read as broken against the full-width hairline beneath it.
 
    16pt is set by the rag, not by taste: at this measure it is the size at
    which the passage fills four lines at 100 / 91 / 99 / 93 per cent of the
-   measure. Smaller leaves a stub — 13pt breaks the same copy at
+   measure. Smaller leaves a stub - 13pt breaks the same copy at
    97 / 99 / 99 / 16, a one-word last line. Re-measure the fills if the copy
    is edited. Leading is 1.4, matching the closing statement, because 16pt
    across 257mm is a long line for the eye to return on.
@@ -281,7 +261,7 @@ a:hover { color: #8A5866; }
    a marker scans to find the marked sections.
 
    The lead-in label is Fraunces, inline, so the block opens in the masthead's
-   voice. The .mark-rule below does the separating — there is no rule above,
+   voice. The .mark-rule below does the separating - there is no rule above,
    since .rule-heavy / .rule-fine already close the masthead. That rule is the
    same ornamented one that closes page 12, which is the point: the folio
    opens and shuts on the same device. .standfirst-rule now carries only the
@@ -308,25 +288,25 @@ a:hover { color: #8A5866; }
 /* ---- Captions ---- */
 /* align-items: flex-start, not the default stretch, so .plate-num keeps its
    7mm circle instead of being pulled to the height of a three-line caption.
-   .caption-row is the eight source plates on pages 1–2 and nothing else. */
+   .caption-row is the eight source plates on pages 1-2 and nothing else. */
 .caption-row { display: flex; align-items: flex-start; gap: 3mm; margin-top: 2.5mm; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.3; color: #1A1A1A; }
 
 /* ---- Plate number: the caption's leading figure set in a chapter-coloured
-   roundel, pages 1–2. The eight source images are cross-referenced by number
+   roundel, pages 1-2. The eight source images are cross-referenced by number
    in the body text of both pages ("images 1 to 4", "images 6 and 7", "image
-   8"), so the figure is a key a marker navigates by, not decoration — it has
+   8"), so the figure is a key a marker navigates by, not decoration - it has
    to be findable at a glance across a four-up row. A bold 12pt digit sitting
    in the caption's own type was not; it read as the first word of the
    sentence.
 
    THE SAME FAMILY AS .callout-dot, DELIBERATELY NOT THE SAME MEMBER. The
-   folio has one numbered-circle idiom already — the 6mm white, hairline-ringed
-   callouts on the manufacturing drawings (pages 6–8). Those carry a leader
+   folio has one numbered-circle idiom already - the 6mm white, hairline-ringed
+   callouts on the manufacturing drawings (pages 6-8). Those carry a leader
    line and point INTO an artwork, so they must stay quiet and let the drawing
    read through. This one labels a whole plate from outside it and should be
    the assertive member: filled with the chapter's field tone, a heavier 0.3mm
    ring, and the display face rather than the caption's PT Serif. Filled means
-   source plate; outlined means part of my own drawing. Keep that split — one
+   source plate; outlined means part of my own drawing. Keep that split - one
    circle doing both jobs makes the numbers on page 6 look like plate numbers.
 
    FILL IS --area-field, NOT --area-accent, and the reason is contrast. The
@@ -334,7 +314,7 @@ a:hover { color: #8A5866; }
    on --sources-accent measures 4.71:1 and on --designs-accent only 3.99:1,
    under the 4.5:1 the folio holds itself to, and reversing white out is worse
    still (3.70:1 and 3.97:1). The field tones are pale, so ink on
-   --sources-field is 6.36:1 with the hue still plainly the chapter's — and
+   --sources-field is 6.36:1 with the hue still plainly the chapter's - and
    the digit stays in the same ink as the caption it leads, which the reversed
    version broke. Measured against the tones as written, not eyeballed.
 
@@ -343,11 +323,11 @@ a:hover { color: #8A5866; }
    than a word, small enough that it is not a drop figure competing with the
    19pt criterion headings below. The -0.7mm top margin lands the circle's
    centre on 2.75mm, the first line's box centre, against a cap centre of
-   2.86mm — 0.11mm apart, so the figure reads as sitting ON the caption's
+   2.86mm - 0.11mm apart, so the figure reads as sitting ON the caption's
    first line rather than floating above it. Re-derive both if the caption
    size or leading moves.
 
-   Fraunces 900 at 13pt puts 3.3mm of cap inside the 6.4mm the ring leaves —
+   Fraunces 900 at 13pt puts 3.3mm of cap inside the 6.4mm the ring leaves -
    52%, which fills the disc without crowding it. It centres geometrically:
    at line-height 1 the digit's centre lands 0.005em below the box centre
    (0.02mm here), so no optical nudge is needed, unlike the running foot's
@@ -358,7 +338,7 @@ a:hover { color: #8A5866; }
    previous build, that is exactly one more line on all four page-1 captions
    (five to six); page 2's narrower column holds at three. Page 1 carries
    roughly 38mm of slack in its two text columns, so a 5.5mm line is
-   affordable — but it is spent, not free, and a re-write of the caption copy
+   affordable - but it is spent, not free, and a re-write of the caption copy
    should not assume it back. ---- */
 .plate-num {
   flex: 0 0 7mm; height: 7mm; margin-top: -0.7mm; box-sizing: border-box;
@@ -370,7 +350,7 @@ a:hover { color: #8A5866; }
 
 /* ---- Image credits: the newspaper picture-credit block for all eight
    source plates on pages 1-2, set once on page 2 under the screen influence
-   columns at the foot of the span4 text column — keyed by bold numerals
+   columns at the foot of the span4 text column - keyed by bold numerals
    to the same figures the roundels carry. The captions keep only what
    identifies the object (origin, date, lesson); holding institution and
    accession live here. Set at the folio's 12pt floor, not newspaper
@@ -407,7 +387,7 @@ a:hover { color: #8A5866; }
 .tbl-key th:first-child, .tbl-key td:first-child { text-align: center; }
 .tbl-af th:last-child, .tbl-af td:last-child { text-align: center; }
 
-/* ---- Experiment pages (9–11) ---- */
+/* ---- Experiment pages (9-11) ---- */
 .exp-row { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 5mm; }
 .exp-first { margin-top: 5mm; padding-bottom: 4mm; border-bottom: 0.4mm solid #1A1A1A; }
 .exp-mid { padding: 4mm 0; border-bottom: 0.4mm solid #1A1A1A; }
@@ -419,19 +399,27 @@ a:hover { color: #8A5866; }
 .mount-head { font-family: 'PT Serif', Times, serif; font-size: 12pt; letter-spacing: 0.1em; text-transform: uppercase; color: #1A1A1A; margin-bottom: 3mm; }
 .mount-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
 .mount-slot { height: 28mm; border: 0.12mm solid #1A1A1A; }
+.mount-slot img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .mount-cap { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.2; margin-top: 1.5mm; color: #1A1A1A; }
 
-/* ---- Manufacturing pages (6–8) ---- */
+/* ---- Manufacturing pages (6-8) ---- */
 .abs-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .piece { position: relative; height: 80mm; border: 0.3mm solid #1A1A1A; background: repeating-linear-gradient(45deg, #ffffff, #ffffff 3mm, #F5EFE2 3mm, #F5EFE2 6mm); }
 .scale-chip { position: absolute; bottom: 5mm; left: 5mm; border: 0.12mm solid #1A1A1A; background: #ffffff; padding: 1.8mm 2.5mm; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; color: #1A1A1A; }
+/* Numbered callouts over the sketch plates (pages 3 to 5). Each sits on the
+   plate's left or right edge with a leader to the feature it names; top is a
+   percentage of the plate box so the same markup serves every plate size.
+   The numbers are the key table's numbers. */
+.co { position: absolute; display: flex; align-items: center; transform: translateY(-50%); z-index: 2; }
+.co .callout-dot { flex: none; }
+.co-l { height: 0.12mm; background: #1A1A1A; }
 .callout-dot { width: 6mm; height: 6mm; border-radius: 50%; border: 0.3mm solid #1A1A1A; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1; }
 
 /* ---- Grain lines and dimensions on the technical flats (page 6) ----
    Third member of the drawing-annotation family: the callout dots point INTO
    an artwork and the scale chips make a claim about one; these put NESA's two
-   named drawing requirements — the position of the grain line, and finished
-   dimensions — ON the flats themselves. Ink only, no rings or fills, so they
+   named drawing requirements - the position of the grain line, and finished
+   dimensions - ON the flats themselves. Ink only, no rings or fills, so they
    read as part of the drawing, and 12pt PT Serif because dimension figures
    are text and the folio's 12pt floor applies to them as much as to body
    copy. Placements are inline mm offsets inside each plate's padding box,
@@ -440,7 +428,7 @@ a:hover { color: #8A5866; }
    flats replace the placeholders.
 
    .dim-note carries the plate's own white as its ground, so a note can sit
-   across drawn lines and stay legible without a border — a bordered box here
+   across drawn lines and stay legible without a border - a bordered box here
    would read as a second scale chip. The grain arrow is heavier than the
    0.12mm dimension hairlines (0.35mm shaft, 3mm heads against 2.2mm): on a
    pattern drawing the grain symbol is the one mark that must be findable at
@@ -461,65 +449,6 @@ a:hover { color: #8A5866; }
 .dim-leader { position: absolute; background: #1A1A1A; }
 .dim-note { position: absolute; font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; color: #1A1A1A; background: #ffffff; padding: 0.4mm 1mm; white-space: nowrap; }
 
-/* ---- Page 7: swing tag reverse, reproduced at true size ----
-   The third column of the labels grid carries the tag's back face itself,
-   not a 12pt restatement of its copy: NESA asks for the prototype label in
-   the documentation, and the reverse is the face that proves the
-   words-here/symbols-there split the note beside it argues. Geometry and
-   type are swing-tag.css's at 1:1 — trim 70 × 120mm, 22mm head with the
-   punch at 35/11, spec at 7.5pt, care at 6.5pt, symbols at 9mm. A
-   true-size reproduction is artwork like the flats above it, not folio
-   body copy; the 12pt floor is held by the two label boxes and the note,
-   which carry the same wording (change one, change all — the sheet in
-   Swing Tag.dc.html repeats it a third time).
-
-   Every rule is scoped under .p7-tagwrap because the swing tag production
-   sheet links deck.css before swing-tag.css: unscoped copies of these
-   class names would silently double up there.
-
-   HEIGHT IS THE PAGE'S BINDING CONSTRAINT. Measured on the built preview:
-   the old text box ran 115.7mm and the labels block had 10.3mm of
-   auto-margin slack above it, so the 120mm tag lands with ~6mm to spare
-   and there is no room for a caption line in the column — the section
-   heading names the face and the scale instead. If the page ever needs
-   the space back, scale the wrap before cutting content: 0.9 keeps the
-   care symbols at 8.1mm. */
-.p7-tagwrap { position: relative; width: 70mm; height: 120mm; margin: 0 auto; font-family: 'PT Serif', Times, serif; color: #1A1A1A; }
-.p7-tagwrap .tag {
-  position: absolute; inset: 0; box-sizing: border-box;
-  background: #FEFBFC; overflow: hidden;
-  clip-path: polygon(22mm 0, 48mm 0, 70mm 22mm, 70mm 120mm, 0 120mm, 0 22mm);
-  display: flex; flex-direction: column;
-}
-.p7-tagwrap .tag-outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.p7-tagwrap .tag-head { flex: none; height: 22mm; }
-.p7-tagwrap .tag-band-slim {
-  flex: none; background: #F5EFE2; box-sizing: border-box;
-  padding: 3.5mm 7mm; display: flex; justify-content: center;
-}
-.p7-tagwrap .tag-band-slim .wordmark { font-size: 12pt; }
-.p7-tagwrap .tag-rule-heavy { flex: none; margin: 2.5mm 7mm 0; height: 0.53mm; background: #1A1A1A; }
-.p7-tagwrap .tag-rule-fine { flex: none; margin: 0.9mm 7mm 0; height: 0.12mm; background: #1A1A1A; }
-.p7-tagwrap .tag-body { flex: 1; min-height: 0; margin: 0 7mm; display: flex; flex-direction: column; }
-.p7-tagwrap .spec-head {
-  font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
-  margin-top: 4.5mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
-}
-.p7-tagwrap .spec-line { font-size: 7.5pt; line-height: 1.4; margin-top: 2mm; }
-.p7-tagwrap .spec-line b { font-weight: 700; }
-.p7-tagwrap .care-row { display: flex; justify-content: space-between; margin-top: 3mm; }
-.p7-tagwrap .care-sym { width: 9mm; height: 9mm; display: block; }
-.p7-tagwrap .care-text { font-size: 6.5pt; line-height: 1.35; margin-top: 3mm; text-wrap: pretty; }
-.p7-tagwrap .origin {
-  font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
-  text-align: center; margin-top: auto; padding-bottom: 2mm;
-}
-.p7-tagwrap .tag-foot {
-  flex: none; margin: 0 7mm 6mm; padding-top: 2mm;
-  border-top: 0.12mm solid #1A1A1A;
-  display: flex; justify-content: space-between; font-size: 7pt;
-}
-
 /* ---- Timeline to completion (page 8) ---- A four-milestone vertical
    timeline under the order-of-construction columns, corroborating the
    "management of item(s) to completion" criterion the item is marked on.
@@ -528,7 +457,7 @@ a:hover { color: #8A5866; }
    three-column block ends at 366.9mm from the page top, the costing column
    already stretches the grid row to 383.3mm, and the content box ends at
    399.9mm (footer top 402.9mm less its 3mm margin). Everything past that
-   paints over the running foot — .content has flex: 1 / min-height: 0 and
+   paints over the running foot - .content has flex: 1 / min-height: 0 and
    nothing clips inside the page. This block spends 4mm of margin plus four
    12pt rows at 1.25 with 1.6mm gaps = 26.0mm, totalling 30.0mm and leaving
    3mm of air above the footer rule.
@@ -539,7 +468,7 @@ a:hover { color: #8A5866; }
    column is the .amrc geometry from pages 9-11, so the folio already has
    this idiom; the two-line head (~10.6mm) hides inside the rows' 26mm.
 
-   ROWS MUST STAY ONE LINE EACH — a single wrap adds 5.3mm and eats the
+   ROWS MUST STAY ONE LINE EACH - a single wrap adds 5.3mm and eats the
    air. The text column runs ~124mm (span4 168.7mm - 34mm label - 5mm gap
    - 6mm dot gutter), roughly 60 characters of 12pt PT Serif; keep each
    milestone under that and re-run the preview probe after editing copy.
@@ -547,8 +476,8 @@ a:hover { color: #8A5866; }
    The connector is drawn in the chapter's graphic tones, where the 4.5:1
    contrast rule does not bite (see the area table at the top of this
    file): line in --area-border, dots in --area-accent, matching the plate
-   dots. The line is 0.35mm — the grain-arrow shaft weight, the folio's
-   "findable but not competing" line — and its geometry is derived, not
+   dots. The line is 0.35mm - the grain-arrow shaft weight, the folio's
+   "findable but not competing" line - and its geometry is derived, not
    eyeballed: dots are 1.6mm at left: 0, so the shared centre is 0.8mm;
    the line sits at left 0.625mm (0.8 - 0.35/2) and stops 2.65mm short of
    the rows box's ends, the centre of a 5.3mm first/last line box, so it
@@ -563,4 +492,66 @@ a:hover { color: #8A5866; }
 
 .swatch { width: 50mm; }
 .swatch-box { width: 50mm; height: 50mm; border: 0.3mm solid #1A1A1A; }
+.swatch-box img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .swatch-cap { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.25; color: #1A1A1A; margin-top: 2.5mm; }
+
+/* Page 7 pattern cards. The drawing sits in .pattern-art and its piece
+   labels are .dim-note overlays positioned as percentages of that box, so
+   every label is live 12 pt type and never part of the artwork. The card is
+   taller than .piece's 80 mm so the labels have room around the pieces. */
+.pattern-piece {
+  box-sizing: border-box; background: #ffffff; display: flex; flex-direction: column; padding: 3mm; gap: 1.5mm;
+  height: 88mm;
+}
+.pattern-title, .pattern-caption { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.15; }
+.pattern-art { position: relative; flex: 1; min-height: 0; }
+.pattern-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* Measured production drawings keep their authored millimetre dimensions. */
+.revision-content { font-family: 'PT Serif', Times, serif; font-size: 12pt; line-height: 1.25; }
+.revision-content p { margin: 0 0 2.5mm; }
+.revision-title { font-family: Fraunces, Georgia, serif; font-size: 19pt; line-height: 1.05; margin: 0 0 3mm; }
+.revision-two { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.revision-schedule { margin: 3mm 0; }
+.revision-schedule p { margin-top: 2mm; }
+.revision-flats { display: grid; grid-template-columns: repeat(3, 80mm); justify-content: space-between; }
+.measured-art { display: block; flex: none; max-width: none; }
+.revision-flats .measured-art { border: 0.12mm solid #1A1A1A; box-sizing: content-box; }
+.revision-flats div .measured-art { margin-bottom: 4mm; }
+.revision-patterns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm 5mm; }
+.revision-pattern { border: 0.12mm solid #1A1A1A; padding: 2mm; background: #ffffff; font-size: 12pt; line-height: 1.15; }
+.revision-pattern b { display: block; margin-bottom: 1mm; }
+.revision-layouts { display: flex; gap: 5mm; margin: 4mm 0; }
+/* Page 7 product labels. The three boxes are the sewn labels from
+   Product Labels.dc.html enlarged for reading: the same six registers in
+   the same order, wordmark, piece, fibre, the five care symbols, the care
+   note, the origin, and the same words. Change the copy on the label sheet
+   and change it here (docs/production-items.md). The wordmark is 15 pt,
+   the copy is 12 pt, the floor for folio type, and the symbols are 6.5 mm
+   on the swing tag's 24 unit drawing at a 1.4 stroke. The symbols read as
+   a row across the 82 mm box with the 6.5 mm cells spread by
+   space-between, so the fibre line above and the note below set the
+   measure and the row does not. */
+.revision-labels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+.revision-labels > div { border: 0.3mm solid #1A1A1A; padding: 2.5mm; background: #ffffff; font-size: 12pt; line-height: 1.25; }
+.revision-labels .wordmark { font-size: 15pt; line-height: 1; }
+.revision-labels .label-piece { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2mm; }
+.revision-labels .label-spec { margin-top: 1mm; }
+.revision-labels .label-care { display: flex; justify-content: space-between; margin: 2mm 2mm 0; }
+.revision-labels .care-sym { width: 6.5mm; height: 6.5mm; display: block; }
+.revision-labels .label-note { margin-top: 1.5mm; }
+.revision-labels .label-origin { margin-top: 1mm; }
+.revision-trial { display: grid; grid-template-columns: 2fr 1fr; gap: 5mm; padding: 4mm 0; border-bottom: 0.3mm solid #1A1A1A; }
+.revision-trial .amrc { grid-template-columns: 32mm 1fr; gap: 2mm 3mm; }
+.revision-trial .body { line-height: 1.24; }
+.revision-trial .exp-title { margin-bottom: 3mm; }
+.revision-results .tbl { --cell-pad: 1.2mm; line-height: 1.15; }
+.revision-proof-pics { display: flex; gap: 3mm; margin-top: 3mm; }
+.revision-proof-pics div { flex: 1; font-size: 12pt; }
+.revision-proof-pics img { display: block; width: 100%; height: 24mm; object-fit: cover; margin-bottom: 1mm; }
+.revision-result-note { margin-top: 2mm !important; font-size: 12pt; line-height: 1.2; }
+.revision-evaluation { margin: 7mm 0; }
+
+
+.revision-final-checks { margin-top: 7mm; }
+.revision-final-checks p { margin-top: 3mm; }

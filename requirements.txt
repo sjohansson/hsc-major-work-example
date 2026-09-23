@@ -1,3 +1,2 @@
-beautifulsoup4>=4.12
-tinycss2>=1.2
-pillow>=10
+# The Canva sync bundle owns its own dependencies.
+-r .agents/skills/canva-sync/requirements.txt

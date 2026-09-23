@@ -1,30 +1,39 @@
-/* The Raven's Ledger - product labels, dress and collar.
+/* The Raven's Ledger - product labels, dress, overskirt and collar.
 
-   The two labels described on page 7 of the folio, set at true size for
-   printing onto transfer material, transferring to white polyester and
-   stitching into the left side seam of each piece.
+   The three labels described on page 7 of the folio, set at true size for
+   printing and stitching into the seam of each piece. How they are printed
+   is open: a printable fabric sheet, iron-on transfer onto a white
+   polyester patch, or a label printer. Every route ends at the same patch.
 
-   CONTENT AND LAYOUT ARE PAGE 7's, NOT A NEW DESIGN. Same three registers
-   in the same order — the wordmark in Fraunces, the composition line, the
-   care line — inside the same 0.3 mm Ink rule. Only the sizes are new:
-   page 7 sets the labels in an 82 mm column at 15/12 pt, and 55 mm of
-   fabric takes the same copy at 12/6.5 pt. The wordmark measures 3.771 mm
-   per point, so 12 pt puts "The Raven's Ledger" at about 41 mm inside a
-   49 mm measure.
+   CONTENT AND LAYOUT ARE PAGE 7's, NOT A NEW DESIGN. Same six registers in
+   the same order on every label - the wordmark in Fraunces, the piece line,
+   the fibre line, the five care symbols, the care note, the origin - inside
+   the same 0.3 mm Ink rule. Only the sizes are new: page 7 sets the labels
+   in an 82 mm column at 15/12 pt with 6.5 mm symbols, and 55 mm of fabric
+   takes the same copy at 12/6.5 pt with 5.5 mm symbols. The wordmark
+   measures 3.771 mm per point, so 12 pt puts "The Raven's Ledger" at about
+   41 mm inside a 50 mm measure.
 
-   TRIM IS THE TRANSFER, NOT THE LABEL. Iron-on film carries whatever it
-   is cut to, so nothing that is not meant to end up on the garment may be
-   printed inside the trim: no cut lines across the artwork, no seam
-   allowance drawn on. The allowance is fabric, not print — the patch is
-   cut larger than the transfer and the difference is what the seam
-   catches. Trim is 58 × 39 mm around a 55 × 36 mm ruled box, so the
-   1.5 mm of paper margin absorbs a hand cut without clipping the rule.
+   THE CELL IS THE PATCH. Each cell is the finished 71 x 48 mm label, with
+   the 55 x 36 mm ruled box set 10 mm from the left edge and 6 mm from the
+   other three. The difference is the seam allowance, and it is blank on
+   every route: no cut line, fold line or stitch line is printed in it, so
+   nothing shows through the fold on a fabric sheet and nothing transfers
+   from film that should not. The crop marks sit on the patch edge.
 
-   MIRRORING. Standard light-fabric transfer paper prints face-down and
-   must be reversed; printable fabric sheets must not be. The mirror prop
-   flips only .label, never the marks, the banner or the notes, so the
-   sheet always says which way it was printed. Default is mirrored,
-   because that is what "transfer material onto white polyester" means.
+   TWO PRINT SHEETS, ONE RUN. The artwork reaches the fabric one of two
+   ways, so the same eight labels are printed twice. Sheet 1 is as it reads,
+   for a printable fabric sheet or a label printer, where the print itself
+   becomes the label. Sheet 2 is the same run mirrored, for iron-on transfer
+   paper, which prints face down and is turned over again when it is
+   pressed. Each sheet fixes --mirror on its own root and its banner says
+   which it is; there is no prop. The flip is applied to .label only, never
+   the crop marks, the banner or the notes, and it takes the 10 mm
+   allowance with it, which is right for a film that is turned over.
+
+   CARE SYMBOLS. The five symbols are inline SVG on a 24 unit grid at a 1.4
+   stroke, the same drawing the swing tag uses, so the two items share one
+   hand. They are sized here and on page 7 by the .care-sym rule alone.
 
    Depends on deck.css for .wordmark, the :root area tokens, .tbl and the
    type utilities. */
@@ -48,7 +57,7 @@
 }
 
 /* ---- Mirror banner ---- */
-/* Ink on the area border token — the one place the brand kit lets a border
+/* Ink on the area border token - the one place the brand kit lets a border
    colour sit behind text, which is the table header row. This banner is
    read at the printer, so it takes that licence. */
 .banner {
@@ -63,60 +72,74 @@
 .banner-text { font-size: 9pt; line-height: 1.25; }
 
 /* ---- Label grid ---- */
+/* Four rows of 48 mm patches with 11 mm between them: 225 mm, plus 8 mm
+   above and the 7 mm the last row's crop marks reach below, inside the
+   241 mm left under the banner. The cell tag sits in the row gap. */
 .grid {
-  flex: none; align-self: center; margin: 11mm 0 0;
-  display: grid; grid-template-columns: repeat(2, 58mm);
-  column-gap: 18mm; row-gap: 18mm;
+  flex: none; align-self: center; margin: 8mm 0 0;
+  display: grid; grid-template-columns: repeat(2, 71mm);
+  column-gap: 16mm; row-gap: 11mm;
 }
-.cell { position: relative; width: 58mm; height: 39mm; }
+.cell { position: relative; width: 71mm; height: 48mm; }
 
-/* The label artwork. Mirroring is applied here and nowhere else. */
+/* The label artwork. Mirroring is applied here and nowhere else; sheet 2
+   sets --mirror to scaleX(-1) on its root and every other sheet to none. The
+   padding is the seam allowance: 10 mm on the left for the side seam,
+   6 mm on the other three edges to turn under. */
 .label {
   position: absolute; inset: 0; box-sizing: border-box;
-  background: #FEFBFC; padding: 1.5mm;
+  padding: 6mm 6mm 6mm 10mm;
   transform: var(--mirror, none); transform-origin: center;
 }
-/* Content is centred rather than top-set: the copy runs 23 mm in a 30 mm
-   measure, and left at the top it leaves a seventh of the label empty
-   below the care line. Page 7's version is top-set because its box is
-   sized by the column it sits in, not by the copy. */
+/* Content is centred rather than top-set so a note that runs one line
+   short does not leave the bottom of the box empty. Page 7's version is
+   top-set because its box is sized by the column it sits in. */
 .label-box {
   box-sizing: border-box; width: 100%; height: 100%;
-  border: 0.3mm solid #1A1A1A; padding: 3mm;
+  border: 0.3mm solid #1A1A1A; padding: 2.5mm;
+  background: #FEFBFC;
   display: flex; flex-direction: column; justify-content: center;
 }
 .label .wordmark { font-size: 12pt; line-height: 1; }
-.label-spec { font-size: 6.5pt; line-height: 1.3; margin-top: 2mm; }
-.label-care { font-size: 6.5pt; line-height: 1.3; margin-top: 1.8mm; }
+.label-piece { font-size: 6.5pt; line-height: 1.2; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1.6mm; }
+.label-spec { font-size: 6.5pt; line-height: 1.3; margin-top: 0.5mm; }
+/* Five symbols spread across the measure, 5.5 mm each. At 24 units on a
+   1.4 stroke the line prints at 0.32 mm, above the 0.3 mm rule, so the
+   interior of the tumble-dry circle and the iron dots stay open. */
+.label-care { display: flex; justify-content: space-between; margin: 1.4mm 1.5mm 0; }
+.care-sym { width: 5.5mm; height: 5.5mm; display: block; }
+.label-note { font-size: 6.5pt; line-height: 1.3; margin-top: 1.2mm; }
+.label-origin { font-size: 6.5pt; line-height: 1.3; margin-top: 0.6mm; }
 
 /* ---- Reading proof ---- */
-/* The mirrored sheet is the only place the label copy is set, and it
-   cannot be read. This sheet sets --mirror to none on its own root, so it
-   reads correctly whatever the prop is doing, and shows the pair twice:
-   at true size to judge the object, and at 150% to proofread it.
-   The enlargement is a faithful scale of the same markup rather than a
-   second setting — the 0.3 mm rule thickens with the type — so what is
+/* Sheet 2 is mirrored and cannot be read. This sheet sets --mirror to
+   none on its own root, so the copy is checked here as it reads, and
+   shows the three labels at true size to judge the
+   object and the dress label at 150% to proofread it. The enlargement is a
+   faithful scale of the same markup rather than a second setting - the
+   0.3 mm rule and the symbol strokes thicken with the type - so what is
    checked here is what prints. */
 .proof-head {
   flex: none; font-size: 8pt; letter-spacing: 0.11em; text-transform: uppercase;
-  font-weight: 700; margin: 9mm 0 3.5mm; padding-bottom: 1.2mm;
+  font-weight: 700; margin: 6mm 0 3.5mm; padding-bottom: 1.2mm;
   border-bottom: 0.12mm solid #1A1A1A;
 }
 .proof-row { flex: none; display: flex; gap: 14mm; }
 .proof-cap { font-size: 8pt; line-height: 1.3; margin-top: 2.5mm; }
-/* At 150% the label takes half the measure, so its caption sits beside it
-   and carries the check to make rather than a bare caption. */
-.proof-pair { flex: none; display: flex; gap: 12mm; align-items: flex-start; }
+/* At 150% the label takes 106.5 mm of the 174 mm measure, so its caption
+   sits beside it and carries the check to make rather than a bare
+   caption. */
+.proof-pair { flex: none; display: flex; gap: 10mm; align-items: flex-start; }
 .proof-side { flex: 1; min-width: 0; font-size: 8.5pt; line-height: 1.35; text-wrap: pretty; }
 .proof-side b { letter-spacing: 0.06em; text-transform: uppercase; font-size: 8pt; }
 .proof-side ul { margin: 2mm 0 0; padding-left: 4.5mm; }
 .proof-side li { margin-bottom: 1.5mm; }
 .proof-side li:last-child { margin-bottom: 0; }
-.proof-150 { position: relative; width: 87mm; height: 58.5mm; }
+.proof-150 { position: relative; flex: none; width: 106.5mm; height: 72mm; }
 .proof-150 .cell { position: absolute; top: 0; left: 0; transform: scale(1.5); transform-origin: top left; }
 
-/* Crop marks sit 1 mm clear of the trim and stop before it, so a cut that
-   follows them never runs through a mark. */
+/* Crop marks sit 1 mm clear of the patch edge and stop before it, so a cut
+   that follows them never runs through a mark. */
 .cm { position: absolute; background: #1A1A1A; }
 .cm-h { width: 6mm; height: 0.15mm; }
 .cm-v { width: 0.15mm; height: 6mm; }
@@ -130,9 +153,9 @@
 .cm-x2 { right: 0; }
 
 /* Sits in the row gap above its cell, clear of the vertical crop mark on
-   the trim edge at x = 0. */
+   the patch edge at x = 0. */
 .cell-tag {
-  position: absolute; left: 2mm; top: -6mm;
+  position: absolute; left: 2mm; top: -5mm;
   font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
 }
 
@@ -151,6 +174,7 @@
   margin: 4.5mm 0 2mm; padding-bottom: 1.2mm; border-bottom: 0.12mm solid #1A1A1A;
 }
 .notes h4:first-child { margin-top: 0; }
+.notes p { margin: 0; font-size: 9pt; line-height: 1.3; text-wrap: pretty; }
 .notes ol, .notes ul { margin: 0; padding-left: 4.5mm; font-size: 9pt; line-height: 1.3; }
 .notes li { margin-bottom: 1.5mm; }
 .notes li:last-child { margin-bottom: 0; }
@@ -161,6 +185,6 @@
 }
 .note b { letter-spacing: 0.06em; text-transform: uppercase; font-size: 8pt; }
 
-/* Cutting diagram: the transfer on its fabric patch, with the seam
+/* Cutting diagram: the printed label on its patch, with the seam
    allowance that is cloth rather than print. */
 .diagram { width: 100%; height: auto; display: block; margin-top: 3mm; }

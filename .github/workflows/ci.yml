@@ -19,17 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Markdown lint
         run: npx --yes markdownlint-cli2 "**/*.md"
@@ -38,4 +38,16 @@ jobs:
         run: npx --yes -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
 
       - name: Python compiles
-        run: python -m compileall -q scripts
+        run: python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
+
+      - name: Agent write guards
+        run: python -m unittest discover -s scripts -p "test_agent_guards.py"
+
+      - name: Canva sync dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Canva sync doctor (fixture deck)
+        run: python .agents/skills/canva-sync/scripts/canva_sync.py doctor --config .agents/skills/canva-sync/assets/fixtures/mini-deck/canva.config.json
+
+      - name: Canva sync selftest
+        run: python .agents/skills/canva-sync/scripts/canva_sync.py selftest --config .agents/skills/canva-sync/assets/fixtures/mini-deck/canva.config.json

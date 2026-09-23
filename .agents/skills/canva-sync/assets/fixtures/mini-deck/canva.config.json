@@ -1,0 +1,22 @@
+{
+  "deck_dir": ".",
+  "deck": "deck.dc.html",
+  "deck_css": "deck.css",
+  "assets_dir": "assets",
+  "output_dir": "build",
+  "local_ids": "canva.local.json",
+  "dialect": "claude-canva-connector",
+  "title": "Mini deck",
+  "page_mm": [148.0, 210.0],
+  "canva_px": [559, 794],
+  "background": "#FEFBFC",
+  "pattern_fill": "#F5EFE2",
+  "props": {
+    "edition": "one",
+    "studentNo": "00000000"
+  },
+  "google_fonts": [],
+  "thumbnail": { "text": "MD", "fill": "#4A4E69" },
+  "placeholder": { "fill": "#EEEDEA", "stroke": "#5A5C70" },
+  "known_residuals": {}
+}

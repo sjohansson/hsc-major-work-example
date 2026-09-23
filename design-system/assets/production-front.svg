@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80mm" height="175mm" viewBox="0 0 80 175">
+  <title>Drawing 6.1. Dress alone, front, scale 1:10.</title>
+  <style>text { font-family: 'PT Serif', Georgia, serif; font-size: 4.26px; fill: #1A1A1A; stroke: none; }
+  path, rect, circle, ellipse { fill: none; stroke: #1A1A1A; stroke-width: 0.22; stroke-linejoin: round; }
+  .alter { stroke: #8C3B4A; } .old { stroke-dasharray: 1 0.7; } .seam { stroke-dasharray: 0.5 0.5; }
+  </style>
+  <g transform="translate(40 13)"><path d="M-7,4 Q0,16 7,4 L18,0 L22,20 L17,44 L30,112 H-30 L-17,44 L-22,20 L-18,0 Z"/><path d="M-18,0 Q-28,2 -30,12 L-37,54 L-26,56 L-21,22 M18,0 Q28,2 30,12 L37,54 L26,56 L21,22"/><path d="M-37,54 L-38,58 L-27,60 L-26,56 M37,54 L38,58 L27,60 L26,56"/><path d="M-17,44 H17 M-12,8 Q-9,20 -9,28 L-8.5,44 M12,8 Q9,20 9,28 L8.5,44"/><path class="seam" d="M-29.5,110 H29.5"/><path d="M0,44 V112"/><path class="seam" d="M-8,5 Q0,20 8,5"/><circle cx="-6" cy="8" r="0.5"/><circle cx="-3" cy="11" r="0.5"/><circle cx="3" cy="11" r="0.5"/><circle cx="6" cy="8" r="0.5"/><circle cx="-27" cy="55.3" r="0.2"/><circle cx="-29" cy="55.3" r="0.2"/><circle cx="-31" cy="55.3" r="0.2"/><circle cx="-33" cy="55.3" r="0.2"/><circle cx="-35" cy="55.3" r="0.2"/><circle cx="27" cy="55.3" r="0.2"/><circle cx="29" cy="55.3" r="0.2"/><circle cx="31" cy="55.3" r="0.2"/><circle cx="33" cy="55.3" r="0.2"/><circle cx="35" cy="55.3" r="0.2"/><path d="M0,68 L0,90" /><path d="M-1,70 L0,68 L1,70 M-1,88 L0,90 L1,88"/></g><text x="2" y="5" text-anchor="start" font-weight="700">6.1 Front</text><text x="79" y="5" text-anchor="end" font-weight="400">1:10</text><path d="M1,13 L1,125" /><path d="M0,13 L3,13" /><path d="M0,125 L3,125" /><text x="4" y="79" text-anchor="start" font-weight="400">112</text><text x="40" y="62" text-anchor="middle" font-weight="400">waist 68</text><text x="40" y="34" text-anchor="middle" font-weight="400">neck 38; facing 4</text><text x="40" y="43" text-anchor="middle" font-weight="400">bust 88; hip 96</text>
+<text x="40" y="132" text-anchor="middle">Hem 240 cm; turn 2; braid 25 mm</text>
+        <text x="2" y="140" font-weight="700">6.5 Band overlap, 1:5</text>
+        <rect x="7" y="144" width="30" height="8"/>
+        <path d="M8,145 h-2 v1 h2 M8,148 h-2 v1 h2 M8,151 h-2 v1 h2"/>
+        <circle cx="17" cy="148" r="1"/><circle cx="27" cy="148" r="1"/>
+        <text x="41" y="150">3 hooks, 2 snaps</text>
+        <text x="2" y="161">83 cm flat; 15 overlap; 68 closed</text>
+        <text x="2" y="169">Snaps 5 and 10 cm into overlap</text></svg>

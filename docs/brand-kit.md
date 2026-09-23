@@ -2,16 +2,16 @@
 
 The Raven's Ledger, Major Textiles Project folio, HSC Textiles and Design. This is the specification of record
 for the folio's identity: names, colours, type and the masthead construction. The implementation is
-`design-system/deck.css`, whose comments record the measurements behind each choice, and the swatch sheet is
-`design-system/explorations/color-theme.html`. The reasons are in [design-rationale.md](design-rationale.md).
+`design-system/deck.css`, whose comments record the measurements behind each choice, and the full Colour chapter is in
+`design-system/meta/design-process.html`, built by `preview.ps1 -Item meta`. The reasons are in [design-rationale.md](design-rationale.md).
 
 ## Section names
 
 Section names follow NESA's Major Textiles Project marking guidelines exactly (see
-[nesa-folio-requirements.md](nesa-folio-requirements.md), Part A.1). Two rulings:
+[nesa-marking-facts.md](nesa-marking-facts.md), section 1). Two rulings:
 
 1. "Design Inspiration" is singular.
-2. "Investigation, Experimentation and Evaluation" uses "and", never "&". The ampersand is reserved for period
+1. "Investigation, Experimentation and Evaluation" uses "and", never "&". The ampersand is reserved for period
    titles, which are the folio's own naming and not NESA-facing.
 
 | Pages | NESA section (official) | Period title (masthead) | Area colourway |
@@ -28,7 +28,9 @@ is never paraphrased, and never only in the footer.
 
 Four structural tokens: Ink `#1A1A1A`, Paper `#FEFBFC`, Cream `#F5EFE2` (the masthead band), and the two brand
 colours sampled from the garment, which arrive as props: `slate` `#4A4E69` (the rule under the wordmark) and
-`wine` `#8C3B4A` (the NESA-designated second colour for pattern modifications on page 7).
+`wine` `#8C3B4A` (the NESA-designated second colour for pattern modifications on page 7). A fifth token,
+`school purple` `#5B2A86` (Wednesday's Nevermore uniform), colours the house mark, the masthead hem, the
+running foot's stitch row and the stitch rows the mark sits between, and nothing else.
 
 Each folio chapter (area) carries its own colourway of five tokens:
 
@@ -58,7 +60,7 @@ colour type, and its one use is the last clause of the closing statement on page
 **Component mapping.** Per page, the area class recolours exactly these components and nothing else: the
 masthead chapter-transition block (field), table header rows (border), table cells (tint), plate corner dots
 (accent), and the section-title stub rules on pages 5 and 12 (border). Kept in brand colours, not area colours:
-the slate rule under the wordmark, the house mark (ink only), and the wine that marks pattern modifications on
+the slate rule under the wordmark, the house mark and its divider lines (school purple), and the wine that marks pattern modifications on
 pages 6 to 8. Production drawings and pattern pieces stay pure ink linework.
 
 ## Type
@@ -71,10 +73,11 @@ at 1 : 1 and is the only place smaller type appears.
 
 ## The house mark
 
-One ornament for the whole set: a jet bead between two bars, drawn in `design-system/assets/house-mark.svg`,
-ink only. It appears in the running foot on all twelve pages, in the ornamented rule that closes the opening and
+One ornament for the whole set: a simplified nightshade flower drawn as linework, held in `design-system/assets/house-mark.svg`,
+in school purple `#5B2A86`. It carries no lines of its own; the stitch rows either side of it are CSS rules in the
+same purple, so they always sit on the page's own line axis. It appears in the running foot on all twelve pages, in the ornamented rule that closes the opening and
 closing statements, on the binder spine and on the swing tag, and nowhere else. It is sized by its ink, not its
-file: `--mark-h` is the height of the drawn band and the box is scaled to deliver it (see `.mark-band` in
+file: `--mark-h` is the height of the drawn flower and the box is scaled to deliver it (see `.mark-band` in
 `deck.css`).
 
 ## Masthead
@@ -110,9 +113,12 @@ edges spring apart by the full slant.
 
 ## Rules and plates
 
-The double rule under the masthead is 0.53 mm over a 0.12 mm hairline, 0.9 mm apart, full width. 0.53 mm rather
-than 0.4 mm because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the pages, collapsing the
-pair to a doubled hairline. Plates on pages 1 to 5 carry a 0.4 mm outer frame, a 0.12 mm inner frame 1.8 mm
+The rule under the masthead is a hem: a 0.53 mm folded edge over a row of topstitching 1.4 mm below it, full
+width, in school purple. The stitch is 2.5 mm of 0.35 mm thread with round ends and a 1 mm gap, one SVG tile
+repeated with `background-repeat: round` so every row starts and ends on a whole stitch. The same stitch row,
+alone, rules the running foot and sits either side of the house mark. The edge is 0.53 mm rather than 0.4 mm
+because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the pages, collapsing the old pair to a
+doubled hairline; the stitch reads by its length, not its weight, and is exempt. Plates on pages 1 to 5 carry a 0.4 mm outer frame, a 0.12 mm inner frame 1.8 mm
 inside it, and four 1.6 mm corner dots in the area accent. Drawings on pages 6 to 8 sit in a 0.3 mm single box
 with no dots.
 

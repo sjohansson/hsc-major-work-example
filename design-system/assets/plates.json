@@ -1,29 +1,761 @@
 {
-  "_comment": "Every image slot in the folio and the production items. Sizes are the printed slot in mm. scripts/make_placeholder_plates.py writes one SVG per entry; real artwork replaces a placeholder by keeping the filename. Fill 'source' with the citation when a real image goes in.",
+  "_comment": "Every image slot in the folio and the production items. Sizes are the printed slot in mm. scripts/make_placeholder_plates.py writes one SVG per entry; real artwork replaces a placeholder by keeping the filename. 'source' records where each image came from; the folio pages present every slot as the finished item it stands for.",
   "plates": [
-    { "file": "i1.svg", "page": "01", "w": 56.4, "h": 90.4, "tone": "mono", "caption": "Mourning dress, c. 1905", "source": "" },
-    { "file": "i2.svg", "page": "01", "w": 56.4, "h": 90.4, "tone": "mono", "caption": "Tulle evening dress, c. 1926", "source": "" },
-    { "file": "i3.svg", "page": "01", "w": 56.4, "h": 90.4, "tone": "mono", "caption": "Tulle party dress, c. 1955", "source": "" },
-    { "file": "i4.svg", "page": "01", "w": 56.4, "h": 90.4, "tone": "mono", "caption": "Detachable white collar, c. 1938", "source": "" },
-    { "file": "i5.svg", "page": "02", "w": 77.5, "h": 57.4, "tone": "mono", "caption": "Jet beading, c. 1890", "source": "" },
-    { "file": "i6.svg", "page": "02", "w": 77.5, "h": 57.4, "tone": "mono", "caption": "The Addams Family (1964), still not reproduced", "source": "Filmways, 1964. Cited, not reproduced." },
-    { "file": "i7.svg", "page": "02", "w": 77.5, "h": 57.4, "tone": "mono", "caption": "Wednesday (2022), still not reproduced", "source": "Netflix, 2022. Cited, not reproduced." },
-    { "file": "i8.svg", "page": "02", "w": 77.5, "h": 57.4, "tone": "mono", "caption": "Horsehair braid in a tulle ruffle", "source": "" },
-    { "file": "s1a.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 1A, front", "source": "" },
-    { "file": "s1b.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 1B, back", "source": "" },
-    { "file": "s1c.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 1C, collar and sash", "source": "" },
-    { "file": "s2a.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 2A, front", "source": "" },
-    { "file": "s2b.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 2B, back", "source": "" },
-    { "file": "s2c.svg", "page": "03", "w": 34.7, "h": 66.4, "tone": "sketch", "caption": "Sketch 2C, beading detail", "source": "" },
-    { "file": "s3a.svg", "page": "04", "w": 78.2, "h": 111.4, "tone": "sketch", "caption": "Sketch 3A, front", "source": "" },
-    { "file": "s3b.svg", "page": "04", "w": 78.2, "h": 111.4, "tone": "sketch", "caption": "Sketch 3B, back", "source": "" },
-    { "file": "s3c.svg", "page": "04", "w": 78.2, "h": 111.4, "tone": "sketch", "caption": "Sketch 3C, sleeve and cuff", "source": "" },
-    { "file": "final_front.svg", "page": "05", "w": 78.2, "h": 113.4, "tone": "photo", "caption": "Final design, front", "source": "" },
-    { "file": "final_back.svg", "page": "05", "w": 78.2, "h": 113.4, "tone": "photo", "caption": "Final design, back", "source": "" },
-    { "file": "final_collar.svg", "page": "05", "w": 78.2, "h": 113.4, "tone": "photo", "caption": "Final design, collar and cuff", "source": "" },
-    { "file": "draw_front.svg", "page": "06", "w": 83.9, "h": 173.4, "tone": "flat", "caption": "Drawing 6.1, front flat, 1 : 7", "source": "" },
-    { "file": "draw_back.svg", "page": "06", "w": 83.9, "h": 173.4, "tone": "flat", "caption": "Drawing 6.2, back flat, 1 : 7", "source": "" },
-    { "file": "draw_collar.svg", "page": "06", "w": 66.9, "h": 43.9, "tone": "flat", "caption": "Drawing 6.3, collar, 1 : 3", "source": "" },
-    { "file": "layout.svg", "page": "07", "w": 78.2, "h": 76.4, "tone": "flat", "caption": "Cutting layout, 1 : 20", "source": "" }
+    {
+      "file": "i1.png",
+      "page": "01",
+      "w": 56.1,
+      "h": 84.2,
+      "tone": "mono",
+      "caption": "Wednesday, the school dance dress, study drawing after the broadcast",
+      "source": "OpenAI image generation, prompt in i1.prompt.txt. Drawn after the screen costume; not a screen still. Presented in the folio as the student's study drawing."
+    },
+    {
+      "file": "i2.png",
+      "page": "01",
+      "w": 56.1,
+      "h": 84.2,
+      "tone": "mono",
+      "caption": "Mourning dress, British, c. 1905, study drawing",
+      "source": "Generated composite design study. Not an archival object reproduction. Public contextual references appear on folio page 2."
+    },
+    {
+      "file": "i3.png",
+      "page": "01",
+      "w": 56.1,
+      "h": 84.2,
+      "tone": "mono",
+      "caption": "Tulle evening dress, French, c. 1926, study drawing",
+      "source": "Generated composite design study. Not an archival object reproduction. Public contextual references appear on folio page 2."
+    },
+    {
+      "file": "i4.png",
+      "page": "01",
+      "w": 56.1,
+      "h": 84.2,
+      "tone": "mono",
+      "caption": "Tulle party dress, American, c. 1955, study drawing",
+      "source": "Generated composite design study. Not an archival object reproduction. Public contextual references appear on folio page 2."
+    },
+    {
+      "file": "i5.png",
+      "page": "02",
+      "w": 77.5,
+      "h": 57.4,
+      "tone": "mono",
+      "caption": "Jet beading, c. 1890, study drawing",
+      "source": "Generated composite design study. Not an archival object reproduction. Public contextual references appear on folio page 2."
+    },
+    {
+      "file": "i6.png",
+      "page": "02",
+      "w": 77.5,
+      "h": 57.4,
+      "tone": "mono",
+      "caption": "The Addams Family (1964), study drawing after the broadcast",
+      "source": "OpenAI image generation, 20 September 2026, prompt in i6.prompt.txt. Costume inspiration: user-supplied Addams_Family_main_cast_1964.JPG. Not a television still."
+    },
+    {
+      "file": "i7.png",
+      "page": "02",
+      "w": 77.5,
+      "h": 57.4,
+      "tone": "mono",
+      "caption": "Wednesday, the school uniform collar, study drawing after the broadcast",
+      "source": "OpenAI image generation, 19 September 2026, prompt in i7.prompt.txt. Not a screen still."
+    },
+    {
+      "file": "i8.png",
+      "page": "02",
+      "w": 77.5,
+      "h": 57.4,
+      "tone": "mono",
+      "caption": "Horsehair braid in a tulle ruffle, c. 1950, study drawing",
+      "source": "Generated composite design study. Not an archival object reproduction. Public contextual references appear on folio page 2."
+    },
+    {
+      "file": "s1a.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 1A, front: the 2022 dress at face value",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s1a.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s1b.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 1B, back, zip and buckled belt",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s1b.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s1c.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 1C, yoke and shirt collar",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s1c.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s2a.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 2A, front",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s2a.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s2b.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 2B, back",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s2b.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s2c.png",
+      "page": "03",
+      "w": 34.7,
+      "h": 66.4,
+      "tone": "sketch",
+      "caption": "Sketch 2C, beading detail",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s2c.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s3a.png",
+      "page": "04",
+      "w": 78.2,
+      "h": 111.4,
+      "tone": "sketch",
+      "caption": "Sketch 3A, front, equal tiers and buckled belt",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s3a.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s3b.png",
+      "page": "04",
+      "w": 78.2,
+      "h": 111.4,
+      "tone": "sketch",
+      "caption": "Sketch 3B, back, lapped zip under the belt",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s3b.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "s3c.png",
+      "page": "04",
+      "w": 78.2,
+      "h": 111.4,
+      "tone": "sketch",
+      "caption": "Sketch 3C, sleeve and cuff",
+      "source": "OpenAI image generation, 19 September 2026, prompt in s3c.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "final_front.png",
+      "page": "05",
+      "w": 78.2,
+      "h": 113.4,
+      "tone": "photo",
+      "caption": "Final design 4A, front, the dance, on the form",
+      "source": "OpenAI image generation, 19 September 2026, prompt in final_front.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "final_back.png",
+      "page": "05",
+      "w": 78.2,
+      "h": 113.4,
+      "tone": "photo",
+      "caption": "Final design 4B, back, on the form, band hooked at the left",
+      "source": "OpenAI image generation, 19 September 2026, prompt in final_back.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "final_collar.png",
+      "page": "05",
+      "w": 78.2,
+      "h": 113.4,
+      "tone": "photo",
+      "caption": "Final design 4C, the change, overskirt off and collar on",
+      "source": "OpenAI image generation, 19 September 2026, prompt in final_collar.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "draw_front.png",
+      "page": "06",
+      "w": 83.9,
+      "h": 173.4,
+      "tone": "flat",
+      "caption": "Drawing 6.1, front flat, overskirt on, 1 : 7",
+      "source": "OpenAI image generation, 19 September 2026, prompt in draw_front.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "draw_back.png",
+      "page": "06",
+      "w": 83.9,
+      "h": 173.4,
+      "tone": "flat",
+      "caption": "Drawing 6.2, back flat, overskirt on, 1 : 7",
+      "source": "OpenAI image generation, 19 September 2026, prompt in draw_back.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "draw_overskirt.svg",
+      "page": "06",
+      "w": 70.4,
+      "h": 65.4,
+      "tone": "flat",
+      "caption": "Drawing 6.4, overskirt flat, band open, 1 : 12",
+      "source": "Hand-drawn SVG, 21 September 2026. Dimensions are html overlays on page 6."
+    },
+    {
+      "file": "draw_collar.png",
+      "page": "07",
+      "w": 66.9,
+      "h": 43.9,
+      "tone": "flat",
+      "caption": "Drawing 6.3, collar, 1 : 3 (page 7)",
+      "source": "OpenAI image generation, 19 September 2026, prompt in draw_collar.prompt.txt. Fictional design artwork."
+    },
+    {
+      "file": "layout.png",
+      "page": "07",
+      "w": 78.2,
+      "h": 76.4,
+      "tone": "flat",
+      "caption": "Cutting layout, 1 : 20",
+      "source": "OpenAI image generation, 19 September 2026, prompt in layout.prompt.txt. Cloth widths, lengths and the scale are html overlays on page 7."
+    },
+    {
+      "file": "pattern_front.png",
+      "page": "07",
+      "w": 76,
+      "h": 53,
+      "tone": "flat",
+      "caption": "Bodice front, pieces 1-2, 1 : 10",
+      "source": "OpenAI image generation, 20 September 2026, prompt in pattern_front.prompt.txt. Piece labels, cut instructions and the scale are html overlays on page 7."
+    },
+    {
+      "file": "pattern_back.png",
+      "page": "07",
+      "w": 76,
+      "h": 53,
+      "tone": "flat",
+      "caption": "Bodice back, pieces 3-4, 1 : 10",
+      "source": "OpenAI image generation, 20 September 2026, prompt in pattern_back.prompt.txt. Piece labels, cut instructions and the scale are html overlays on page 7."
+    },
+    {
+      "file": "pattern_sleeve.png",
+      "page": "07",
+      "w": 76,
+      "h": 53,
+      "tone": "flat",
+      "caption": "Sleeve and cuff, pieces 5-6, 1 : 10",
+      "source": "OpenAI image generation, 20 September 2026, prompt in pattern_sleeve.prompt.txt. Piece labels, cut instructions and the scale are html overlays on page 7."
+    },
+    {
+      "file": "pattern_skirt.png",
+      "page": "07",
+      "w": 76,
+      "h": 53,
+      "tone": "flat",
+      "caption": "Overskirt, skirt and band, pieces 7-12, 1 : 10",
+      "source": "OpenAI image generation, 20 September 2026, prompt in pattern_skirt.prompt.txt. Piece labels, cut instructions and the scale are html overlays on page 7."
+    },
+    {
+      "file": "pattern_collar.png",
+      "page": "07",
+      "w": 76,
+      "h": 53,
+      "tone": "flat",
+      "caption": "Collar and stand, pieces 13-14, 1 : 10",
+      "source": "OpenAI image generation, 20 September 2026, prompt in pattern_collar.prompt.txt. Piece labels, cut instructions and the scale are html overlays on page 7."
+    },
+    {
+      "file": "swatch_satin.png",
+      "page": "08",
+      "w": 50,
+      "h": 50,
+      "tone": "photo",
+      "caption": "Swatch 8.1, black crepe satin",
+      "source": "OpenAI image generation, 20 September 2026, prompt in swatch_satin.prompt.txt. Stands in the 50 x 50 mm slot where the fabric swatch is mounted."
+    },
+    {
+      "file": "swatch_tulle.png",
+      "page": "08",
+      "w": 50,
+      "h": 50,
+      "tone": "photo",
+      "caption": "Swatch 8.2, black nylon tulle",
+      "source": "OpenAI image generation, 20 September 2026, prompt in swatch_tulle.prompt.txt. Stands in the 50 x 50 mm slot where the fabric swatch is mounted."
+    },
+    {
+      "file": "swatch_pique.png",
+      "page": "08",
+      "w": 50,
+      "h": 50,
+      "tone": "photo",
+      "caption": "Swatch 8.3, white cotton pique and sew-in interfacing",
+      "source": "OpenAI image generation, 20 September 2026, prompt in swatch_pique.prompt.txt. Stands in the 50 x 50 mm slot where the fabric swatch is mounted."
+    },
+    {
+      "file": "swatch_trims.png",
+      "page": "08",
+      "w": 50,
+      "h": 50,
+      "tone": "photo",
+      "caption": "Swatch 8.4, horsehair braid, grosgrain, and petersham",
+      "source": "OpenAI image generation, 20 September 2026, prompt in swatch_trims.prompt.txt. Stands in the 50 x 50 mm slot where the trims are mounted."
+    },
+    {
+      "file": "swatch_notions.png",
+      "page": "08",
+      "w": 50,
+      "h": 50,
+      "tone": "photo",
+      "caption": "Swatch 8.5, invisible zip, hooks and bars, covered snaps, and jet glass beads",
+      "source": "OpenAI image generation, 20 September 2026, prompt in swatch_notions.prompt.txt. Stands in the 50 x 50 mm slot where the notions are mounted."
+    },
+    {
+      "file": "exp1-1.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "1.1 Soft tulle, gathered",
+      "source": "Generated illustration, prompt in exp1-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp1-2.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "1.2 Mid-weight tulle, gathered",
+      "source": "Generated illustration, prompt in exp1-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp1-3.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "1.3 Stiff tulle, gathered",
+      "source": "Generated illustration, prompt in exp1-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp1-4.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "1.4 Mid-weight on satin, at rest",
+      "source": "Generated illustration, prompt in exp1-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp2-1.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "2.1 Poplin collar sample",
+      "source": "Generated illustration, prompt in exp2-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp2-2.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "2.2 Pique collar sample",
+      "source": "Generated illustration, prompt in exp2-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp2-3.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "2.3 Satin collar sample",
+      "source": "Generated illustration, prompt in exp2-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp2-4.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "2.2 Pique after three washes",
+      "source": "Generated illustration, prompt in exp2-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp3-1.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "3.1 Crepe satin, shiny face",
+      "source": "Generated illustration, prompt in exp3-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp3-2.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "3.2 Crepe satin, matte face",
+      "source": "Generated illustration, prompt in exp3-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp3-3.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "3.3 Cotton sateen",
+      "source": "Generated illustration, prompt in exp3-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp3-4.png",
+      "page": "09",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "3.4 Polyester crepe, seam puckered",
+      "source": "Generated illustration, prompt in exp3-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp4-1.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "4.1 Standard foot (control)",
+      "source": "Generated illustration, prompt in exp4-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp4-2.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "4.2 Teflon foot",
+      "source": "Generated illustration, prompt in exp4-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp4-3.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "4.3 Walking foot",
+      "source": "Generated illustration, prompt in exp4-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp4-4.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "4.4 Tulle caught by the standard foot",
+      "source": "Generated illustration, prompt in exp4-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp5-1.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "5.1 Machine basting (control)",
+      "source": "Generated illustration, prompt in exp5-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp5-2.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "5.2 Ruffler foot",
+      "source": "Generated illustration, prompt in exp5-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp5-3.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "5.3 Zig zag over cord",
+      "source": "Generated illustration, prompt in exp5-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp5-4.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "5.4 Cord gathers set to the carrier",
+      "source": "Generated illustration, prompt in exp5-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp6-1.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "6.1 Chalk on satin, brushed",
+      "source": "Generated illustration, prompt in exp6-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp6-2.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "6.2 Heat pen ghost on satin",
+      "source": "Generated illustration, prompt in exp6-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp6-3.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "6.3 Tailor's tacks on tulle",
+      "source": "Generated illustration, prompt in exp6-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp6-4.png",
+      "page": "10",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "6.4 Pencil on satin after sponging",
+      "source": "Generated illustration, prompt in exp6-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp7-1.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "7.1 Raw tulle edge (control)",
+      "source": "Generated illustration, prompt in exp7-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp7-2.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "7.2 Satin-bound tulle edge",
+      "source": "Generated illustration, prompt in exp7-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp7-3.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "7.3 Double-turned satin hem",
+      "source": "Generated illustration, prompt in exp7-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp7-4.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "7.4 Horsehair braid hem",
+      "source": "Generated illustration, prompt in exp7-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp8-1.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "8.1 Hook-and-loop tape",
+      "source": "Generated illustration, prompt in exp8-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp8-2.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "8.2 Covered snaps",
+      "source": "Generated illustration, prompt in exp8-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp8-3.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "8.3 Zip in the band",
+      "source": "Generated illustration, prompt in exp8-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp8-4.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "8.4 Hooks and bars",
+      "source": "Generated illustration, prompt in exp8-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp9-1.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "9.1 Lapped zip (control)",
+      "source": "Generated illustration, prompt in exp9-1.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp9-2.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "9.2 Hook and eye placket",
+      "source": "Generated illustration, prompt in exp9-2.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp9-3.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "9.3 Invisible zip",
+      "source": "Generated illustration, prompt in exp9-3.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "exp9-4.png",
+      "page": "11",
+      "w": 34.9,
+      "h": 28.5,
+      "tone": "photo",
+      "caption": "9.4 Invisible zip under the band",
+      "source": "Generated illustration, prompt in exp9-4.prompt.txt. Stands in the slot where the experiment sample is mounted."
+    },
+    {
+      "file": "production-front.svg",
+      "page": "06",
+      "w": 80,
+      "h": 175,
+      "tone": "flat",
+      "caption": "Drawing 6.1. Dress alone, front, scale 1:10.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "production-back.svg",
+      "page": "06",
+      "w": 80,
+      "h": 175,
+      "tone": "flat",
+      "caption": "Drawing 6.2. Dress alone, back, scale 1:10.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "production-overskirt.svg",
+      "page": "06",
+      "w": 80,
+      "h": 81,
+      "tone": "flat",
+      "caption": "Drawing 6.4. Flared overskirt, scale 1:20.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "production-collar.svg",
+      "page": "06",
+      "w": 80,
+      "h": 81,
+      "tone": "flat",
+      "caption": "Collar at 1:10 and stand at 1:5; 38 cm neck arc, 7 cm back depth, and four snaps.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-front-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 40,
+      "tone": "flat",
+      "caption": "Front bodice seam lines, scale 1:15.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-back-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 40,
+      "tone": "flat",
+      "caption": "Back bodice seam lines, scale 1:15.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-sleeve-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 43,
+      "tone": "flat",
+      "caption": "Sleeve seam line and cuff cutting line, scale 1:15.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-skirt-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 54,
+      "tone": "flat",
+      "caption": "Skirt seam line and facing, scale 1:15.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-carrier-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 54,
+      "tone": "flat",
+      "caption": "Carrier seam line, scale 1:15; broken tier diagrams labelled by piece number.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "pattern-collar-measured.svg",
+      "page": "07",
+      "w": 76,
+      "h": 54,
+      "tone": "flat",
+      "caption": "Collar and stand seam lines at 1:15; collar neck arc 38 cm, back depth 7 cm.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "cut-layout-satin.svg",
+      "page": "07",
+      "w": 80,
+      "h": 66,
+      "tone": "flat",
+      "caption": "Satin and pique cutting envelopes at 1:50, including seam allowances.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "cut-layout-tulle.svg",
+      "page": "07",
+      "w": 168,
+      "h": 77,
+      "tone": "flat",
+      "caption": "Tulle cutting layout, scale 1:50, three tiers, four gores, sleeve pair, and trial strips.",
+      "source": "Measured vector drawing, 22 September 2026. Fictional specification; dimensions and scale are authored in millimetres."
+    },
+    {
+      "file": "s3b-revised.png",
+      "page": "04",
+      "w": 78.2,
+      "h": 111.4,
+      "tone": "sketch",
+      "caption": "Sketch 3B. Back view with slim raw-edged tulle sleeves.",
+      "source": "OpenAI image generation edit, 22 September 2026. Corrects sleeve fullness and removes cuffs to match sketch 3A. Prompt in s3b-revised.prompt.txt."
+    }
   ]
 }

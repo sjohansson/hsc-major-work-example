@@ -1,0 +1,18 @@
+For the built-in OpenAI image generation tool, written 19 September 2026.
+Original fictional design artwork for a textiles folio. No real person, no actor likeness, no screen still.
+
+Drawing 6.1, production flat, dress front with the overskirt on, scale 1 : 7. Style: a technical production flat for a
+manufacturing specification. Black line only on pure white, uniform line weight of about 0.5 pt at print size with a
+slightly heavier outline, no shading, no colour, no grey fill, no fabric texture, no figure, garment drawn symmetrically
+as it sits flat, seams as single lines, topstitching as dashed lines, gathers as short evenly spaced ticks along the
+seam. Nothing but the garment: no dimension lines, arrows, numbers, text, grain arrows, scale bars, title, border or
+watermark. All of those are overlaid by the page layout at fixed positions, so the garment must sit exactly where
+described. Draw the front of the final design flat and symmetrical: round neckline with a narrow facing line inside it
+and four tiny circles for the snap studs; princess seams from the armhole curving down through the bust to the waist
+seam; long straight sleeves with a 4 cm cuff and one small button, the cuff seam marked with a fine dotted line for the
+beads; the 40 mm band at the waist as two parallel lines; below it three gathered tulle tiers, each drawn as a shallow
+curved band with gather ticks along its top edge, graded 18, 26 and 34 cm deep so the lowest is nearly twice the top
+one, the lowest tier ending at the skirt hem. Format: tall portrait, approximately 1:2; the printed box is 83.9 x 173.4
+mm. Position matters: the shoulder line sits at about 5% of the image height, the neckline at about 13%, the waist band
+at about 35%, the hem at about 88%, and the garment is centred with clear white space at both sides, because the page
+overlays callout leaders at those heights.

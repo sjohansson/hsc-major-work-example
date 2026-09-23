@@ -1,0 +1,19 @@
+{
+  "deck_dir": "design-system",
+  "deck": "Deck.dc.html",
+  "deck_css": "deck.css",
+  "assets_dir": "assets",
+  "output_dir": "build/canva",
+  "local_ids": "canva.local.json",
+  "dialect": "claude-canva-connector",
+  "title": "My deck",
+  "page_mm": [297.0, 420.0],
+  "canva_px": [1123, 1588],
+  "background": "#FFFFFF",
+  "pattern_fill": "#F5EFE2",
+  "props": {},
+  "google_fonts": [],
+  "thumbnail": { "text": "MD", "fill": "#333333" },
+  "placeholder": { "fill": "#EEEEEE", "stroke": "#888888" },
+  "known_residuals": {}
+}
