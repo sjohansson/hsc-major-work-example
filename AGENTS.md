@@ -18,7 +18,7 @@ evidence issue:
 
 The `nesa-assessor` agent in `.agents/agents/` runs the marking procedure and the `get-nesa-grading-rules` skill
 in `.agents/skills/` loads the two documents. Both defer to the documents; a rule changes in the documents, never
-in the agent. The Copilot and Claude Code wrappers for the agent are thin and carry no procedure; see
+in the agent. The Copilot, Claude Code, and Codex wrappers are thin and carry no procedure; see
 [docs/agents.md](docs/agents.md).
 
 In short: the folio is marked as the finished submission a marker holds. A generated plate is marked on what it
@@ -80,9 +80,10 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 - `scripts/` `preview.ps1` and `make_placeholder_plates.py`.
 - `.agents/agents/` the agent definitions, `canva-sync` and `nesa-assessor`, written for any host. This is the
   agent: the role, the procedure it reads, the tools it may not have, and the boundaries.
-- `.github/agents/` and `.claude/agents/` the Copilot and Claude Code wrappers for the same two agents. Each is
-  that host's frontmatter, a line that says "read the agnostic file", and a section explaining what the host
-  adds. No procedure lives in a wrapper. `docs/agents.md` compares the three tiers.
+- `.github/agents/`, `.claude/agents/`, and `.codex/agents/` the Copilot, Claude Code, and Codex wrappers for the
+  same two agents. Each uses its host's format, says "read the agnostic file", and explains what the host adds.
+  Codex uses standalone TOML files with permission profiles and hooks. No procedure lives in a wrapper.
+  `docs/agents.md` compares all four files for each agent.
 - `.agents/skills/` the skills, once, for every host. `canva-sync/` is the self-contained Canva sync: its
   scripts, references, assets and its guard hook. The sync is one way, repo to Canva; a Canva edit is reported,
   never written back into the deck. `get-nesa-grading-rules/` loads the two marking documents before any grading
@@ -107,11 +108,13 @@ python scripts/make_placeholder_plates.py
 npx markdownlint-cli2 "**/*.md"
 npx -p cspell -p @cspell/dict-en-au cspell --no-progress "**/*.md"
 python .agents/skills/get-nesa-grading-rules/scripts/review_guard.py --path <file>
+python -m unittest discover -s scripts -p "test_agent_guards.py"
 python -m compileall -q scripts .agents/skills/canva-sync/scripts .agents/skills/get-nesa-grading-rules/scripts
 ```
 
 Setup: `python -m venv .venv`, `pip install -r requirements.txt`. Chrome or Edge on `PATH`, or `CHROME_PATH` set,
-for anything under `canva.py`. CI (`.github/workflows/ci.yml`) runs markdownlint, cspell and compileall.
+for anything under `canva.py`. CI (`.github/workflows/ci.yml`) runs markdownlint, cspell, compileall, agent guard
+tests, and the Canva fixture checks.
 
 ## Load-bearing constraints
 
