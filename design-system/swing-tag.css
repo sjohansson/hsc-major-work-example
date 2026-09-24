@@ -104,6 +104,10 @@
 /* Shared house mark between two stitch rows (see --stitch in deck.css). 9mm,
    not the 12.16mm it was when the drawing carried its own bars: the flower
    alone at 12mm was the largest thing on the face after the wordmark. */
+/* The slot takes the body's spare height between the claim and the piece
+   name, so the mark sits in the middle of that gap rather than on top of
+   the name. */
+.tag-mark-slot { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .tag-mark { display: flex; align-items: center; gap: 2.5mm; --mark-h: 9mm; }
 .tag-mark .bar { flex: 1; height: var(--stitch-h); background-image: var(--stitch); background-repeat: round no-repeat; background-size: var(--stitch-tile); }
 .tag-piece { font-family: Fraunces, Georgia, serif; font-weight: 900; font-size: 15pt; line-height: 1.05; text-align: center; }
