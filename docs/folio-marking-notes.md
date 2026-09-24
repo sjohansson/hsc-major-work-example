@@ -150,8 +150,10 @@ every sample photograph was declined because the methods state the grid and the 
 
 ## 7. Rerunning the NESA analysis
 
-The artefact is always the exported PDF in `output/`, never the HTML or a preview. Record its export date, size,
-and SHA-256 so the next review knows which file it compared.
+The artefact is always the exported PDF the student will print and submit, never the HTML, a preview, or the
+Canva sync's build output under `build/canva/`. By default that is the PDF in `output/`. A folio finished in
+Canva is marked from the PDF exported from Canva, given by its path. Record its export date, size, and SHA-256 so
+the next review knows which file it compared.
 
 Checks to run before reading a word:
 
