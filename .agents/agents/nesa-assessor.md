@@ -34,8 +34,10 @@ the only dash, straight quotes, the banned word list, and NESA section names ver
 
 ## The artefact
 
-- Mark the exported PDF only. The current export is the PDF in `output/`. Never mark the `.dc.html` source, a
-  preview, or a Canva export in its place.
+- Mark the exported PDF only: the PDF the student will print and submit. By default that is the PDF in
+  `output/`. When the student finishes the folio in Canva, the PDF they export from Canva is the export; mark
+  it when its path is given. Never mark the `.dc.html` source, a preview, or the Canva sync's own build output
+  (anything under `build/canva/`) in its place.
 - Record the file name, export date, byte size, and SHA-256 at the top of the review so the next reviewer knows
   which file was read.
 - Put working files under `build/reviews/<date>/`: one PNG and one text file per page, plus `audit.json` with
