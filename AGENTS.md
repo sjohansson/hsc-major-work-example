@@ -83,8 +83,8 @@ The folio text is written by a fictional Year 12 student, first person, and is m
   pages: a link to another doc becomes a wiki page link, a link to anything else in the repo becomes a GitHub
   URL, and a link to a missing file fails the build. The wiki Home page is `docs/wiki/home.md`, with its images
   taken from `design-system/assets/`; the script fills its `<!-- wiki-index -->` line with every doc. A link into
-  `docs/wiki/images/` names an image `wiki_images.py` renders from the previews (the spine and the swing tag).
-  `docs_to_wiki.py --render` writes those into the wiki at publish time; they are never committed here.
+  `docs/wiki/images/` names an image `wiki_images.py` renders from the previews (the production items and the brand kit
+  specimens). `docs_to_wiki.py --render` writes those into the wiki at publish time; they are never committed here.
   `print_pdfs.py` prints the previews to PDF with headless Chrome and checks each page count and sheet size.
 - `.agents/agents/` the agent definitions, `canva-sync` and `nesa-assessor`, written for any host. This is the
   agent: the role, the procedure it reads, the tools it may not have, and the boundaries.
