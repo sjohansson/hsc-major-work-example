@@ -98,8 +98,8 @@ The folio text is written by a fictional Year 12 student, first person, and is m
   task and carries the review guard hook.
 - `build/` generated output, ignored by git. Nothing generated is ever committed.
 - `canva.config.json` at the repo root tells the sync where the deck, its stylesheet and its assets are.
-- `canva.local.json` holds Canva design, page and asset ids. Ignored by git. The committed template is
-  `.agents/skills/canva-sync/assets/canva.local.template.json`.
+- `canva.local.json` holds Canva design, page and asset ids. Ignored by git. Copy `canva.local.example.json` to
+  `canva.local.json` and replace the placeholders with your own ids.
 
 ## Commands
 
@@ -109,7 +109,7 @@ python scripts/print_pdfs.py [--item folio spine tag labels mounts] [--out build
 python .agents/skills/canva-sync/scripts/canva_sync.py doctor [--full]
 python .agents/skills/canva-sync/scripts/canva_sync.py build [--verify] [--pdf]
 python .agents/skills/canva-sync/scripts/canva_sync.py extract
-python .agents/skills/canva-sync/scripts/canva_sync.py ops --page 01 --phase elements|format
+python .agents/skills/canva-sync/scripts/canva_sync.py ops --page 01 --phase page|elements|format
 python .agents/skills/canva-sync/scripts/canva_sync.py check --dump design.json
 python .agents/skills/canva-sync/scripts/canva_sync.py all
 python .agents/skills/canva-sync/scripts/canva_sync.py selftest
