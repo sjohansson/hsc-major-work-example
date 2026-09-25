@@ -297,13 +297,52 @@ def run_selftest() -> dict:
                 steps["public dialect refuses"] = "ok" if refused else "FAIL"
                 dump = work / "dump.json"
                 dump.write_text(json.dumps(
-                    {"design_id": "D1", "pages": [{"id": "P1", "elements": [
-                        {"text": "Mini deck"}, {"text": "not in the repo"}]}]}), encoding="utf-8")
+                    {"design_id": "D1", "document": {"pages": [{"id": "P1", "elements": [
+                        {"id": "LB1", "type": "text", "textRegions": [{"characters": "Mini deck"}]},
+                        {"id": "LB2", "type": "text",
+                         "textRegions": [{"characters": "not in the "}, {"characters": "repo"}]},
+                    ]}]}}), encoding="utf-8")
                 res, differs = run(["check", "--dump", str(dump)], expect=1)
                 steps["check reports a difference"] = "ok" if differs else "FAIL"
+                if differs and "not in the repo" not in res.stdout:
+                    steps["check reports a difference"] = "FAIL: textRegions not read"
+
         else:
             steps["verify"] = "skipped: no chrome"
             notes.append("no browser found, so verify, extract, ops and check were skipped")
+
+        # The probe must catch a field the connector does not accept, not
+        # only a missing tool or op type.
+        def op(t, props, req):
+            return {"properties": {"type": {"const": t}, **{k: {} for k in props}},
+                    "required": ["type", *req]}
+        schema = {"tools": [{"name": "read-design"}, {"name": "edit-design", "inputSchema": {
+            "properties": {"operations": {"items": {"anyOf": [
+                op("add_page", ["width", "height", "background_color", "title"], []),
+                op("replace_speaker_notes", ["page_id", "notes"], ["page_id", "notes"]),
+                op("insert_shape", ["page_id", "top", "left", "width", "height", "path",
+                                    "view_box_width", "view_box_height", "color",
+                                    "stroke_color", "stroke_weight", "rotation"], ["page_id"]),
+                op("insert_fill", ["page_id", "asset_type", "asset_id", "alt_text", "top",
+                                   "left", "width", "height"], ["page_id"]),
+                op("add_text", ["page_id", "text", "top", "left", "width", "rotation"],
+                   ["page_id", "text"]),
+                {"properties": {"type": {"const": "format_text"}, "locator_id": {},
+                                "formatting": {"properties": {k: {} for k in (
+                                    "font_size", "color", "text_align", "line_height",
+                                    "font_weight", "font_style")}}},
+                 "required": ["type", "locator_id", "formatting"]},
+            ]}}}}}]}
+        dump = work / "tools.json"
+        dump.write_text(json.dumps(schema), encoding="utf-8")
+        res, ok = run(["probe", "--tools", str(dump)])
+        steps["probe accepts matching fields"] = "ok" if ok else "FAIL"
+        schema["tools"][1]["inputSchema"]["properties"]["operations"]["items"]["anyOf"][-1][
+            "properties"]["element_ref"] = schema["tools"][1]["inputSchema"]["properties"][
+            "operations"]["items"]["anyOf"][-1]["properties"].pop("locator_id")
+        dump.write_text(json.dumps(schema), encoding="utf-8")
+        res, refused = run(["probe", "--tools", str(dump)], expect=1)
+        steps["probe refuses a renamed field"] = "ok" if refused else "FAIL"
 
         # Writing outside the output folder must be refused, whatever is asked.
         try:

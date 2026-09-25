@@ -1,16 +1,33 @@
 {
   "name": "claude-canva-connector",
-  "status": "unverified",
-  "description": "The operation vocabulary this pipeline has always emitted for a Canva connector exposed as read-design and edit-design. It is not in Canva's public MCP documentation, so treat it as unconfirmed until a probe and a one-page push agree.",
+  "status": "verified",
+  "description": "Canva's MCP connector as it is exposed today (checked 26 September 2026 through the claude.ai Canva connector): read-design opens an editing transaction and reads pages, edit-design applies operations to one page per call and commits or cancels. It creates shapes, images, text and pages, formats text and replaces speaker notes. Elements are addressed by locator id (page id, a hyphen, element id). Verified 26 September 2026: page 01 pushed (69 element and 25 format operations), read back and committed to design DAHWPUeQnIU.",
   "required_tools": ["read-design", "edit-design"],
   "apply_tool": "edit-design",
+  "transaction": {
+    "open": "read-design with open_transaction: true; the response carries transaction_id",
+    "apply": "edit-design with transaction_id, page_index (1-based) and operations, finalize: keep_open",
+    "commit": "edit-design with transaction_id and finalize: commit, no operations, only after the person approves the preview",
+    "cancel": "edit-design with transaction_id and finalize: cancel, no operations"
+  },
+  "path_commands": "MmLlHhVvCcSsAaZz",
   "capabilities": {
     "create_elements": true,
+    "create_pages": true,
     "speaker_notes": true,
     "format_text": true,
     "transactions": true
   },
   "ops": {
+    "page": {
+      "type": "add_page",
+      "emit": [
+        ["from", "width", "width"],
+        ["from", "height", "height"],
+        ["from", "background_color", "background"],
+        ["from", "title", "title"]
+      ]
+    },
     "notes": {
       "type": "replace_speaker_notes",
       "emit": [
@@ -62,7 +79,7 @@
     "format": {
       "type": "format_text",
       "emit": [
-        ["from", "element_id", "element_id"],
+        ["from", "locator_id", "locator_id"],
         ["nest", "formatting", [
           ["from", "font_size", "font_size"],
           ["from", "color", "color"],

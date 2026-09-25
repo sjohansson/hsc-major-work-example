@@ -7,24 +7,24 @@ connector actually accepts, and states which tools that connector must expose.
 
 Two ship with the bundle:
 
-  claude-canva-connector   the vocabulary this pipeline has always emitted
-                           (insert_shape / insert_fill / add_text /
-                           format_text / replace_speaker_notes). Marked
-                           `unverified`: it is not in Canva's public
-                           documentation, so a connector that takes it has to
-                           prove it by probe before anything is pushed.
-  canva-mcp-public         Canva's documented public MCP server. Its editing
-                           transaction applies `replace_text` and
-                           `find_and_replace_text` only, so it can change text
-                           in a design that already exists but cannot create a
-                           page's elements. Asking it for the elements phase is
-                           an error that names the import-from-URL route.
+  claude-canva-connector   Canva's connector as it is exposed today:
+                           read-design and edit-design, with add_page /
+                           insert_shape / insert_fill / add_text /
+                           format_text / replace_speaker_notes, elements
+                           addressed by locator id. The default.
+  canva-mcp-public         Legacy: the start/perform/commit transaction tools
+                           Canva's public server documented before September
+                           2026. Its editing transaction applies
+                           `replace_text` only, so it cannot create a page's
+                           elements. Asking it for the elements phase is an
+                           error that names the import-from-URL route.
 
 The probe is the gate. `canva_sync.py probe --tools tools.json` takes a dump of
 the connector's tool list - the agent gets that by listing the MCP server's
 tools - and reports whether the dialect's required tools are there and, when
-the dump carries input schemas that enumerate operation types, whether every op
-type the dialect emits is among them. Exit 1 means do not push.
+the dump carries the apply tool's input schema, whether every op type the
+dialect emits is among them and whether every field it emits is one that op
+type accepts, with every required field present. Exit 1 means do not push.
 
 A dialect file:
 
@@ -33,7 +33,7 @@ A dialect file:
       "status": "verified" | "unverified",
       "required_tools": ["..."],
       "apply_tool": "...",
-      "op_types_path": ["properties", "operations", "items", ...],
+      "path_commands": "MmLl...",   optional: the SVG commands insert_shape accepts
       "capabilities": {"create_elements": true, ...},
       "ops": {
         "<abstract op>": {
@@ -77,6 +77,14 @@ class Dialect:
         self.apply_tool = data.get("apply_tool", "")
         self.capabilities = dict(data.get("capabilities", {}))
         self.ops = dict(data.get("ops", {}))
+        self.path_commands = data.get("path_commands", "")
+
+    def unsupported_path_commands(self, d: str) -> str:
+        """The SVG path commands in d this connector will not draw, if it says."""
+        if not self.path_commands:
+            return ""
+        return "".join(sorted({c for c in d if c.isalpha() and c not in "eE"
+                               and c not in self.path_commands}))
 
     # -- rendering -----------------------------------------------------------
 
@@ -165,19 +173,29 @@ def _tool_names(dump) -> dict:
     return found
 
 
-def _enumerated_op_types(tool: dict) -> set:
-    """Every enum value under the tool's schema that looks like an op type.
+def _op_variants(tool: dict) -> dict:
+    """Map op type -> the schema object that describes that op.
 
-    Connectors describe their apply tool differently, so rather than pin one
-    JSON pointer this collects the enums of any property named `type` or
-    `operation`. No enums found means the schema does not say, which the probe
-    reports as unknown rather than as a failure."""
-    found = set()
+    Connectors describe their apply tool differently: one variant per op in an
+    anyOf/oneOf with `type` as a const, or a single object whose `type` is an
+    enum. This walks the whole schema rather than pinning one JSON pointer.
+    A const variant carries its properties, so its fields can be checked; an
+    enum only names the types."""
+    found: dict = {}
 
     def walk(node, key=None):
         if isinstance(node, dict):
+            props = node.get("properties")
+            if isinstance(props, dict) and isinstance(props.get("type"), dict):
+                t = props["type"]
+                if "const" in t:
+                    found[str(t["const"])] = node
+                elif isinstance(t.get("enum"), list) and key not in ("formatting",):
+                    for v in t["enum"]:
+                        found.setdefault(str(v), {})
             if key in ("type", "operation", "op") and isinstance(node.get("enum"), list):
-                found.update(str(v) for v in node["enum"])
+                for v in node["enum"]:
+                    found.setdefault(str(v), {})
             for k, v in node.items():
                 walk(v, k)
         elif isinstance(node, list):
@@ -188,13 +206,50 @@ def _enumerated_op_types(tool: dict) -> set:
     return found
 
 
+def _field_problems(dialect: "Dialect", variants: dict) -> dict:
+    """Per op type: emitted fields the schema does not accept, required ones it never emits."""
+
+    def keys(entries):
+        out = {}
+        for entry in entries:
+            out[entry[1]] = entry[2] if entry[0] == "nest" else None
+        return out
+
+    def compare(emitted: dict, schema: dict, where: str, problems: list):
+        props = schema.get("properties")
+        if not isinstance(props, dict):
+            return
+        for k, sub in emitted.items():
+            if k not in props and k != "type":
+                problems.append(f"{where}{k}: not accepted")
+            elif sub is not None:
+                compare(keys(sub), props[k], f"{where}{k}.", problems)
+        for k in schema.get("required", []):
+            if k != "type" and k not in emitted:
+                problems.append(f"{where}{k}: required, never emitted")
+
+    result = {}
+    for spec in dialect.ops.values():
+        schema = variants.get(spec["type"])
+        if not schema:
+            continue
+        problems: list = []
+        compare(keys(spec.get("emit", [])), schema, "", problems)
+        if problems:
+            result[spec["type"]] = problems
+    return result
+
+
 def probe(dialect: Dialect, dump) -> dict:
     tools = _tool_names(dump)
     missing = [t for t in dialect.required_tools if _norm(t) not in tools]
     apply_tool = tools.get(_norm(dialect.apply_tool), {}) if dialect.apply_tool else {}
-    declared = _enumerated_op_types(apply_tool)
+    variants = _op_variants(apply_tool)
+    declared = set(variants)
     wanted = sorted(dialect.op_types())
     unsupported = sorted(t for t in wanted if declared and t not in declared)
+    fields = _field_problems(dialect, variants)
+    fields_checked = sorted(t for t in wanted if variants.get(t))
 
     result = {
         "dialect": dialect.name,
@@ -205,6 +260,8 @@ def probe(dialect: Dialect, dump) -> dict:
         "op_types": wanted,
         "op_types_declared": sorted(declared) if declared else None,
         "unsupported_op_types": unsupported,
+        "fields_checked": fields_checked,
+        "field_problems": fields,
     }
     if missing:
         result["ok"] = False
@@ -212,13 +269,18 @@ def probe(dialect: Dialect, dump) -> dict:
     elif unsupported:
         result["ok"] = False
         result["reason"] = "the apply tool's schema does not list every operation type"
+    elif fields:
+        result["ok"] = False
+        result["reason"] = "the dialect emits fields the apply tool's schema does not accept"
     else:
         result["ok"] = True
         result["reason"] = (
             "tools match; the operation vocabulary is still unconfirmed because the "
             "schema does not enumerate it - push one page and read it back first"
-            if declared == set() else "tools and operation types both match"
-        )
+            if declared == set() else
+            "tools and operation types match; fields were not checked because the schema "
+            "does not describe each operation" if not fields_checked else
+            "tools, operation types and fields all match")
     return result
 
 

@@ -1,7 +1,7 @@
 {
   "name": "canva-mcp-public",
   "status": "verified",
-  "description": "Canva's documented public MCP server at mcp.canva.com. Its editing transaction applies replace_text and find_and_replace_text, so it can change the text of a design that already exists but cannot create a page's shapes, images or text. Building a design from this repository over this connector means importing the flattened HTML from a public URL and then correcting text here.",
+  "description": "Legacy: the tool set Canva's public MCP server at mcp.canva.com documented before September 2026. The connector checked on 26 September 2026 no longer exposes these tools; it matches claude-canva-connector instead. Kept so a connector that still speaks this set is recognised by probe. Its editing transaction applies replace_text and find_and_replace_text, so it can change the text of a design that already exists but cannot create a page's shapes, images or text. Building a design from this repository over this connector means importing the flattened HTML from a public URL and then correcting text here.",
   "required_tools": [
     "start-editing-transaction",
     "perform-editing-operations",

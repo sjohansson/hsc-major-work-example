@@ -48,13 +48,13 @@ The short version:
 ```json
 {
   "design_id": "DAF...",
-  "pages": { "01": "DAF...:page-id", "02": "..." },
-  "assets": { "cover.png": "MAF...", "plate.svg": "MAF..." }
+  "pages": { "01": "PB...", "02": "PB..." },
+  "assets": { "cover.png": "MA...", "plate.svg": "MA..." }
 }
 ```
 
 It names one person's Canva account, so it is git-ignored and `assets/canva.local.template.json` is what gets
-committed. `check --refresh-ids` writes it; nothing else does. Without it, operations carry the literal
+committed. A repository can also commit a filled-in example beside it for people to copy. `check --refresh-ids` writes it; nothing else does. Without it, operations carry the literal
 `PAGE_ID` and every image is a placeholder, which is enough to generate and inspect a push on a fresh clone.
 
 ## Adopting the skill in another repository

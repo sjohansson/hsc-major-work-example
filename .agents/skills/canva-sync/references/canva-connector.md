@@ -1,43 +1,62 @@
 # The Canva connector, the dialects and the probe
 
-## What Canva publishes
+## What Canva's connector exposes
 
-Canva's public MCP server is at `https://mcp.canva.com/mcp` and authenticates with OAuth. Its documented tools,
-checked against Canva's developer documentation in September 2026, include:
+Checked on 26 September 2026 through the claude.ai Canva connector. The tools that matter here:
 
 | Tool | Does |
 | --- | --- |
 | `search-designs` | Find designs in the account |
-| `get-design`, `get-design-pages`, `get-design-content` | Read a design's metadata, pages and content |
-| `get-presenter-notes` | Read speaker notes |
-| `get-design-thumbnail` | A rendered thumbnail |
+| `read-design` | Read a design's metadata, pages, content, thumbnails and speaker notes; with `open_transaction: true`, open an editing transaction |
+| `edit-design` | Apply operations to one page of an open transaction, then commit or cancel it |
 | `import-design-from-url` | Create a design from a document at a public URL |
 | `upload-asset-from-url`, `get-assets` | Put images in the media library and list them |
 | `export-design` | Export to PDF and other formats |
-| `start-editing-transaction`, `perform-editing-operations`, `commit-editing-transaction`, `cancel-editing-transaction` | The editing transaction |
 
-Two things follow, and both shape this skill:
+The editing transaction works like this:
 
-- **There is no public `read-design` or `edit-design`.** Those are the names an older connector used, and the
-  names the default dialect here still asks for.
-- **`perform-editing-operations` documents `replace_text` and `find_and_replace_text` only.** It changes text in
-  a design that already exists. It does not create shapes, images or text boxes.
+1. `read-design` with `open_transaction: true` (and `"thumbnails"` in `filter.fields` for a before picture) returns a
+   `transaction_id`.
+2. `edit-design` with that `transaction_id`, a 1-based `page_index`, `finalize: "keep_open"` and an `operations`
+   array applies the operations to that page and returns the draft page: its `id` and its `elements`, each with an
+   element `id`, and text as `textRegions[].characters`.
+3. `edit-design` with `finalize: "commit"` and no operations saves everything. The connector requires the person
+   to see a preview and approve before this call. `finalize: "cancel"` with no operations discards everything.
+   Neither can carry operations.
 
-`start-editing-transaction` returns the design's `richtexts` and `fills`, each carrying an `element_id`. Canva's
-documentation is explicit that those element ids are the source for editing operations, and that they do not
-come from `get-design-content`.
+Elements are addressed by **locator id**: the page id, a hyphen, and the element id, for example
+`PBPLrWbbTNTyFGHq-LBMKbVQbB97s87LB`. `format_text`, `delete_element`, `position_element` and the other edit
+operations take `locator_id`; the create operations (`add_text`, `insert_shape`, `insert_fill`,
+`replace_speaker_notes`) take `page_id`. `add_page` takes `width`, `height`, `background_color` and `title`.
+
+What the schema will and will not take, and where the pipeline meets it:
+
+- `insert_shape` paths accept only `M L H V C S A Z`. `ops` refuses to emit a path with any other command.
+- `format_text` has no font family. Size (a whole number of pixels), `bold` or `normal`, `italic` or `normal`,
+  colour as six-digit hex, `start`/`center`/`end` alignment and a line height between 0.5 and 2.5 all cross.
+- There is no operation to set an existing page's background colour. `add_page` sets it for a new page.
+- Formatting applies to a whole text box. Bold or italic words inside a paragraph (a lead-in, an emphasised term)
+  come out in the paragraph's own style.
+- Canva's default face is wider than Fraunces and PT Serif, so a paragraph can run a line longer than in the deck
+  and short single-line boxes (a footer label, a page number) can wrap. Apply the brand fonts in Canva, or widen
+  the box there; the deck is not changed to suit.
+
+The tool set Canva's public server documented before this (`start-editing-transaction`,
+`perform-editing-operations`, `commit-editing-transaction`, `cancel-editing-transaction`, `get-design-content`)
+could only replace text in an existing design. It no longer appears on the connector.
 
 ## The two dialects
 
 `ops` builds abstract operations; a file under `assets/dialects/` spells them for one connector.
 
-**`claude-canva-connector`** is the vocabulary this pipeline has always emitted: `insert_shape`, `insert_fill`,
-`add_text`, `format_text`, `replace_speaker_notes`, applied through `read-design` and `edit-design`. It is
-marked `unverified`, because it is not in Canva's public documentation and nothing in this repository has ever
-pushed with it. It is the default because it is the only dialect that can build a page from nothing.
+**`claude-canva-connector`** is the default, verified on 26 September 2026 by pushing page 01: `add_page`, `insert_shape`, `insert_fill`, `add_text`,
+`format_text` and `replace_speaker_notes` through `read-design` and `edit-design`, as described above. Its file
+also records the transaction calls and the path commands the connector draws. Its `status` becomes `verified`
+once a page pushed with it has been read back and matched.
 
-**`canva-mcp-public`** is the documented server above. `capabilities.create_elements` is false, so asking it for
-the elements phase exits 1 and names the route below instead of emitting a payload the connector would reject.
+**`canva-mcp-public`** is the legacy tool set above. `capabilities.create_elements` is false, so asking it for
+the elements phase exits 1 and names the import-from-URL route instead of emitting a payload the connector would
+reject.
 
 Adding a third is a JSON file, not a code change. `dialect.py` explains the file's shape at the top.
 
@@ -50,11 +69,17 @@ canva_sync.py probe --tools - --dialect canva-mcp-public
 
 List the connector's tools, save that JSON - the whole response, or a bare list of names, either is read - and
 run the probe. It checks that every tool the dialect needs is present, ignoring case and the difference between
-`-` and `_`, and, where the apply tool's input schema enumerates operation types, that every type the dialect
-emits is among them. It prints its finding as JSON and exits 1 when they do not match.
+`-` and `_`. Where the dump carries the apply tool's input schema it also checks that every operation type the
+dialect emits is among the schema's types, and, where the schema describes each type's fields, that every field
+the dialect emits is accepted and every required field is emitted. It prints its finding as JSON, with
+`field_problems` per operation type, and exits 1 when anything does not match.
 
-A pass is not a guarantee. When the schema does not enumerate operation types the probe says so in its `reason`,
-and the first page still has to be pushed and read back as `push-loop.md` describes.
+Save the tool list **with input schemas**. A list of names alone proves only that the tools exist; the field
+check is what catches a renamed field such as `element_id` becoming `locator_id` before it reaches Canva.
+
+A pass is not a guarantee. The probe reads field names, not values or behaviour, so the first page pushed with
+an unverified dialect still has to be read back as `push-loop.md` describes. When the schema does not describe
+the operations the probe says so in its `reason`.
 
 If the tool list cannot be dumped at all, probe by hand: open a transaction, apply one shape operation to a
 scratch page, read the page back, and cancel the transaction. If the shape is not there, the vocabulary is
@@ -62,7 +87,8 @@ wrong.
 
 ## The import-from-URL route
 
-With the public connector, a design is not built operation by operation. It is imported:
+Only a connector that matches the legacy `canva-mcp-public` dialect needs this. There a design is not built
+operation by operation. It is imported:
 
 1. `build` the flattened export.
 2. Publish `<output_dir>/canva-import-rev.html` at a **public HTTPS URL**. `import-design-from-url` fetches it

@@ -14,18 +14,24 @@ connector with different op names is a new file under assets/dialects/, not a
 change here.
 
 Phases per page:
+    page      one add_page operation sized and coloured like the repo page,
+              for a label canva.local.json has no page id for yet.
     elements  everything that creates an element, in paint order. Chunked so
               one connector call stays a sane size. `PAGE_ID` stands in for
               the page id when canva.local.json does not have one yet.
     format    created text carries no styling, so every text element needs a
-              follow-up format operation. This phase consumes the element ids
-              the elements phase returned (one per text, in order).
+              follow-up format operation addressed by locator id. Give it the
+              connector's response after the elements phase (--from-dump) and
+              each repo text is paired with the Canva element holding the
+              same words; or give it the ids in text order (--ids/--id-list).
 
 Usage:
     canva_sync.py ops --page 01 --phase elements
     canva_sync.py ops --page 01 --phase elements --chunk 2
+    canva_sync.py ops --page 01 --phase format --from-dump response.json
     canva_sync.py ops --page 01 --phase format --ids ids.txt
     canva_sync.py ops --page 01 --phase format --id-list a,b,c
+    canva_sync.py ops --page 05 --phase page
     canva_sync.py ops --summary [--json]
 
 Asset mapping: canva.local.json ("assets") maps repo image names to Canva
@@ -43,6 +49,7 @@ import sys
 from pathlib import Path
 
 from . import COMMAND  # noqa: E402
+from .check import element_texts, find_pages, norm  # noqa: E402
 from .config import cfg  # noqa: E402
 from .dialect import DialectError  # noqa: E402
 from .dialect import load as load_dialect  # noqa: E402
@@ -104,8 +111,15 @@ def text_op(e) -> dict:
     return op
 
 
-def format_op(e, element_id) -> dict:
-    op = {"op": "format", "element_id": element_id,
+def locator(page_id: str, element_id: str) -> str:
+    """A locator id is the page id, a hyphen and the element id. Accept either."""
+    if "-" in element_id or page_id == "PAGE_ID":
+        return element_id
+    return f"{page_id}-{element_id}"
+
+
+def format_op(e, locator_id) -> dict:
+    op = {"op": "format", "locator_id": locator_id,
           "font_size": int(e["size"]), "color": e["color"],
           "text_align": e["align"], "line_height": e["lh"]}
     if e.get("bold"):
@@ -140,6 +154,32 @@ def is_page_ground(e, page):
             and e["w"] >= page["width"] - 2 and e["h"] >= page["height"] - 2)
 
 
+def ids_from_dump(dump, page_id, texts):
+    """Pair each repo text with the Canva text element that holds the same words.
+
+    Pairing by content rather than position means a response that lists
+    elements in a different order, or a page that already had text on it,
+    cannot put one text's styling on another. Returns (ids, unmatched)."""
+    pages = find_pages(dump)
+    page = next((p for p in pages if p.get("id") == page_id), None)
+    if page is None and len(pages) == 1:
+        page = pages[0]
+    if page is None:
+        raise OpsError(f"no page {page_id!r} in the dump")
+    pool = element_texts(page)
+    used: set = set()
+    ids, unmatched = [], []
+    for e in texts:
+        want = norm(e["text"])
+        hit = next((i for i, (eid, t) in enumerate(pool) if i not in used and t == want), None)
+        if hit is None:
+            unmatched.append(want)
+            continue
+        used.add(hit)
+        ids.append(locator(page.get("id", page_id), pool[hit][0]))
+    return ids, unmatched
+
+
 def summary(pages, assets, chunk_size):
     per_page = []
     for p in pages:
@@ -159,11 +199,13 @@ def main(argv=None, settings=None):
     settings = settings or cfg()
     ap = argparse.ArgumentParser(prog=f"{COMMAND} ops", description=__doc__.splitlines()[0])
     ap.add_argument("--page")
-    ap.add_argument("--phase", choices=("elements", "format"))
+    ap.add_argument("--phase", choices=("page", "elements", "format"))
     ap.add_argument("--chunk", type=int, help="print only this 1-based chunk")
     ap.add_argument("--chunk-size", type=int, default=CHUNK_DEFAULT)
     ap.add_argument("--ids", help="file of element ids, one per line, in text order, or - for stdin")
     ap.add_argument("--id-list", help="element ids as one comma-separated list")
+    ap.add_argument("--from-dump", help="the connector's response after the elements phase "
+                                        "(a file or -); texts are paired by content")
     ap.add_argument("--dialect", help="override the dialect named in the config")
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--json", action="store_true", help="print the summary as JSON")
@@ -197,6 +239,20 @@ def main(argv=None, settings=None):
 
     pid = settings.page_id(args.page)
 
+    if args.phase == "page":
+        if not spelling.can("create_pages"):
+            print(f"dialect {spelling.name!r} cannot add pages", file=sys.stderr)
+            return 1
+        if pid != "PAGE_ID":
+            print(f"page {args.page} is already mapped to {pid}; nothing to add", file=sys.stderr)
+            return 1
+        op = {"op": "page", "width": int(round(page["width"])),
+              "height": int(round(page["height"])), "title": args.page}
+        if page.get("background"):
+            op["background"] = page["background"]
+        print(json.dumps(spelling.render_all([op]), separators=(",", ":")))
+        return 0
+
     if args.phase == "elements":
         if not spelling.can("create_elements"):
             print(f"dialect {spelling.name!r} cannot create elements: {spelling.data.get('description', '')}\n"
@@ -225,6 +281,15 @@ def main(argv=None, settings=None):
                     o[k] = round(v, 1)
                 elif k == "path":
                     o[k] = _round_path(v)
+        bad = [(i, spelling.unsupported_path_commands(o["path"]))
+               for i, o in enumerate(ops) if o.get("path")]
+        bad = [(i, c) for i, c in bad if c]
+        if bad:
+            for i, c in bad:
+                print(f"  op {i}: path uses {c}, which {spelling.name} cannot draw", file=sys.stderr)
+            print("  rewrite those commands in build (Q/T become C/S) before pushing",
+                  file=sys.stderr)
+            return 1
         try:
             rendered = spelling.render_all(ops)
         except DialectError as exc:
@@ -241,15 +306,25 @@ def main(argv=None, settings=None):
         if not spelling.can("format_text"):
             print(f"dialect {spelling.name!r} cannot format text", file=sys.stderr)
             return 1
-        if args.id_list:
+        texts = [e for e in els if e["kind"] == "text"]
+        if args.from_dump:
+            raw = sys.stdin.read() if args.from_dump == "-" else                 Path(args.from_dump).read_text(encoding="utf-8")
+            ids, unmatched = ids_from_dump(json.loads(raw), pid, texts)
+            if unmatched:
+                print(f"{len(unmatched)} repo text(s) have no Canva element with the same words:",
+                      file=sys.stderr)
+                for t in unmatched:
+                    print(f"    {t[:100]}", file=sys.stderr)
+                return 1
+        elif args.id_list:
             ids = [i.strip() for i in args.id_list.split(",") if i.strip()]
         elif args.ids == "-":
             ids = sys.stdin.read().split()
         elif args.ids:
             ids = Path(args.ids).read_text(encoding="utf-8").split()
         else:
-            ap.error("--phase format needs --ids or --id-list")
-        texts = [e for e in els if e["kind"] == "text"]
+            ap.error("--phase format needs --from-dump, --ids or --id-list")
+        ids = [locator(pid, i) for i in ids]
         if len(ids) != len(texts):
             print(f"id count {len(ids)} != text count {len(texts)}", file=sys.stderr)
             return 1

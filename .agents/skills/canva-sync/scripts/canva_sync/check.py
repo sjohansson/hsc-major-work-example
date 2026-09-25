@@ -18,9 +18,11 @@ folder this tool ever writes; the deck is never touched.
 
 The dump's shape is not pinned to one connector version. The walker accepts
 either the raw response or a bare list of pages, finds pages as the first
-list of objects that carry elements, and reads text from any of the keys
-`text`, `plain_text` or `content` and asset ids from `asset_id` or
-`media_id`. If a future response nests things differently, fix the walker
+list of objects that carry elements, and reads an element's text from its
+`textRegions[].characters` (how read-design and edit-design return it today,
+one region per run of styling, joined back together) or else from any of the
+keys `text`, `plain_text`, `content` or `characters`, and asset ids from
+`asset_id` or `media_id`. If a future response nests things differently, fix the walker
 here rather than the comparison.
 
     canva_sync.py check --dump design.json
@@ -39,7 +41,7 @@ from pathlib import Path
 from . import COMMAND
 from .config import cfg
 
-TEXT_KEYS = ("text", "plain_text", "content")
+TEXT_KEYS = ("text", "plain_text", "content", "characters")
 ASSET_KEYS = ("asset_id", "media_id")
 ID_KEYS = ("id", "page_id")
 ELEMENT_KEYS = ("elements", "children", "items")
@@ -49,10 +51,47 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def region_text(node: dict):
+    """The text of an element that carries textRegions, or None."""
+    regions = node.get("textRegions")
+    if not isinstance(regions, list):
+        return None
+    return norm("".join(r.get("characters", "") for r in regions if isinstance(r, dict)))
+
+
+def element_texts(page) -> list:
+    """(locator id or element id, text) for every text element under a page, in order."""
+    found: list = []
+
+    def visit(node):
+        if isinstance(node, dict):
+            text = region_text(node)
+            if text is None:
+                text = next((norm(node[k]) for k in TEXT_KEYS
+                             if isinstance(node.get(k), str) and node[k].strip()), None)
+            ident = node.get("locator_id") or node.get("id")
+            if text and isinstance(ident, str):
+                found.append((ident, text))
+                return
+            for v in node.values():
+                visit(v)
+        elif isinstance(node, list):
+            for v in node:
+                visit(v)
+
+    visit(page.get("elements", page))
+    return found
+
+
 def walk(node, texts: list, assets: list):
     """Collect text strings and asset ids anywhere under node."""
     if isinstance(node, dict):
+        text = region_text(node)
+        if text:
+            texts.append(text)
         for k, v in node.items():
+            if k == "textRegions":
+                continue
             if k in TEXT_KEYS and isinstance(v, str) and v.strip():
                 texts.append(norm(v))
             elif k in ASSET_KEYS and isinstance(v, str):
@@ -72,6 +111,10 @@ def find_pages(dump):
     if isinstance(dump, dict):
         if "pages" in dump and isinstance(dump["pages"], list):
             return dump["pages"]
+        # edit-design returns the one page it edited as document.page
+        page = dump.get("page")
+        if isinstance(page, dict) and any(k in page for k in ELEMENT_KEYS):
+            return [page]
         for v in dump.values():
             found = find_pages(v)
             if found:
