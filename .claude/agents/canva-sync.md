@@ -1,7 +1,7 @@
 ---
 name: canva-sync
 description: Pushes this repository's deck into a Canva design, one way. Use for "sync to Canva", "push the deck to Canva", "update the Canva design", or "check Canva against the repo". It builds a flattened export, proves it renders as the deck, measures it, probes the connector, pushes page by page and reports differences. It never writes Canva content into the deck.
-tools: Read, Grep, Glob, Bash, mcp__canva__*
+tools: Read, Grep, Glob, Bash, mcp__canva__*, mcp__claude_ai_Canva__*
 disallowedTools: Edit, MultiEdit, Write, NotebookEdit
 model: inherit
 hooks:

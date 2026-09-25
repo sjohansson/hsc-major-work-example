@@ -20,10 +20,25 @@ repository as it stands. `references/config.md` inside the bundle says how.
 | File | Holds | Committed |
 | --- | --- | --- |
 | `canva.config.json` | Deck paths, page size, prop values, webfonts, placeholder colours, known residuals, output folder, dialect | Yes |
-| `canva.local.json` | Design id, page id map, asset id map for one Canva account | No. Template: `.agents/skills/canva-sync/assets/canva.local.template.json` |
+| `canva.local.json` | Design id, page id map, asset id map for one Canva account | No. Copy `canva.local.example.json` and fill in your ids |
 | `build/canva/canva-import-rev.html` | The flattened deck, pages in reverse (the order Canva's importer reads) | No |
 | `build/canva/canva-layout.json` | Per page: ordered shapes, images and texts with geometry and style | No |
 | `build/canva/verify/` | Reference and export renders and diffs from the last verify | No |
+
+To set it up, copy the example and edit the copy:
+
+```text
+cp canva.local.example.json canva.local.json
+```
+
+- `design_id` is the id in the design's Canva URL, `canva.com/design/<design_id>/edit`.
+- `pages` maps a deck page label to a Canva page id. Leave it as `{}` and run
+  `python .agents/skills/canva-sync/scripts/canva_sync.py check --dump design.json --refresh-ids` on the
+  connector's `read-design` output to fill it in; the ids start with `PB`.
+- `assets` maps an image's filename, as the deck refers to it, to a Canva asset id (starting `MA`) for an image
+  already uploaded to the account. Leave it as `{}` and every image is pushed as a placeholder rectangle.
+
+Replace or remove every `x` placeholder before pushing: an id that is not real is sent to Canva as it stands.
 
 Setup: `pip install -r requirements.txt`, and Chrome or Edge on `PATH` or named in `CHROME_PATH`.
 
@@ -93,15 +108,21 @@ differently. Same words, same column, same height. Canva re-flows text on import
 A residual is recorded only when it is understood, and written down here when it is. It is not a way to get a
 page through the gate.
 
-## The connector, and a caveat
+## The connector
 
-The operation vocabulary the pipeline emits by default is not in Canva's public MCP documentation, and nothing
-here has ever pushed with it. It is marked `unverified`, and the `probe` command is the gate: it checks the
-connector's tool list against the dialect before anything is pushed, and the first page of an unverified dialect
-is pushed one chunk at a time and read back.
+The pipeline pushes through Canva's connector as it is exposed today (checked 26 September 2026): `read-design`
+opens an editing transaction, `edit-design` applies operations to one page at a time and then commits or cancels,
+and elements are addressed by locator id. The `probe` command is the gate: it checks the connector's tool list,
+operation types and field names against the dialect before anything is pushed. The dialect was verified on
+26 September 2026 by pushing page 01, reading it back and committing it. Nothing is committed to the design
+without the person approving the preview.
 
-Canva's documented public server can replace text in an existing design but cannot create a page's elements. The
-route for that connector is to publish the flattened HTML at a public URL and import it, which a private
+What does not cross: font families (text lands in Canva's default face, which is wider, so a few boxes wrap),
+bold or italic words inside a paragraph, the page background tint, and images that have no Canva asset id, which
+arrive as placeholder rectangles.
+
+Canva's older public tool set could replace text in an existing design but could not create a page's elements. The
+route for a connector that still speaks it is to publish the flattened HTML at a public URL and import it, which a private
 repository cannot do without publishing the file somewhere. `references/canva-connector.md` in the bundle has
 the detail.
 
