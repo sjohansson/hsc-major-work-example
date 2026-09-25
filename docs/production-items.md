@@ -1,3 +1,6 @@
+<!-- markdownlint-disable MD033 -->
+<!-- The images are rendered from the previews by scripts/wiki_images.py when the wiki is published. -->
+
 # Production items
 
 Four physical pieces sit beside the twelve folio pages. Each is a `.dc.html` design component in `design-system/`
@@ -14,6 +17,12 @@ of work.
 
 ## Binder spine insert
 
+<p align="center">
+  <img src="wiki/images/binder-spine.png" alt="Binder spine insert, 436 x 59 mm, laid on its side" width="820">
+</p>
+
+<p align="center"><sub>The spine insert at the trim, laid on its side. The head is on the left.</sub></p>
+
 The page masthead turned through 90 degrees: cream band, 38 pt wordmark, slate rule, and the 60 degree
 transition into all four area fields in order, so the spine stands for the whole folio. The strip is 436 mm, 16 mm
 longer than A3, which is why it prints on A2 with a spare. Measure the binder's spine pocket before printing.
@@ -22,12 +31,27 @@ is set from the head.
 
 ## Swing tag
 
+<p align="center">
+  <img src="wiki/images/swing-tag-front.png" alt="Swing tag, front" width="210">
+  <img src="wiki/images/swing-tag-back.png" alt="Swing tag, back, with the specification and care" width="210">
+</p>
+
+<p align="center"><sub>The swing tag, 70 x 120 mm, front and back.</sub></p>
+
 Two faces printed at true size, glued either side of a 1 to 1.5 mm board core, cut to the outline and punched for
 a 7 mm black grosgrain ribbon. The front carries the wordmark, the house mark and the claim. The back is the
 completion marker: the product specification, the five care symbols and the care sentence. The sewn labels carry
 the same five symbols; change a symbol on one and change it on the other.
 
 ## Product labels
+
+<p align="center">
+  <img src="wiki/images/label-dress.png" alt="Dress label, size 10" width="270">
+  <img src="wiki/images/label-overskirt.png" alt="Overskirt label, waist 68 cm" width="270">
+  <img src="wiki/images/label-collar.png" alt="Collar label, neck 38 cm" width="270">
+</p>
+
+<p align="center"><sub>The dress, overskirt and collar labels from the reading proof, each a 71 x 48 mm patch with its blank allowance on the left.</sub></p>
 
 Sewn labels for the dress, the overskirt and the collar. All three share one layout: wordmark, piece and size,
 fibre content, the five care symbols in the order wash, bleach, tumble dry, natural dry, iron, a one-line care
@@ -43,6 +67,12 @@ reading: the same six registers, the same symbols and the same words, at 12 pt w
 on one and change it on the other. Dress size is 10, overskirt waist is 68 cm, and collar neck is 38 cm.
 
 ## Mount scaffold
+
+<p align="center">
+  <img src="wiki/images/mount-scaffold.png" alt="Mount scaffold sheet 1, Materials, with twelve offcut slots and the 100 mm bar" width="420">
+</p>
+
+<p align="center"><sub>Sheet 1 of 3, Materials: twelve 38 x 22 mm slots and the calibration bar.</sub></p>
 
 Three A4 guides provide 45 reference-offcut slots for the sample display. The slots are 38 x 22 mm and are
 independent of the selected images on folio pages 9 to 11. IDs include every marking/material condition,

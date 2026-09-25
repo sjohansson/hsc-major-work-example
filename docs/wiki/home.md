@@ -8,7 +8,8 @@
 <h1 align="center">The Raven's Ledger</h1>
 
 <p align="center">
-  <em>A fictional HSC Textiles and Design major work, marked by an AI while it is still being written.</em>
+  <em>An invented HSC Textiles and Design major work, marked by AI against the real NESA criteria while it is
+  still being written.</em>
 </p>
 
 <p align="center">
@@ -24,6 +25,17 @@
 This wiki goes with a twelve-page A3 folio for a school dance dress, inspired by the dress Wednesday Addams wears
 to the Rave'N dance. The student, the school, the dress, and every test result are invented. Nobody has
 submitted any of it.
+
+The marking is not invented. The criteria, the mark ranges, and the page rules are NESA's own, quoted from the
+published documents for students sitting the HSC in 2026 and 2027. The marking procedure, the agents that run it,
+and the reviews they write are the same ones a real student's folio would get.
+
+| Invented | Real |
+| --- | --- |
+| The student, the school, and the dress | NESA's marking guidelines and mark ranges, quoted word for word |
+| Every experiment, trial, and test result | The page limits, section order, and submission rules |
+| The plates, which are generated study drawings | The marking procedure and the evidence rules |
+| | The agents, and the reviews and marks they give |
 
 The dress is only the test case. The real question is this: can the folio be built like software, so a student
 gets marker-style feedback every time a page changes, instead of once, after it is handed in?
@@ -45,6 +57,9 @@ flowchart LR
   page limits are checked, not eyeballed.
 - **The AI marks.** The `nesa-assessor` agent reads the exported PDF against the published marking guidelines and
   reports what a marker would find: unsupported claims, contradictions, and missing required elements.
+
+On 26 September 2026 four agents marked the same export against the same rules. Three gave 23 out of 25 and one
+gave 25. The [grading review](../nesa-grading-review.md) puts them side by side and shows where they disagree.
 
 ## The folio, section by section
 
@@ -82,8 +97,10 @@ colourway.
 
 ## Production items
 
-The folio lives in a binder, and the dress leaves with a swing tag. Both are drawn by the same stylesheet as the
+The folio lives in a [binder](https://link.amazon/B0heUZFEB), and the dress leaves with a swing tag. Both are drawn by the same stylesheet as the
 pages, so they carry the same masthead, rules, and house mark.
+
+Adjust the spine size and graphics to fit the binder actually used.
 
 <p align="center">
   <img src="images/binder-spine.png" alt="Binder spine insert, 436 x 59 mm, laid on its side" width="820">
@@ -105,6 +122,7 @@ pages, so they carry the same masthead, rules, and house mark.
 - New here? Read the [design rationale](../design-rationale.md) for why the folio looks the way it does.
 - Marking something? Read the [NESA marking facts](../nesa-marking-facts.md) and the
   [folio marking notes](../folio-marking-notes.md) first. They govern every review.
+- Want to see a marking? The [NESA grading review](../nesa-grading-review.md) compares four agents on one export.
 - Printing or making? The [print specifications](../print-specifications.md) and
   [production items](../production-items.md) cover paper, binding, the swing tag, and the labels.
 - Curious about the agents? [Agents in this repo](../agents.md) shows how one agent runs on Copilot, Claude Code,
@@ -116,6 +134,6 @@ pages, so they carry the same masthead, rules, and house mark.
 
 ## About this wiki
 
-Everything here is fictional. The plates are generated study drawings and stand in for the student's own artwork.
-No real student, school, or screen still appears anywhere. The wiki is rebuilt from the
+The folio is invented; the rules it is marked against are not. The plates are generated study drawings and stand
+in for the student's own artwork. No real student, school, or screen still appears anywhere. The wiki is rebuilt from the
 [docs/ folder](../../docs) on every push to `main`, so edit the repository, not the wiki.

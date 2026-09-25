@@ -1,9 +1,21 @@
+<!-- markdownlint-disable MD033 -->
+<!-- The specimens are rendered from the design notes page by scripts/wiki_images.py when the wiki is published. -->
+
 # Brand kit
 
 The Raven's Ledger, Major Textiles Project folio, HSC Textiles and Design. This is the specification of record
 for the folio's identity: names, colours, type and the masthead construction. The implementation is
 `design-system/deck.css`, whose comments record the measurements behind each choice, and the full Colour chapter is in
 `design-system/meta/design-process.html`, built by `preview.ps1 -Item meta`. The reasons are in [design-rationale.md](design-rationale.md).
+
+<p align="center">
+  <img src="../design-system/assets/house-mark.svg"
+    alt="The house mark, a nightshade flower in school purple"
+    width="72">
+</p>
+
+Every picture on this page is a live specimen from the design notes page, drawn by `deck.css` and rendered when
+the wiki is published, so the pictures and the pages cannot disagree.
 
 ## Section names
 
@@ -24,6 +36,14 @@ Section names follow NESA's Major Textiles Project marking guidelines exactly (s
 The full official name is used verbatim in the dateline on all twelve pages. The section name a marker looks for
 is never paraphrased, and never only in the footer.
 
+<p align="center">
+  <img src="wiki/images/masthead-areas.png"
+    alt="The four mastheads, one per section, in Slate, Bone, Ash and Wine"
+    width="680">
+</p>
+
+<p align="center"><sub>The masthead of each section, drawn at 297 mm and shown at 60 per cent.</sub></p>
+
 ## Colour
 
 Four structural tokens: Ink `#1A1A1A`, Paper `#FEFBFC`, Cream `#F5EFE2` (the masthead band), and the two brand
@@ -31,6 +51,12 @@ colours sampled from the garment, which arrive as props: `slate` `#4A4E69` (the 
 `wine` `#8C3B4A` (the NESA-designated second colour for pattern modifications on page 7). A fifth token,
 `school purple` `#5B2A86` (Wednesday's Nevermore uniform), colours the house mark, the masthead hem, the
 running foot's stitch row and the stitch rows the mark sits between, and nothing else.
+
+<p align="center">
+  <img src="wiki/images/brand-colours.png"
+    alt="Swatches for Ink, Paper, Cream, Slate, Wine and School purple"
+    width="680">
+</p>
 
 Each folio chapter (area) carries its own colourway of five tokens:
 
@@ -47,6 +73,26 @@ Each folio chapter (area) carries its own colourway of five tokens:
 | III Ash | `#C9D4DA` | `#7F98A8` | `#6D818E` | `#F0F3F5` | `#5C6C77` | 5.28 : 1 |
 | IV Wine | `#D8C1C6` | `#A26B78` | `#8A5C67` | `#F4EDEF` | `#744F58` | 6.80 : 1 |
 
+<p align="center">
+  <img src="wiki/images/colourway-slate.png"
+    alt="Area I colourway, Slate: field, border, accent, tint and emph"
+    width="400">
+  <img src="wiki/images/colourway-bone.png"
+    alt="Area II colourway, Bone: field, border, accent, tint and emph"
+    width="400">
+</p>
+
+<p align="center">
+  <img src="wiki/images/colourway-ash.png"
+    alt="Area III colourway, Ash: field, border, accent, tint and emph"
+    width="400">
+  <img src="wiki/images/colourway-wine.png"
+    alt="Area IV colourway, Wine: field, border, accent, tint and emph"
+    width="400">
+</p>
+
+<p align="center"><sub>The four colourways, filled from the same <code>--area-*</code> tokens the pages use.</sub></p>
+
 Field, accent and tint are derived from the border: field is the border mixed 42 per cent over white, tint 12 per
 cent over white, accent the border mixed 82 per cent towards ink. `emph` is the accent mixed 80 per cent towards
 ink, `color-mix(in srgb, <accent> 80%, #1A1A1A)`, written out as a literal so it survives without `color-mix()`
@@ -56,6 +102,14 @@ re-measure `emph`; every value must stay above 4.5 : 1 on paper.
 **Contrast rules.** Area tokens are fill-and-rule colours, never text colours. Text over a fill is always Ink,
 and only ever over field or tint. Border may sit behind table header text. `emph` is the only token that may
 colour type, and its one use is the last clause of the closing statement on page 12.
+
+<p align="center">
+  <img src="wiki/images/emph-line.png"
+    alt="The closing statement on page 12, its last clause set in Wine emph"
+    width="660">
+</p>
+
+<p align="center"><sub>The one text use of an area colour: Wine emph, 16 pt, 6.80 : 1 on paper.</sub></p>
 
 **Component mapping.** Per page, the area class recolours exactly these components and nothing else: the
 masthead chapter-transition block (field), table header rows (border), table cells (tint), plate corner dots
@@ -71,6 +125,24 @@ titles and the plate-number roundels. PT Serif is the text face for everything a
 statement 16 pt at 1.4. The kit has no style below 12 pt. The swing tag reverse reproduced on page 7 is artwork
 at 1 : 1 and is the only place smaller type appears.
 
+<p align="center">
+  <img src="wiki/images/type-display.png"
+    alt="Fraunces Black: the wordmark, a section title and three plate-number roundels"
+    width="680">
+</p>
+
+<p align="center"><sub>
+  Fraunces Black: the wordmark at 38 pt, a section title at 19 pt, and the plate-number roundels.
+</sub></p>
+
+<p align="center">
+  <img src="wiki/images/type-text.png"
+    alt="PT Serif: the standfirst, a body paragraph and the masthead dateline"
+    width="680">
+</p>
+
+<p align="center"><sub>PT Serif: the standfirst at 16 pt, body at 12.5 pt, and the dateline at 12 pt.</sub></p>
+
 ## The house mark
 
 One ornament for the whole set: a simplified nightshade flower drawn as linework, held in `design-system/assets/house-mark.svg`,
@@ -80,6 +152,14 @@ closing statements, on the binder spine and on the swing tag, and nowhere else. 
 file: `--mark-h` is the height of the drawn flower and the box is scaled to deliver it (see `.mark-band` in
 `deck.css`).
 
+<p align="center">
+  <img src="wiki/images/house-mark-uses.png"
+    alt="The house mark in the ornamented rule and in the running foot"
+    width="680">
+</p>
+
+<p align="center"><sub>The mark at 10 mm in the ornamented rule, and at 6 mm in the running foot.</sub></p>
+
 ## Masthead
 
 The cream band carries the wordmark at 38 pt with the slate rule beneath, and ends after the wordmark in a 60
@@ -88,6 +168,16 @@ right-aligned dateline in two registers: the official NESA section name in PT Se
 letterspacing, over the period title in PT Serif italic, 12 pt. The block is top-aligned so the section name
 starts at the same height on every page and a two-line name grows downward. Line breaks are authored, never
 wrapped: only "Investigation, Experimentation / and Evaluation" breaks.
+
+<p align="center">
+  <img src="wiki/images/masthead-detail.png"
+    alt="Masthead detail at full size: the end of the wordmark, the 60 degree seam, the dateline and the hem"
+    width="680">
+</p>
+
+<p align="center"><sub>
+  The right-hand 180 mm of the masthead at full size: the seam, the dateline, and the hem below.
+</sub></p>
 
 Slant geometry: horizontal run = band height / tan 60 degrees, about 0.577 times the band height, 15 mm at the
 default 26 mm band. The slant is derived from the band height so the angle holds if the band is retuned within
@@ -121,6 +211,22 @@ because 0.4 mm is 1.51 px on a 1x screen and snapped to one row on half the page
 doubled hairline; the stitch reads by its length, not its weight, and is exempt. Plates on pages 1 to 5 carry a 0.4 mm outer frame, a 0.12 mm inner frame 1.8 mm
 inside it, and four 1.6 mm corner dots in the area accent. Drawings on pages 6 to 8 sit in a 0.3 mm single box
 with no dots.
+
+<p align="center">
+  <img src="wiki/images/plates.png"
+    alt="A source plate with slate dots, a sketch plate with bone dots, and a production drawing in a single box"
+    width="680">
+</p>
+
+<p align="center"><sub>A source plate, a sketch plate, and a production drawing, at the size they print.</sub></p>
+
+The stub rule is 60 mm by 1.1 mm in the area border colour, under the opening display line on pages 5 and 12.
+
+<p align="center">
+  <img src="wiki/images/rule-stub.png"
+    alt="The stub rule in the Wine border colour under an opening display line"
+    width="680">
+</p>
 
 ## Compliance guardrails
 

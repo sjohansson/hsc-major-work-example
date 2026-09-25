@@ -16,14 +16,33 @@ from print_pdfs import REPO, find_chrome, build_previews
 SCALE = 3
 PX_PER_MM = 96 / 25.4 * SCALE
 
-# Wiki image name -> (preview item, preview page, css selector, which match, mm cropped off each edge, turn).
+# Wiki image name -> (preview item, preview page, css selector, which match, mm cropped off each edge, turn, paper).
 # The spine prints with 3 mm of bleed round the 59 x 436 mm trim; the crop takes it back to the trim, and the
-# turn lays the strip down so it reads left to right. docs_to_wiki.py reads the names, so nothing here may
-# need Pillow at import time: the CI wiki check runs before the requirements are installed.
+# turn lays the strip down so it reads left to right. The brand kit images are the live specimens on the design
+# notes page, drawn by deck.css. Paper is a margin in mm set on paper colour round a specimen that has no sheet
+# of its own, so it does not sit on the wiki's own background. docs_to_wiki.py reads the names, so nothing here
+# may need Pillow at import time: the CI wiki check runs before the requirements are installed.
 IMAGES = {
-    "binder-spine.png": ("spine", "binder-spine.html", ".spine-piece", 0, 3, True),
-    "swing-tag-front.png": ("tag", "swing-tag.html", ".tag-wrap", 0, 0, False),
-    "swing-tag-back.png": ("tag", "swing-tag.html", ".tag-wrap", 1, 0, False),
+    "binder-spine.png": ("spine", "binder-spine.html", ".spine-piece", 0, 3, True, 0),
+    "swing-tag-front.png": ("tag", "swing-tag.html", ".tag-wrap", 0, 0, False, 0),
+    "swing-tag-back.png": ("tag", "swing-tag.html", ".tag-wrap", 1, 0, False, 0),
+    "label-dress.png": ("labels", "product-labels.html", ".proof-row .cell", 0, 0, False, 4),
+    "label-overskirt.png": ("labels", "product-labels.html", ".proof-row .cell", 1, 0, False, 4),
+    "label-collar.png": ("labels", "product-labels.html", ".proof-row .cell", 2, 0, False, 4),
+    "mount-scaffold.png": ("mounts", "mount-scaffold.html", ".ms-sheet", 0, 0, False, 0),
+    "type-display.png": ("meta", "design-notes.html", ".mp-spec", 0, 0, False, 0),
+    "type-text.png": ("meta", "design-notes.html", ".mp-spec", 1, 0, False, 0),
+    "house-mark-uses.png": ("meta", "design-notes.html", ".mp-spec", 3, 0, False, 0),
+    "masthead-detail.png": ("meta", "design-notes.html", ".mp-spec", 5, 0, False, 0),
+    "rule-stub.png": ("meta", "design-notes.html", ".mp-spec", 6, 0, False, 0),
+    "plates.png": ("meta", "design-notes.html", ".mp-spec", 7, 0, False, 0),
+    "masthead-areas.png": ("meta", "design-notes.html", ".mp-spec", 8, 0, False, 0),
+    "brand-colours.png": ("meta", "design-notes.html", ".mp-cards", 0, 0, False, 4),
+    "colourway-slate.png": ("meta", "design-notes.html", ".mp-wrap > .area-sources", 0, 0, False, 6),
+    "colourway-bone.png": ("meta", "design-notes.html", ".mp-wrap > .area-designs", 0, 0, False, 6),
+    "colourway-ash.png": ("meta", "design-notes.html", ".mp-wrap > .area-making", 0, 0, False, 6),
+    "colourway-wine.png": ("meta", "design-notes.html", ".mp-wrap > .area-trials", 0, 0, False, 6),
+    "emph-line.png": ("meta", "design-notes.html", ".mp-emph-line", 0, 0, False, 6),
 }
 
 # Hides everything but the target, moves the target to the top left corner, and reports its size.
@@ -37,6 +56,10 @@ ISOLATE = """
   .stack { display: block !important; padding: 0 !important; }
   body * { visibility: hidden !important; }
   .wiki-target, .wiki-target * { visibility: visible !important; }
+  /* The design notes column is 180 mm but gives way to a narrow window. The screenshot window is the target's
+     own width, so the column is held at 180 mm or it would rewrap and outgrow the measured height. */
+  .mp-wrap { max-width: none !important; }
+  %(paper)s
 </style>
 <script>
   const place = () => {
@@ -75,11 +98,15 @@ def chrome_run(chrome, *args):
     )
 
 
-def render(chrome, html, selector, index, crop_mm, turn, dest, work):
+def render(chrome, html, selector, index, crop_mm, turn, paper_mm, dest, work):
     from PIL import Image
 
     page = work / f"{dest.stem}.html"
-    inject = ISOLATE % {"selector": json.dumps(selector), "index": index}
+    paper = (
+        f".wiki-target {{ background: #FEFBFC; padding: {paper_mm}mm; margin: 0; }}"
+        " .wiki-target > :first-child { margin-top: 0; }"
+    ) if paper_mm else ""
+    inject = ISOLATE % {"selector": json.dumps(selector), "index": index, "paper": paper}
     page.write_text(html.read_text(encoding="utf-8-sig").replace("</body>", inject + "</body>"), encoding="utf-8")
 
     dom = chrome_run(chrome, "--dump-dom", page.as_uri()).stdout
@@ -113,8 +140,9 @@ def render_all(out, chrome=None):
     with tempfile.TemporaryDirectory() as td:
         previews = Path(td) / "previews"
         build_previews(sorted({spec[0] for spec in IMAGES.values()}), previews)
-        for name, (_item, html, selector, index, crop_mm, turn) in IMAGES.items():
-            width, height = render(chrome, previews / html, selector, index, crop_mm, turn, out / name, previews)
+        for name, (_item, html, selector, index, crop_mm, turn, paper_mm) in IMAGES.items():
+            args = (selector, index, crop_mm, turn, paper_mm, out / name, previews)
+            width, height = render(chrome, previews / html, *args)
             print(f"  {name:<22} {width} x {height} px")
 
 
