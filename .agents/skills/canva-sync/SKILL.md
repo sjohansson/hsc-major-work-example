@@ -51,7 +51,8 @@ python PATH_TO_BUNDLE/scripts/canva_sync.py verify [--scale 2] [--keep DIR]
 python PATH_TO_BUNDLE/scripts/canva_sync.py extract [--page 07]
 python PATH_TO_BUNDLE/scripts/canva_sync.py ops --summary [--json]
 python PATH_TO_BUNDLE/scripts/canva_sync.py ops --page 01 --phase elements [--chunk N]
-python PATH_TO_BUNDLE/scripts/canva_sync.py ops --page 01 --phase format --id-list a,b,c
+python PATH_TO_BUNDLE/scripts/canva_sync.py ops --page 01 --phase format --from-dump response.json
+python PATH_TO_BUNDLE/scripts/canva_sync.py ops --page 05 --phase page
 python PATH_TO_BUNDLE/scripts/canva_sync.py probe --tools tools.json
 python PATH_TO_BUNDLE/scripts/canva_sync.py check --dump design.json [--refresh-ids]
 python PATH_TO_BUNDLE/scripts/canva_sync.py all
@@ -75,13 +76,15 @@ Do not skip a gate. Each one exists because the step after it is expensive to un
 3. **extract.**
 4. **ops --summary --json.** If `unmapped_assets` is not empty, say which images have no asset id and ask
    whether to push with placeholder rectangles or stop and upload them first. Do not decide this silently.
-5. **probe.** List the connector's tools, save that as JSON, and run `probe --tools`. Stop on a mismatch. If only
-   the public dialect matches, say so and switch to the import-from-URL route in
-   `references/canva-connector.md` rather than pushing operations the connector will reject.
-6. **Push, one page at a time.** For each page: open an editing transaction, apply the `elements` chunks in
-   order, collect the returned text element ids in order, apply the `format` phase with `--id-list`, compare the
-   returned thumbnail against `<output_dir>/verify/out-NN.png`, then commit the transaction. On any error,
-   cancel the transaction, report what happened, and stop. Do not carry on to the next page.
+5. **probe.** List the connector's tools with their input schemas, save that as JSON, and run `probe --tools`.
+   Stop on a mismatch, including any `field_problems`. If only the legacy public dialect matches, say so and
+   switch to the import-from-URL route in `references/canva-connector.md` rather than pushing operations the
+   connector will reject.
+6. **Push, one page at a time.** A page with no id yet is added first with `ops --phase page`. For each page:
+   open an editing transaction with `read-design`, apply the `elements` chunks in order with `edit-design`, save
+   the last response, apply the `format` phase with `--from-dump`, compare the draft thumbnail against
+   `<output_dir>/verify/out-NN.png`, show the person the preview, and commit only when they approve. On any
+   error, cancel the transaction, report what happened, and stop. Do not carry on to the next page.
    `references/push-loop.md` has the detail, including what to do on the first page of an unverified dialect.
 7. **check.** Feed the connector's design JSON to `check --dump -`. On a fresh design use `--refresh-ids` once,
    which writes the design id and page ids into the local id file. Text Canva has that the repository does not
