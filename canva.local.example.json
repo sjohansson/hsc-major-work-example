@@ -1,0 +1,11 @@
+{
+  "design_id": "DAxxxxxxxxx",
+  "pages": {
+    "01": "PBxxxxxxxxxxxxxx",
+    "02": "PBxxxxxxxxxxxxxx"
+  },
+  "assets": {
+    "i1.png": "MAxxxxxxxxx",
+    "house-mark.svg": "MAxxxxxxxxx"
+  }
+}
