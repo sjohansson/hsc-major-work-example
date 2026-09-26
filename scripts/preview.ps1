@@ -37,9 +37,6 @@
     Path to a browser executable. Defaults to Chrome, then Edge, then
     whatever the shell has registered for .html.
 
-.PARAMETER NoOpen
-    Build without launching a browser.
-
 .PARAMETER Guides
     Folio: overlay the six-column grid and the margin box. Spine: outline
     the trim inside the bleed. Equivalent to the showGuides / showTrim props.
@@ -53,6 +50,18 @@
     hairline the A3 page prints. The slots are border-box, so this changes
     the look of the rule and not the size of the box. Equivalent to the
     dashedSlots prop.
+
+.PARAMETER NoOpen
+    Build once without launching a browser, and exit. This is the mode for
+    tools and CI (print_pdfs.py uses it): no watching, no reload script.
+
+.PARAMETER NoWatch
+    Build once, open, and exit. Without it the script keeps running after
+    it opens the browser and rebuilds whenever a file under design-system/
+    changes. The built pages poll a small stamp file that each rebuild
+    rewrites and reload themselves when it changes, keeping their scroll
+    position: save a file, look at the browser. Ctrl+C stops watching. An
+    edit to this script itself needs a restart.
 
 .EXAMPLE
     .\scripts\preview.ps1
@@ -71,8 +80,12 @@
     The three swing tag designs side by side, to choose between.
 
 .EXAMPLE
-    .\scripts\preview.ps1 -Rose '#B86B80' -StudentNo 12345678 -NoOpen
-    Re-sample the garment colour without opening a window.
+    .\scripts\preview.ps1 -Wine '#9A4656' -StudentNo 12345678 -NoOpen
+    Try another wine colour and build without opening a window.
+
+.EXAMPLE
+    .\scripts\preview.ps1 -Item folio -NoWatch
+    Build and open the folio once, then return to the prompt.
 #>
 [CmdletBinding()]
 param(
@@ -82,6 +95,12 @@ param(
     [string] $OutDir = (Join-Path ([System.IO.Path]::GetTempPath()) 'folio-preview'),
     [string] $Browser,
     [switch] $NoOpen,
+    [switch] $NoWatch,
+
+    # Internal: set by the watch loop when it re-runs this script for a
+    # rebuild, so the child builds and returns instead of watching again.
+    [Parameter(DontShow)]
+    [switch] $Rebuild,
 
     [switch] $Guides,
     [switch] $Bleed,
@@ -270,6 +289,49 @@ $shellCss = @"
   }
 "@
 
+# ---------------------------------------------------------------------------
+# Live reload. The pages are file:// URLs, so there is no server to push a
+# change and fetch() of a sibling file is blocked. A <script src> of one is
+# not, so each page re-adds a script tag for live-reload.js every 600 ms.
+# Each rebuild rewrites that file with a new stamp. The page remembers the
+# first stamp it sees and reloads when the stamp changes, so a page left
+# over from an earlier run reloads once per rebuild rather than looping.
+# Scroll position is carried across the reload in sessionStorage. Tools and
+# CI build with -NoOpen and get none of this.
+# ---------------------------------------------------------------------------
+$live = $Rebuild -or -not ($NoOpen -or $NoWatch)
+$reloadJs = if (-not $live) { '' } else {
+    @'
+<script>
+(function () {
+  var key = 'pv-scroll:' + location.pathname, seen = null;
+  try {
+    var at = JSON.parse(sessionStorage.getItem(key) || 'null');
+    sessionStorage.removeItem(key);
+    if (at) addEventListener('load', function () { scrollTo(at[0], at[1]); });
+  } catch (e) {}
+  function poll() {
+    var el = document.createElement('script');
+    el.src = './live-reload.js?t=' + Date.now();
+    el.onload = el.onerror = function () {
+      el.remove();
+      var now = window.__pvStamp;
+      if (seen !== null && now && now !== seen) {
+        try { sessionStorage.setItem(key, JSON.stringify([scrollX, scrollY])); } catch (e) {}
+        location.reload();
+        return;
+      }
+      if (now) seen = now;
+      setTimeout(poll, 600);
+    };
+    document.head.appendChild(el);
+  }
+  poll();
+})();
+</script>
+'@
+}
+
 $built = @()
 
 foreach ($key in $wanted) {
@@ -296,7 +358,7 @@ foreach ($key in $wanted) {
                'font:13px/1.4 ''PT Serif'',Georgia,serif;padding:9px 16px;display:flex;gap:16px;' +
                'align-items:baseline;flex-wrap:wrap"><b>' + $doc.Name + '</b>' +
                '<span style="opacity:0.6;font-size:12px">' + $doc.Sub + '</span>' +
-               '<a href="./index.html" style="color:#EECAD4">&larr; all items</a></div>'
+               '<a href="./index.html" style="color:#EECAD4">&larr; all items</a></div>' + $reloadJs
         $raw = $raw -replace '<body>', ('<body>' + $bar)
 
         if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Force | Out-Null }
@@ -372,6 +434,7 @@ $shellCss
 <div class="stack">
 $($pages -join "`n")
 </div>
+$reloadJs
 </body></html>
 "@
 
@@ -427,8 +490,9 @@ $head
 <h1>The Raven&rsquo;s Ledger</h1>
 <div class="lede">Static previews rendered from the .dc.html sources against the live stylesheets in <code>design-system/</code>. Sheets are sized in real millimetres: Ctrl&nbsp;+&nbsp;scroll to zoom freely, Ctrl+P to print a true-size proof.$flagLine</div>
 $($cards -join "`n")
-<div class="foot">Rebuild after editing: <code>pwsh .\scripts\preview.ps1</code>, then reload.<br>
-Options: <code>-Item folio|spine|tag|labels|mounts|meta</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
+<div class="foot">While <code>pwsh .\scripts\preview.ps1</code> is running, every save under <code>design-system/</code> rebuilds these pages and the open tabs reload themselves. Without it running, re-run the script and reload.<br>
+Options: <code>-Item folio|spine|tag|labels|mounts|meta</code>, <code>-Guides</code>, <code>-Bleed</code>, <code>-DashedSlots</code>, <code>-Slate</code>, <code>-Wine</code>, <code>-GownSize</code>, <code>-StudentNo</code>, <code>-NoWatch</code>, <code>-NoOpen</code>. Run <code>Get-Help .\scripts\preview.ps1 -Full</code> for the rest.</div>
+$reloadJs
 </body></html>
 "@
 
@@ -436,8 +500,14 @@ $indexPath = Join-Path $OutDir 'index.html'
 Set-Content -LiteralPath $indexPath -Value $index -Encoding UTF8
 Write-Host "  index                  ->  $indexPath"
 
+# Written last, so a page that sees the new stamp reloads into finished files.
+if ($live) {
+    $stamp = [DateTime]::UtcNow.Ticks
+    Set-Content -LiteralPath (Join-Path $OutDir 'live-reload.js') -Value "window.__pvStamp = '$stamp';" -Encoding UTF8
+}
+
 # ---------------------------------------------------------------------------
-if ($NoOpen) { return }
+if ($NoOpen -or $Rebuild) { return }
 
 function Resolve-Browser {
     param([string] $Explicit)
@@ -468,4 +538,41 @@ else {
     # No known browser on disk; hand it to whatever the shell has registered.
     Start-Process -FilePath $target
     Write-Host "`nopened with the shell's registered handler: $target"
+}
+
+if ($NoWatch) { return }
+
+# ---------------------------------------------------------------------------
+# Watch. Each rebuild re-runs this script with the same parameters plus
+# -Rebuild, so the build logic has one home. Editors often save in several
+# writes (temp file, rename, touch), so the loop waits for 300 ms of quiet
+# before it rebuilds. The output folder is not under design-system/, so the
+# rebuild's own writes do not trigger another one.
+# ---------------------------------------------------------------------------
+$childArgs = @{}
+foreach ($k in $PSBoundParameters.Keys) { $childArgs[$k] = $PSBoundParameters[$k] }
+$childArgs.Rebuild = $true
+
+$watcher = New-Object System.IO.FileSystemWatcher $ds
+$watcher.IncludeSubdirectories = $true
+$watcher.NotifyFilter = [System.IO.NotifyFilters]'FileName, LastWrite, DirectoryName'
+
+Write-Host "`nwatching $ds - save a file and the open tabs reload. Ctrl+C stops."
+try {
+    while ($true) {
+        $change = $watcher.WaitForChanged([System.IO.WatcherChangeTypes]::All, 500)
+        if ($change.TimedOut) { continue }
+        $names = [System.Collections.Generic.List[string]]::new()
+        $names.Add($change.Name)
+        while (-not ($next = $watcher.WaitForChanged([System.IO.WatcherChangeTypes]::All, 300)).TimedOut) {
+            if (-not $names.Contains($next.Name)) { $names.Add($next.Name) }
+        }
+
+        Write-Host "`n$(Get-Date -Format 'HH:mm:ss')  changed: $($names -join ', ')"
+        try { & $PSCommandPath @childArgs }
+        catch { Write-Warning "rebuild failed: $($_.Exception.Message) - still watching" }
+    }
+}
+finally {
+    $watcher.Dispose()
 }

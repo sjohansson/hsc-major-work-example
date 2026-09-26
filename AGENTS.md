@@ -32,7 +32,8 @@ A fictional HSC Textiles and Design Major Textiles Project folio: twelve A3 page
 items (binder spine insert, swing tag, product labels, mount scaffold). The pages are `.dc.html` design components
 rendered by `design-system/deck-stage.js` and `design-system/support.js`, styled by `design-system/deck.css` and
 one stylesheet per item. `scripts/preview.ps1` renders them to static HTML for a browser and a true-size print
-proof. `canva_sync.py` flattens the deck for Canva and checks it back.
+proof, and rebuilds on every save unless given `-NoWatch` or `-NoOpen` (`docs/preview.md`). `canva_sync.py`
+flattens the deck for Canva and checks it back.
 
 Everything is invented. Never add a real student name, student number, school, teacher, or a photograph of a real
 person. Never add copyrighted material (commercial patterns, screen stills, magazine scans, exam papers, other
@@ -104,7 +105,7 @@ The folio text is written by a fictional Year 12 student, first person, and is m
 ## Commands
 
 ```pwsh
-pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoOpen]
+pwsh scripts/preview.ps1 -Item folio|spine|tag|labels|mounts|meta|all [-Guides] [-Bleed] [-NoWatch] [-NoOpen]
 python scripts/print_pdfs.py [--item folio spine tag labels mounts] [--out build/print]
 python .agents/skills/canva-sync/scripts/canva_sync.py doctor [--full]
 python .agents/skills/canva-sync/scripts/canva_sync.py build [--verify] [--pdf]
