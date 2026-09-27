@@ -2,7 +2,7 @@
 
 ## What Canva's connector exposes
 
-Checked on 26 September 2026 through the claude.ai Canva connector. The tools that matter here:
+Checked on 28 September 2026 through the claude.ai Canva connector. The tools that matter here:
 
 | Tool | Does |
 | --- | --- |
@@ -10,7 +10,8 @@ Checked on 26 September 2026 through the claude.ai Canva connector. The tools th
 | `read-design` | Read a design's metadata, pages, content, thumbnails and speaker notes; with `open_transaction: true`, open an editing transaction |
 | `edit-design` | Apply operations to one page of an open transaction, then commit or cancel it |
 | `import-design-from-url` | Create a design from a document at a public URL |
-| `upload-asset-from-url`, `get-assets` | Put images in the media library and list them |
+| `create-upload-url` | Hand out a one-time URL that takes a local file into the media library |
+| `upload-asset-from-url`, `get-assets` | Put an image at a public URL into the media library, and look up assets by id |
 | `export-design` | Export to PDF and other formats |
 
 The editing transaction works like this:
@@ -37,9 +38,12 @@ What the schema will and will not take, and where the pipeline meets it:
 - There is no operation to set an existing page's background colour. `add_page` sets it for a new page.
 - Formatting applies to a whole text box. Bold or italic words inside a paragraph (a lead-in, an emphasised term)
   come out in the paragraph's own style.
-- Canva's default face is wider than Fraunces and PT Serif, so a paragraph can run a line longer than in the deck
-  and short single-line boxes (a footer label, a page number) can wrap. Apply the brand fonts in Canva, or widen
-  the box there; the deck is not changed to suit.
+- Canva's default face, Arimo, is wider than Fraunces and PT Serif, so a paragraph can run a line longer than in
+  the deck and short single-line boxes (a footer label, a page number) can wrap. On a dense page a longer
+  paragraph runs into the box below it. `push-loop.md` has the check to run before commit. Apply the brand fonts
+  in Canva, or move or widen the box there; the deck is not changed to suit, and text is never set smaller.
+- `edit-design` can split a large response across two text blocks, and truncate it. Record each chunk's new
+  text element ids from its own response rather than relying on the last one.
 
 The tool set Canva's public server documented before this (`start-editing-transaction`,
 `perform-editing-operations`, `commit-editing-transaction`, `cancel-editing-transaction`, `get-design-content`)
@@ -50,9 +54,10 @@ could only replace text in an existing design. It no longer appears on the conne
 `ops` builds abstract operations; a file under `assets/dialects/` spells them for one connector.
 
 **`claude-canva-connector`** is the default, verified on 26 September 2026 by pushing page 01: `add_page`, `insert_shape`, `insert_fill`, `add_text`,
-`format_text` and `replace_speaker_notes` through `read-design` and `edit-design`, as described above. Its file
-also records the transaction calls and the path commands the connector draws. Its `status` becomes `verified`
-once a page pushed with it has been read back and matched.
+`format_text` and `replace_speaker_notes` through `read-design` and `edit-design`, as described above. It went
+through again on 28 September 2026 with two more pages, this time with `insert_fill` carrying uploaded asset ids.
+Its file also records the transaction calls and the path commands the connector draws. Its `status` becomes
+`verified` once a page pushed with it has been read back and matched.
 
 **`canva-mcp-public`** is the legacy tool set above. `capabilities.create_elements` is false, so asking it for
 the elements phase exits 1 and names the import-from-URL route instead of emitting a payload the connector would
@@ -103,9 +108,31 @@ back.
 
 ## Assets
 
-Images cross only if the account already holds them. Upload them - in the Canva app, or with
-`upload-asset-from-url`, which also needs a public HTTPS URL - and record the ids in the local id file under
-`assets`, keyed by the image's filename as the deck refers to it.
+Images cross only if the account already holds them. Record each id in the local id file under `assets`, keyed
+by the image's filename as the deck refers to it.
+
+Local files go up through `create-upload-url`, no public URL needed. Checked on 28 September 2026:
+
+1. Call `create-upload-url`. It returns a one-time URL: one request, valid for 30 minutes. Ask for one per file.
+2. POST the file's bytes to it:
+
+   ```text
+   curl -sS -X POST -H "Content-Type: application/octet-stream" --data-binary @path/to/image.png "<upload url>"
+   ```
+
+   A `201` response carries `{"mediaId":"MA..."}`, the asset id.
+3. `get-assets` with the id confirms the account holds the image and shows its size.
+
+`upload-asset-from-url` does the same from a public HTTPS URL, and the Canva app does it by hand.
+
+An SVG whose text uses a font Canva does not have comes out in a wider fallback face, and a caption that runs to
+the edge is clipped. Upload a PNG render of it instead, recorded under the SVG's filename so the deck's reference
+still matches: the SVG in an `<img>` at its own size, screenshot in headless Chrome at
+`--force-device-scale-factor=4` on a transparent background. The font has to be installed on the machine for
+that render, because an SVG loaded through `<img>` cannot fetch web fonts. Keep the render under `output_dir`.
+
+Uploading writes to the person's media library and to the local id file, which this skill does not edit. It
+happens outside the push, with the person's go-ahead.
 
 The map is keyed by filename and goes stale silently, so run `ops --summary` after any rename under the assets
 folder. An image with no id becomes a placeholder rectangle; it is never guessed at.

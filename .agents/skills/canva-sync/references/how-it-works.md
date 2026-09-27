@@ -84,15 +84,28 @@ after it, and the report will look like wholesale disagreement. Check the page c
 
 ## What crosses into Canva and what does not
 
-Crosses: geometry, stacking order, colours, text content, sizes, weights, italics, alignment, line heights, and
-any image with a mapped asset id.
+Crosses: geometry, stacking order, colours, text content, sizes, alignment set with `text-align`, line heights,
+bold and italic applied to a whole text box, and any image with a mapped asset id.
 
 Does not cross:
 
-- Font families. The format operation has no family parameter, so text lands in Canva's default face at the
-  right size and weight. Apply the real faces from a Canva brand kit.
-- Hatched or patterned fills, which flatten to the single tone in `pattern_fill`.
+- Font families. The format operation has no family parameter, so text lands in Canva's default face, Arimo, at
+  the right size and weight. Apply the real faces from a Canva brand kit. Arimo is usually wider, so check the
+  draft for overlaps before commit (`push-loop.md`).
+- Bold, italic or underlined words inside a paragraph. Formatting applies to a whole box, so they come out in
+  the paragraph's own style.
+- The page background of an existing page. There is no operation to set it, so a page that already exists stays
+  white. `add_page` sets it for a new page.
+- Hatched or patterned fills, including any rule drawn as a repeating background image, which flatten to the
+  single tone in `pattern_fill`. A dotted or stitched rule becomes a solid bar in that tone.
 - Any image with no asset id, which becomes a placeholder rectangle in the `placeholder` colours.
+
+Known gaps in extract:
+
+- It reads `textContent`, which drops a `<br/>` without leaving a space, so two words join. `push-loop.md` has
+  the workaround.
+- It reads `text-align`, so text centred with flexbox (`justify-content: center` on the box) arrives left
+  aligned.
 
 ## Still deck-shaped
 

@@ -1,5 +1,7 @@
 # The push loop
 
+<!-- cspell:ignore Experimentationand -->
+
 One page at a time, inside a transaction, with a gate in front of it. Read `canva-connector.md` first if the
 connector has not been probed yet.
 
@@ -43,8 +45,14 @@ recorded. Pages are mapped by position, so add them in label order.
    Chunk size is a trade-off against the connector's payload limit. 40 has gone through cleanly; drop it if a
    call is rejected for size.
 
-3. **Save the last response.** Each `edit-design` call returns the draft page with every element's `id` and its
-   text. Save the response to the last chunk as JSON under `<output_dir>/`.
+   Operation text is UTF-8. On Windows, set `PYTHONIOENCODING=utf-8` before printing a chunk to the console, or
+   characters such as `·` and `é` show as `�`. The file is fine either way; it is only the console.
+
+3. **Save the responses.** Each `edit-design` call returns the draft page with every element's `id` and its
+   text. Save the response to the last chunk as JSON under `<output_dir>/`. On a dense page that response can
+   come back split across two text blocks, or truncated. Join split blocks before parsing, and record each
+   chunk's new text element ids, in creation order, to a file as each chunk goes in, so step 4 can fall back to
+   `--ids`.
 
 4. **Format.** Created text carries no styling, so every text element needs a follow-up:
 
@@ -60,7 +68,23 @@ recorded. Pages are mapped by position, so add them in label order.
 
 5. **Look at it.** `read-design` with the `transaction_id` and `"thumbnails"` returns the draft. Compare it with
    `<output_dir>/verify/out-01.png`. This is a human-level check, not a pixel one: is it the same page? Save the
-   draft's design content and run `check --dump FILE --page 01`.
+   draft's design content and run `check --dump FILE --page 01`. `check` matches pages by position, so a dump
+   holding one page has to carry empty pages in front of it to land in the right slot.
+
+   Then check what the thumbnail is too small to show:
+
+   - **Overlaps.** Canva's default face is wider than the deck's, so a paragraph can take an extra line and run
+     into the box below it, or a table cell into the next row. From the response's element boxes, flag any text
+     box whose bottom runs past the top of the next box in the same column. Clear it by moving the lower box
+     down or widening the box, in the same transaction, and say what moved and by how much.
+   - **Never shrink text.** Do not set a text box smaller than the size the deck gave it to make it fit. A deck
+     with a minimum type size, such as a 12 pt floor (16 px on an A3 page at 1123 px), breaks that rule without
+     anything in Canva saying so. If moving and widening cannot clear an overlap, report it; cutting words is a
+     change to the deck, and that belongs to a person.
+   - **Line breaks.** Extract reads `textContent`, which drops a `<br/>` without leaving a space, so
+     `Experimentation<br/>and` arrives as `Experimentationand`. Compare each text against the deck. Until extract
+     is fixed, send an affected box's `add_text` with a `\n` where the `<br/>` was. That box no longer matches
+     the element list, so `--from-dump` cannot pair it: format with `--ids`, and expect `check` to report it.
 
 6. **Commit, with approval.** Show the person the preview and the check result, and commit (`finalize:
    "commit"`, no operations) only once they approve. The connector requires it and the commit cannot be undone.

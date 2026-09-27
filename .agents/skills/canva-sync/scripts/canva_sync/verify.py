@@ -44,7 +44,9 @@ LABEL_RE = re.compile(r'data-label="([^"]*)"')
 
 # Known residuals live in canva.config.json ("known_residuals": per page
 # label, in per cent). They record a difference that is real, understood and
-# not a regression. The one the example folio ships with:
+# not a regression. The example folio carried one until 28 September 2026,
+# when page 12 measured 0.102% with nothing left in its columns. Kept here in
+# case it comes back:
 #
 #   12  The evaluation text is a two-column multicol whose third paragraph
 #       runs across the break, and the block carries `text-wrap: pretty`.
@@ -59,7 +61,8 @@ LABEL_RE = re.compile(r'data-label="([^"]*)"')
 #       column does not either: the look-ahead is genuinely gone with the
 #       text that left. Canva re-flows text on import in any case.
 #
-# Every other page is held to --tolerance, so a real regression still fails.
+# Every page without an entry is held to --tolerance, so a real regression
+# still fails.
 
 
 def reference_pages(warnings):
@@ -209,8 +212,10 @@ def verify(export_path: Path | None = None, chrome=None, scale: float = 1.0,
     if failed:
         print(f"  ! pages over tolerance: {', '.join(failed)} (worst {worst:.3f}%)")
         return 1
-    known = ", ".join(sorted(residuals)) or "none"
-    print(f"  every page within {tolerance}%, except the known residual on {known}")
+    if residuals:
+        print(f"  every page within {tolerance}%, except the known residual on {', '.join(sorted(residuals))}")
+    else:
+        print(f"  every page within {tolerance}%")
     return 0
 
 

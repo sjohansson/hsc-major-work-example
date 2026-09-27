@@ -75,7 +75,10 @@ Do not skip a gate. Each one exists because the step after it is expensive to un
    put something else in Canva. Nothing goes past this gate.
 3. **extract.**
 4. **ops --summary --json.** If `unmapped_assets` is not empty, say which images have no asset id and ask
-   whether to push with placeholder rectangles or stop and upload them first. Do not decide this silently.
+   whether to push with placeholder rectangles or stop and upload them first. Do not decide this silently. The
+   connector uploads local files; `references/canva-connector.md` has the route, including why an SVG with text
+   goes up as a PNG render. Recording the ids is an edit to the local id file, so the upload is the person's
+   step or the main session's, not this skill's.
 5. **probe.** List the connector's tools with their input schemas, save that as JSON, and run `probe --tools`.
    Stop on a mismatch, including any `field_problems`. If only the legacy public dialect matches, say so and
    switch to the import-from-URL route in `references/canva-connector.md` rather than pushing operations the
@@ -83,8 +86,10 @@ Do not skip a gate. Each one exists because the step after it is expensive to un
 6. **Push, one page at a time.** A page with no id yet is added first with `ops --phase page`. For each page:
    open an editing transaction with `read-design`, apply the `elements` chunks in order with `edit-design`, save
    the last response, apply the `format` phase with `--from-dump`, compare the draft thumbnail against
-   `<output_dir>/verify/out-NN.png`, show the person the preview, and commit only when they approve. On any
-   error, cancel the transaction, report what happened, and stop. Do not carry on to the next page.
+   `<output_dir>/verify/out-NN.png`, check the draft's text boxes for overlaps, show the person the preview, and
+   commit only when they approve. Canva's default face is wider than the deck's, so dense pages overlap: clear
+   an overlap by moving or widening a box, never by making text smaller than the deck set it. On any error,
+   cancel the transaction, report what happened, and stop. Do not carry on to the next page.
    `references/push-loop.md` has the detail, including what to do on the first page of an unverified dialect.
 7. **check.** Feed the connector's design JSON to `check --dump -`. On a fresh design use `--refresh-ids` once,
    which writes the design id and page ids into the local id file. Text Canva has that the repository does not
@@ -111,6 +116,8 @@ gate and why, and what would clear it.
 ## References
 
 - `references/how-it-works.md` - the stages, the cascade subset, the four rewrites, what crosses and what does not.
-- `references/push-loop.md` - the per-page push, chunking, element ids, and recovering from a failed transaction.
-- `references/canva-connector.md` - Canva's public MCP tools, the dialects, the probe, and the import-from-URL route.
+- `references/push-loop.md` - the per-page push, chunking, element ids, checking a draft before commit, and
+  recovering from a failed transaction.
+- `references/canva-connector.md` - Canva's public MCP tools, the dialects, the probe, uploading images, and the
+  import-from-URL route.
 - `references/config.md` - every config key, the discovery order, and how to adopt this skill in another repository.
