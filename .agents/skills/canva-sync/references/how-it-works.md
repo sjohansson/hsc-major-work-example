@@ -59,6 +59,11 @@ Renders the flattened export and asks the browser where everything landed, in th
 coordinate space. The result is an ordered element list per page: shapes with paths, images with asset names,
 texts with geometry, size, weight, colour, alignment and line height.
 
+Two things the computed style does not say directly are worked out. A `<br>` becomes a `\n` in the text, rather
+than vanishing and joining the words either side. Text centred in a flex row takes its alignment from
+`justify-content`, and, when `align-items` is `center`, its box is moved onto its own lines, because Canva sets
+text from the top of the box. A numbered circle keeps its digit in the middle.
+
 ### ops
 
 Turns the element list into abstract operations, then spells them for one connector. See
@@ -84,8 +89,9 @@ after it, and the report will look like wholesale disagreement. Check the page c
 
 ## What crosses into Canva and what does not
 
-Crosses: geometry, stacking order, colours, text content, sizes, alignment set with `text-align`, line heights,
-bold and italic applied to a whole text box, and any image with a mapped asset id.
+Crosses: geometry, stacking order, colours, text content with its line breaks, sizes, alignment (from
+`text-align`, or from flexbox for centred text), line heights, bold and italic applied to a whole text box, and
+any image with a mapped asset id.
 
 Does not cross:
 
@@ -99,13 +105,6 @@ Does not cross:
 - Hatched or patterned fills, including any rule drawn as a repeating background image, which flatten to the
   single tone in `pattern_fill`. A dotted or stitched rule becomes a solid bar in that tone.
 - Any image with no asset id, which becomes a placeholder rectangle in the `placeholder` colours.
-
-Known gaps in extract:
-
-- It reads `textContent`, which drops a `<br/>` without leaving a space, so two words join. `push-loop.md` has
-  the workaround.
-- It reads `text-align`, so text centred with flexbox (`justify-content: center` on the box) arrives left
-  aligned.
 
 ## Still deck-shaped
 

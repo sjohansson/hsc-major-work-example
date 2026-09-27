@@ -283,6 +283,14 @@ def run_selftest() -> dict:
             res, ok = run(["extract"])
             steps["extract"] = "ok" if ok else f"FAIL rc={res.returncode}"
             if ok:
+                # The kicker's <br> has to stay a line break, and the badge's
+                # flex-centred digit has to stay centred.
+                layout = json.loads((work / "build" / "canva-layout.json").read_text(encoding="utf-8"))
+                texts = [e for p in layout for e in p["elements"] if e["kind"] == "text"]
+                br = any(e["text"] == "FIXTURE\nONE" for e in texts)
+                badge = any(e["text"] == "3" and e["align"] == "center" for e in texts)
+                steps["extract line break"] = "ok" if br else "FAIL"
+                steps["extract flex centring"] = "ok" if badge else "FAIL"
                 res, ok = run(["ops", "--summary", "--json"])
                 steps["ops"] = "ok" if ok else f"FAIL rc={res.returncode}"
                 if ok:

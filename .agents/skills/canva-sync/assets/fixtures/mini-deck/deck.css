@@ -1,7 +1,8 @@
 /* The fixture stylesheet. Every construct here is one the flattener has to
    resolve: custom properties, calc(), a child combinator, !important beating
-   a more specific rule, ::before, a table, a multicol block, vertical text
-   and a clip-path pair. Keep it small; keep it exhaustive. */
+   a more specific rule, ::before, a table, a multicol block, vertical text,
+   a clip-path pair, and a flex-centred badge for extract. Keep it small; keep
+   it exhaustive. */
 
 :root {
   --ink: #1A1A1A;
@@ -129,6 +130,21 @@ table.spec tbody > tr > .note {
 .mark {
   display: block;
   margin-bottom: 4mm;
+}
+
+/* The digit is centred by flexbox, not text-align, so extract has to read
+   justify-content and align-items to keep it in the middle. */
+.badge {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7mm;
+  height: 7mm;
+  border-radius: 50%;
+  border: 0.3mm solid var(--ink);
+  font-size: 3.4mm;
+  line-height: 1;
 }
 
 .tail {

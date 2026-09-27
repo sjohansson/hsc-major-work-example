@@ -1,7 +1,5 @@
 # Syncing the folio to Canva
 
-<!-- cspell:ignore EXPERIMENTATIONAND -->
-
 The repo is the source of truth. The deck is flattened into the shape Canva can read, checked pixel for pixel
 against the real deck, measured into an element list, and turned into operations for a Canva connector. A
 read-back step compares what Canva holds against the repo.
@@ -124,8 +122,9 @@ The two SVGs without text, `house-mark.svg` and `draw_overskirt.svg`, upload as 
 ## What crosses and what does not
 
 - Geometry, stacking order, colours, text content, sizes, alignment and the mapped images all cross. So do bold
-  and italic when they apply to a whole text box. The 60 degree masthead transition crosses as a mitred polygon
-  shape.
+  and italic when they apply to a whole text box. A `<br/>` crosses as a line break, and text centred with
+  flexbox, such as the plate numbers, stays centred in its box. The 60 degree masthead transition crosses as a
+  mitred polygon shape.
 - Font families do not cross. The format operation has no family parameter, so text lands in Canva's default
   face, Arimo, at the correct size and weight. Apply Fraunces (display) and PT Serif (body) from the brand kit in
   Canva. The brand kit also wants the sixteen area hexes from the top of `deck.css`.
@@ -138,8 +137,6 @@ The two SVGs without text, `house-mark.svg` and `draw_overskirt.svg`, upload as 
   `add_page` sets it only for a new page.
 - Hatched fills on the pattern-piece plates and the stitch rows (`.rule-fine`, drawn as a repeating background
   image) flatten to the `pattern_fill` tone. A stitch row arrives as a pale solid bar.
-- Plate numbers sit at the left of their circles. `.plate-num` centres its digit with flexbox, and extract reads
-  `text-align`, which is `start`.
 - Images map by filename to asset ids in `canva.local.json`. Unmapped images push as placeholder rectangles that
   can be filled afterwards.
 - `ops --summary` lists every image the deck uses that the local map does not cover. Run it after any rename
@@ -156,10 +153,6 @@ The thumbnail is too small to show these, so check the draft itself before askin
   28 September two page 12 cells were set to 15 px, which is 11.25 pt, to stop one. Canva flags nothing, but the
   NESA Assessor measures the smallest text on every page. Move or widen the box, or say that the deck needs
   fewer words.
-- **Line breaks.** Extract reads `textContent`, which drops a `<br/>` without leaving a space. The pages 09 to 12
-  mastheads, `Investigation, Experimentation<br/>and Evaluation`, come out as "EXPERIMENTATIONAND EVALUATION".
-  Until extract is fixed, send that box's text with a `\n` where the `<br/>` is, and format the page with
-  `--ids`, because `--from-dump` cannot pair the changed text.
 
 ## Verify and its tolerance
 

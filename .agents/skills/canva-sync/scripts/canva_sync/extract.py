@@ -83,6 +83,37 @@ Promise.all([
     if (!m) return 0;
     return Math.round(Math.atan2(parseFloat(m[2]), parseFloat(m[1])) * 180 / Math.PI);
   }
+  // textContent drops a <br> without leaving a space, which joins the words
+  // either side of it. Keep it as a line break; add_text takes \n.
+  function textOf(node) {
+    var s = '';
+    Array.prototype.forEach.call(node.childNodes, function (c) {
+      if (c.nodeType === 3) s += c.data.replace(/\s+/g, ' ');
+      else if (c.nodeName === 'BR') s += '\n';
+      else if (c.nodeType === 1) s += textOf(c);
+    });
+    return s.replace(/ +/g, ' ').replace(/ ?\n ?/g, '\n').trim();
+  }
+  // A flex row centres its text with justify-content and align-items, which
+  // text-align does not report. Canva sets a text box's lines from its top,
+  // so text centred vertically also needs the box moved onto its own lines.
+  function flexText(el, cs, r) {
+    if ((cs.display !== 'flex' && cs.display !== 'inline-flex') || cs.flexDirection !== 'row') return null;
+    var j = cs.justifyContent;
+    var out = { align: j === 'center' ? 'center' : (j === 'flex-end' || j === 'end' || j === 'right') ? 'end' : null,
+                top: null, h: null };
+    if (cs.alignItems === 'center') {
+      var inTop = r.top + parseFloat(cs.borderTopWidth) + parseFloat(cs.paddingTop);
+      var inBottom = r.bottom - parseFloat(cs.borderBottomWidth) - parseFloat(cs.paddingBottom);
+      var lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var lines = Math.max(1, Math.round(range.getBoundingClientRect().height / lh));
+      out.h = lines * lh;
+      out.top = (inTop + inBottom) / 2 - out.h / 2;
+    }
+    return out;
+  }
 
   function walk(el) {
     var cs = getComputedStyle(el);
@@ -163,19 +194,24 @@ Promise.all([
       });
     }
 
-    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    var text = textOf(el);
     if (text && !blockChildWithText(el)) {
       var rot = rotationOf(cs);
       var b = box;
+      var align = cs.textAlign;
       if (rot !== 0) {
         // report the unrotated box: width is the layout width
         b = { x: box.x, y: box.y, w: r.height * SX, h: r.width * SY };
+      } else {
+        var ft = flexText(el, cs, r);
+        if (ft && ft.align) align = ft.align;
+        if (ft && ft.top !== null) b = { x: box.x, y: (ft.top - srect.top) * SY, w: box.w, h: ft.h * SY };
       }
       els.push({ kind: 'text', x: b.x, y: b.y, w: b.w, h: b.h, text: text,
                  tag: tag,
                  size: parseFloat(cs.fontSize) * SX,
                  weight: cs.fontWeight, italic: cs.fontStyle === 'italic',
-                 color: cs.color, align: cs.textAlign,
+                 color: cs.color, align: align,
                  lh: Math.round(parseFloat(cs.lineHeight) / parseFloat(cs.fontSize) * 100) / 100,
                  caps: cs.textTransform === 'uppercase',
                  family: (cs.fontFamily.split(',')[0] || '').replace(/"/g, ''),

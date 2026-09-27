@@ -1,7 +1,5 @@
 # The push loop
 
-<!-- cspell:ignore Experimentationand -->
-
 One page at a time, inside a transaction, with a gate in front of it. Read `canva-connector.md` first if the
 connector has not been probed yet.
 
@@ -81,10 +79,6 @@ recorded. Pages are mapped by position, so add them in label order.
      with a minimum type size, such as a 12 pt floor (16 px on an A3 page at 1123 px), breaks that rule without
      anything in Canva saying so. If moving and widening cannot clear an overlap, report it; cutting words is a
      change to the deck, and that belongs to a person.
-   - **Line breaks.** Extract reads `textContent`, which drops a `<br/>` without leaving a space, so
-     `Experimentation<br/>and` arrives as `Experimentationand`. Compare each text against the deck. Until extract
-     is fixed, send an affected box's `add_text` with a `\n` where the `<br/>` was. That box no longer matches
-     the element list, so `--from-dump` cannot pair it: format with `--ids`, and expect `check` to report it.
 
 6. **Commit, with approval.** Show the person the preview and the check result, and commit (`finalize:
    "commit"`, no operations) only once they approve. The connector requires it and the commit cannot be undone.
