@@ -32,7 +32,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
+          python-version: "3.15"
 
       # Pillow for the rendered images. The runner image already has PowerShell 7 and Chrome.
       - name: Install dependencies
